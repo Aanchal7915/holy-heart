@@ -10,7 +10,7 @@ import OurDoctor from './pages/OurDoctor'
 
 function App() {
   return (
-    <div>
+    <div className="sm:min-w-0 min-w-[500px] sm:overflow-x-visible overflow-x-auto">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

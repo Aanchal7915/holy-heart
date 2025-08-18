@@ -7,13 +7,13 @@ import SpecialistsSection from "../components/SpecialistsSection";
 
 function Home() {
   return (
-    <>
+    <div>
       <Hero />
       <AboutSection />
 
       <ConsultationForm />
       <SpecialistsSection />
-    </>
+    </div>
   );
 }
 

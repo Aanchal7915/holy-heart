@@ -7,14 +7,14 @@ import Consultation from '../components/Consultation';
 
 function OurDoctor() {
   return (
-    <>
+    <div>
       <OurDoctorHero/>
       <DoctorsPage/>
       <TeamCard/>
       <StatCard/>
       <CertificationCard/>
       <Consultation/>
-    </>
+    </div>
   );
 }
 
