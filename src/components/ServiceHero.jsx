@@ -3,12 +3,12 @@ import React from "react";
 import { Phone } from "lucide-react";
 import { motion } from "framer-motion";
 
-const Specialties = () => {
+const ServiceHero = () => {
   return (
     <section
       className="relative w-full h-screen flex items-center justify-center bg-cover bg-center"
       style={{
-        backgroundImage: `url("/service1.jpg"), url("https://source.unsplash.com/1600x900/?hospital,medical")`,
+        backgroundImage: `url("/service1.jpg"), url("/assets/service-hero.jpg")`,
       }}
     >
       {/* Overlay */}
@@ -51,4 +51,4 @@ const Specialties = () => {
   );
 };
 
-export default Specialties;
+export default ServiceHero;
