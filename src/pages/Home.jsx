@@ -8,13 +8,11 @@ import SpecialistsSection from "../components/SpecialistsSection";
 function Home() {
   return (
     <div>
-      <Navbar />
       <Hero />
       <AboutSection/>
       
       <ConsultationForm/>
       <SpecialistsSection/>
-      <Footer/>
     </div>
   );
 }
