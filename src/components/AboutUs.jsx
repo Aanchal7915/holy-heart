@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { HeartPulse } from "lucide-react";
 
-const AboutSection = () => {
+const AboutUs = () => {
   return (
     <section className="bg-white py-16 px-6 md:px-20">
       <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -78,4 +78,4 @@ const AboutSection = () => {
   );
 };
 
-export default AboutSection;
+export default AboutUs;

@@ -1,6 +1,6 @@
 import React from "react";
 
-const WhyChoose = () => {
+const WhyChooseUs = () => {
   const features = [
     {
       title: "Advanced Medical Infrastructure",
@@ -78,4 +78,4 @@ const WhyChoose = () => {
   );
 };
 
-export default WhyChoose;
+export default WhyChooseUs;
