@@ -4,14 +4,14 @@ import WhyChooseUs from "../components/WhyChooseUs";
 import FreeConsultation from "../components/FreeConsultation";
 
 function Home() {
-  return (
-    <div>
-      <ServiceHero />
-      <ServiceCard/>
-      <WhyChooseUs/>
-      <FreeConsultation/>
-    </div>
-  );
+    return (
+        <>
+            <ServiceHero />
+            <ServiceCard />
+            <WhyChooseUs />
+            <FreeConsultation />
+        </>
+    );
 }
 
 export default Home;

@@ -1,17 +1,11 @@
-import Navbar from "../components/Navbar";
-import ContactHero from "../components/ContactHero";
-import ContactForm from "../components/ContactForm";
-import Footer from "../components/Footer";
+import AboutHero from "../components/AboutHero";
 
-function Home() {
+function About() {
   return (
-    <div>
-      <Navbar />
-      <ContactHero />
-      <ContactForm/>
-      <Footer/>
-    </div>
+    <>
+      <AboutHero />
+    </>
   );
 }
 
-export default Home;
+export default About;
