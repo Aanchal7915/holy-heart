@@ -14,14 +14,14 @@ const BookAppointment = () => {
     const department = formData.get("department");
     const message = formData.get("message");
 
-    const text = `📅 *New Appointment Request*
+    const text = `*New Appointment Request*
     
-👤 Name: ${fullName}
-📧 Email: ${email}
-📞 Phone: ${phone}
-📆 Date: ${date}
-🏥 Department: ${department}
-📝 Message: ${message || "N/A"}
+Name: ${fullName}
+Email: ${email}
+Phone: ${phone}
+Date: ${date}
+Department: ${department}
+Message: ${message || "N/A"}
 `;
 
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
@@ -36,6 +36,7 @@ const BookAppointment = () => {
         <h2 className="text-3xl font-bold text-gray-800 mb-3 text-center">
           Book Appointment
         </h2>
+        <div className="bg-red-500 h-[5px] w-[100px] mx-auto mt-0 mb-4 pt-0"></div>
         <p className="text-gray-600 mb-8 text-center">
           Schedule your consultation with our experienced doctors.
           Please fill out the form below and our team will contact you shortly.

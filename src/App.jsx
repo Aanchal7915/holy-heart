@@ -12,7 +12,7 @@ import BookAppointment from "./pages/BookAppointment";
 
 function App() {
   return (
-    <div className="sm:min-w-0 min-w-[500px] sm:overflow-x-visible overflow-x-auto bg-gray-100">
+    <div className="sm:min-w-0 min-w-[400px] sm:overflow-x-visible overflow-x-auto bg-gray-100">
       <Navbar />
       <ScrollToTop/>
       <Routes>

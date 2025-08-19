@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { FaBars, FaTimes, FaPhone } from "react-icons/fa";
 import logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate=useNavigate();
 
   return (
     <nav className="fixed w-full z-50 bg-white shadow">
@@ -32,7 +33,7 @@ const Navbar = () => {
           <a href="tel:+9101262279279" className="flex items-center text-red-600 font-semibold">
             <FaPhone className="mr-2" /> +91 01262-279279
           </a>
-          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-medium">
+          <button onClick={()=>navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-medium">
             Book Appointment
           </button>
         </div>
@@ -57,7 +58,7 @@ const Navbar = () => {
             {/* <li><Link to="/faqs" onClick={() => setIsOpen(false)}>FAQs</Link></li> */}
             <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
             <li className="border-t border-gray-400 py-6">
-              <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">
+              <button onClick={()=>navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">
                 Book Appointment
               </button>
             </li>
