@@ -1,5 +1,5 @@
 import { FaHeartbeat, FaBullseye, FaHandsHelping } from "react-icons/fa";
-
+import { FiEye } from "react-icons/fi";
 const aboutData = [
   {
     icon: <FaHeartbeat className="text-blue-600 text-3xl" />,
@@ -8,7 +8,7 @@ const aboutData = [
       "Holy Heart Advanced Cardiac Care & Research Center has been providing exceptional care since 2013 with state-of-the-art technology and experienced specialists.",
   },
   {
-    icon: <FaBullseye className="text-blue-600 text-3xl" />,
+    icon: <FiEye className="text-blue-600 text-3xl" />,
     title: "Our Vision",
     description:
       "To redefine cardiovascular care delivery, scale greater heights, and set new standards in cardiac treatment excellence.",

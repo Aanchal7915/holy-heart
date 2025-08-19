@@ -11,8 +11,10 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-6 py-3">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <img src={logo} alt="Holy Heart" className="h-10 w-auto" />
-          <span className="font-bold text-lg text-red-600">Holy Heart</span>
+          <img src={logo} alt="Holy Heart" className="h-10 w-auto" /> 
+          <span className="font-medium text-lg text-red-600 font-pacifico"
+          style={{fontFamily:"Pacifico"}}
+          >Holy Heart</span>
         </div>
 
         {/* Desktop Menu */}

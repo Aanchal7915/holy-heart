@@ -67,9 +67,9 @@ const ContactHero = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-extrabold leading-tight"
+          className="text-4xl md:text-6xl font-bold leading-tight"
         >
-          Get In <span className="text-red-500">Touch</span>
+          Get In <span className="text-red-400">Touch</span>
         </motion.h1>
 
         {/* Description */}

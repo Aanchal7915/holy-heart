@@ -80,9 +80,9 @@ const ServiceHero = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-extrabold leading-tight"
+          className="text-4xl md:text-6xl font-bold leading-tight"
         >
-          Our <span className="text-red-500">Specialties</span> 
+          Our <span className="text-red-400">Specialties</span> 
         </motion.h1>
 
         {/* Description */}

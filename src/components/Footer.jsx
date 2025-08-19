@@ -20,7 +20,9 @@ const Footer = () => {
           <div className="">
             <div className="flex items-center space-x-2 mb-4">
               <img src={logo} alt="Holy Heart" className="h-10 md:h-20 w-auto" />
-              <span className="font-bold text-xl text-red-500">Holy Heart</span>
+              <span className="font-medium text-xl text-red-500"
+              style={{fontFamily:"Pacifico"}}
+              >Holy Heart</span>
             </div>
             <p className="text-sm mb-4">
               Holy Heart Advanced Cardiac Care & Research Center has been
@@ -108,7 +110,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-12 border-t border-gray-700 pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
-          <p>© 2024 Holy Heart Hospital. All rights reserved.</p>
+          <p>© 2025 Holy Heart Hospital. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="hover:text-red-500">Privacy Policy</a>
             <a href="#" className="hover:text-red-500">Terms of Service</a>

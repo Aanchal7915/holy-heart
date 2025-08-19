@@ -11,8 +11,8 @@ const Hero = () => {
       <div className="absolute inset-0 bg-black/40"></div>
       <div className="container relative mx-auto px-6 md:px-12 z-10">
         <div className="max-w-2xl text-white">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-            Advanced <span className="text-red-500">Cardiac Care</span><br /> You Can Trust
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+            Advanced <span className="text-red-400">Cardiac Care</span><br /> You Can Trust
           </h1>
           <p className="mt-4 text-lg text-gray-200">
             Holy Heart Hospital provides comprehensive cardiovascular care with
