@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-6 py-3">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <img src={logo} alt="Holy Heart" className="h-10 w-auto" /> 
+          <img src={logo} alt="Holy Heart" className="h-12 md:h-15 w-auto" /> 
           <span className="font-medium text-lg text-red-600 font-pacifico"
           style={{fontFamily:"Pacifico"}}
           >Holy Heart</span>
@@ -23,7 +23,7 @@ const Navbar = () => {
           <li><Link to="/about" className="hover:text-red-600">About Us</Link></li>
           <li><Link to="/services" className="hover:text-red-600">Services</Link></li>
           <li><Link to="/our-doctors" className="hover:text-red-600">Our Doctors</Link></li>
-          <li><Link to="/faqs" className="hover:text-red-600">FAQs</Link></li>
+          {/* <li><Link to="/faqs" className="hover:text-red-600">FAQs</Link></li> */}
           <li><Link to="/contact" className="hover:text-red-600">Contact</Link></li>
         </ul>
 
@@ -54,7 +54,7 @@ const Navbar = () => {
             <li><Link to="/about" onClick={() => setIsOpen(false)}>About Us</Link></li>
             <li><Link to="/services" onClick={() => setIsOpen(false)}>Services</Link></li>
             <li><Link to="/our-doctors" onClick={() => setIsOpen(false)}>Our Doctors</Link></li>
-            <li><Link to="/faqs" onClick={() => setIsOpen(false)}>FAQs</Link></li>
+            {/* <li><Link to="/faqs" onClick={() => setIsOpen(false)}>FAQs</Link></li> */}
             <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
             <li className="border-t border-gray-400 py-6">
               <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">

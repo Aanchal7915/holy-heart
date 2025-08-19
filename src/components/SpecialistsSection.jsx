@@ -1,4 +1,5 @@
 import { FaHeartbeat, FaStethoscope, FaChild, FaMicroscope, FaHospital, FaHeart, FaBullseye, FaHandsHelping } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const services = [
   {
@@ -52,6 +53,7 @@ const cards = [
 ];
 
 export default function SpecialistsSection() {
+  const navigate=useNavigate();
   return (
     <>
       <section className="py-16 max-w-[1200px] mx-auto px-6">
@@ -104,7 +106,7 @@ export default function SpecialistsSection() {
         </div>
 
         <div className="text-center mt-10">
-          <button className="hover:bg-red-700 hover:scale-110 hover:shadow bg-red-600 text-white px-6 py-3 rounded-4xl font-semibold transition-all duration-300 ">
+          <button onClick={()=>navigate("/services")} className="hover:bg-red-700 hover:scale-110 hover:shadow bg-red-600 text-white px-6 py-3 rounded-4xl font-semibold transition-all duration-300 ">
             ➜ View All Services
           </button>
         </div>
