@@ -41,7 +41,7 @@ const About = () => {
         </motion.p>
 
         {/* Buttons */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-8 flex flex-wrap gap-4">
           <motion.a
             href="#services"
             whileHover={{ scale: 1.05 }}
