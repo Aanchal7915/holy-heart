@@ -78,7 +78,7 @@ export default function SpecialistsSection() {
           {/* Center Image */}
           <div className="flex justify-center">
             <img
-              src="/src/assets/home-heart.jpg"
+              src="/assets/home-heart.jpg"
               alt="Human Heart"
               className="w-72 md:w-96"
             />
