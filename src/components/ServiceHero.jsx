@@ -96,7 +96,7 @@ const ServiceHero = () => {
         </motion.p>
 
         {/* Buttons */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-8 flex gap-4 flex-wrap">
           <motion.a
             href="#services"
             whileHover={{ scale: 1.05 }}
