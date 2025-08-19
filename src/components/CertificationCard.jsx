@@ -1,22 +1,15 @@
 import React from "react";
+import { PiMedal } from "react-icons/pi";
 
 const CertificationCard = ({ cert }) => {
-  const fallbackIcon =
-    "https://via.placeholder.com/40x40.png?text=Icon"; // fallback image
-
-  const handleError = (e) => {
-    e.target.src = fallbackIcon;
-  };
+ 
 
   return (
     <div className="flex items-start gap-3 bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition">
       {/* Icon */}
-      <img
-        src={cert.icon}
-        alt={cert.title}
-        onError={handleError}
-        className="w-10 h-10"
-      />
+      <span className="p-4 rounded-full bg-red-100">
+      <PiMedal className="text-red-600 text-xl"/>
+      </span>
 
       {/* Text */}
       <div>
@@ -34,22 +27,18 @@ export default function Certifications() {
     {
       title: "American Heart Association (AHA) Guidelines",
       subtitle: "All procedures follow AHA standards",
-      icon: "/aha.png",
     },
     {
       title: "National Board of Examinations (NBE)",
       subtitle: "Board-certified specialists",
-      icon: "/nbe.png",
     },
     {
       title: "Cardiological Society of India (CSI)",
       subtitle: "Active CSI members",
-      icon: "/csi.png",
     },
     {
       title: "Indian Association of Cardiovascular Surgeons",
       subtitle: "Professional membership maintained",
-      icon: "/invalid.png", // broken → will show fallback
     },
   ];
 
@@ -60,6 +49,7 @@ export default function Certifications() {
         <h2 className="text-2xl font-bold text-gray-900">
           Professional Certifications
         </h2>
+        <div className="mt-2 h-1 w-24 mx-auto bg-red-500 rounded-full"></div>
         <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
           Our medical team maintains the highest professional standards
           through continuous education and certification.

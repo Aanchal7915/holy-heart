@@ -25,10 +25,10 @@ export default function Consultation() {
       className="relative bg-cover bg-center py-20 px-6 text-white"
       style={{
         backgroundImage:
-          "url('/consultation-bg.jpg')", // Replace with your hospital bg image
+          "url('/assets/schedule-consul.jpg')", // Replace with your hospital bg image
       }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+      <div className="absolute inset-0 bg-black opacity-60"></div>
 
       <div className="relative z-10 container mx-auto text-center">
         {/* Heading */}

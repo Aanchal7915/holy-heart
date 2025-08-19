@@ -42,7 +42,7 @@ export default function WhyChooseUs() {
         <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
           Why Choose Our Cardiac Services?
         </h2>
-        <div className="mt-2 h-1 w-24 mx-auto bg-red-500 rounded-full"></div>
+        
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

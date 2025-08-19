@@ -1,12 +1,9 @@
 import React from "react";
+import { Calendar1Icon, Phone } from "lucide-react";
 
 // DoctorCard Component
 const DoctorCard = ({ doctor }) => {
-  const fallbackImage = "https://via.placeholder.com/300x400?text=Doctor+Image";
-
-  const handleImageError = (e) => {
-    e.target.src = fallbackImage;
-  };
+  
 
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-2xl overflow-hidden w-full max-w-3xl mx-auto mb-8">
@@ -15,7 +12,6 @@ const DoctorCard = ({ doctor }) => {
         <img
           src={doctor.image}
           alt={doctor.name}
-          onError={handleImageError}
           className="h-full w-full object-cover"
         />
       </div>
@@ -57,12 +53,12 @@ const DoctorCard = ({ doctor }) => {
         </div>
 
         {/* Buttons */}
-        <div className="mt-6 flex gap-4">
-          <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full font-semibold shadow-md">
-            📅 Book Appointment
+        <div className="mt-6 flex gap-4 flex flex-wrap">
+          <button className="flex items-center gap-x-4 py-2 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full font-semibold shadow-md">
+             <Calendar1Icon/>Book Appointment
           </button>
-          <button className="border border-gray-400 hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-full font-semibold">
-            📞 Contact
+          <button className="flex items-center gap-x-4 border border-gray-400 hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-full font-semibold">
+            <Phone/> Contact
           </button>
         </div>
       </div>
@@ -78,7 +74,7 @@ export default function DoctorsPage() {
       qualification: "MD (Medicine), DM (Cardiology)",
       experience: "15+ Years",
       languages: ["English", "Hindi"],
-      image: "/doctor1.jpg", // Replace with your image path
+        image: "/assets/doctor/doctor1.jpg", // Replace with your image path
       specializations: [
         "Interventional Cardiology",
         "Coronary Angioplasty",
@@ -97,7 +93,7 @@ export default function DoctorsPage() {
       qualification: "MBBS, MD (Cardiology)",
       experience: "12+ Years",
       languages: ["English", "Hindi", "Punjabi"],
-      image: "/invalid.jpg", // Broken link → fallback will load
+      image: "/assets/doctor/doctor2.jpg", // Broken link → fallback will load
       specializations: [
         "Pediatric Cardiology",
         "Congenital Heart Disease",
@@ -118,6 +114,7 @@ export default function DoctorsPage() {
         <h2 className="text-3xl font-bold text-center text-gray-800">
           Meet Our <span className="text-red-500">Expert Team</span>
         </h2>
+        <div className="bg-red-500 h-[5px] w-[100px] mx-auto mt-2 mt-0 mb-4 pt-0"></div>
         <p className="text-center text-gray-600 mt-2 max-w-2xl mx-auto">
           Our distinguished team of cardiologists brings together decades of
           experience, advanced training, and a commitment to providing the
