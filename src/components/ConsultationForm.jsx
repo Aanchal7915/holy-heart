@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaPhoneAlt, FaClock, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function ConsultationForm() {
   const [form, setForm] = useState({
@@ -18,9 +18,9 @@ export default function ConsultationForm() {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6 mt-10">
+    <div className="grid md:grid-cols-2 gap-6 mt-10 px-6 py-6">
       {/* Left Form Section */}
-      <div className="bg-white rounded-2xl shadow p-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-300 p-6">
         <h2 className="text-2xl font-bold mb-2">Request A Consultation</h2>
         <p className="text-gray-600 mb-6">
           Book your appointment with our cardiac specialists
@@ -130,8 +130,8 @@ export default function ConsultationForm() {
       </div>
 
       {/* Right Emergency Info Section */}
-      <div className="space-y-6">
-        <div className="bg-red-600 text-white p-6 rounded-2xl shadow">
+      <div className="space-y-6 flex flex-col justify-center">
+        <div className="bg-red-600 text-white p-6 rounded-2xl shadow-lg">
           <h3 className="text-xl font-bold mb-2">Emergency Situations?</h3>
           <p className="mb-4">We are here to help 24/7</p>
           <div className="bg-red-700 p-4 rounded-lg flex items-center gap-3">
@@ -150,13 +150,13 @@ export default function ConsultationForm() {
         </div>
 
         {/* Contact Info */}
-        <div className="bg-white rounded-2xl shadow p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-300 p-6">
           <h4 className="font-bold text-lg mb-3">Contact Information</h4>
-          <p className="text-gray-600 mb-2">
-            📍 330, Vinay Nagar, Delhi Bypass Chowk, Rohtak - 124001
+          <p className="text-gray-600 mb-2 flex flex-row items-center gap-x-2">
+            <FaMapMarkerAlt className="text-red-500 mt-1" /> 330, Vinay Nagar, Delhi Bypass Chowk, Rohtak - 124001
           </p>
-          <p className="text-gray-600 mb-2">📧 holyhearthospital@gmail.com</p>
-          <p className="text-gray-600">🕒 Mon-Sat: 9:00 AM - 8:00 PM</p>
+          <p className="text-gray-600 mb-2 flex flex-row items-center gap-x-2"><FaEnvelope className="text-red-500" /> holyhearthospital@gmail.com</p>
+          <p className="text-gray-600 flex flex-row items-center gap-x-2"><FaClock className="text-red-500 " /> Mon-Sat: 9:00 AM - 8:00 PM</p>
         </div>
       </div>
     </div>

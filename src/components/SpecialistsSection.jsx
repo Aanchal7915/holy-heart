@@ -51,11 +51,12 @@ const cards = [
   },
 ];
 
-export default function HomePageSections() {
+export default function SpecialistsSection() {
   return (
     <>
-      <section className="py-16">
+      <section className="py-16 max-w-[1200px] mx-auto px-6">
         <h2 className="text-3xl font-bold text-center mb-4">We Specialize In</h2>
+        <div className="bg-red-500 h-[5px] w-[100px] mx-auto mt-0 mb-4 pt-0"></div>
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
           Comprehensive cardiac care services with state-of-the-art technology
           and experienced specialists dedicated to your heart health.
@@ -65,9 +66,9 @@ export default function HomePageSections() {
           {/* Left Column */}
           <div className="space-y-6">
             {services.slice(0, 3).map((service, idx) => (
-              <div key={idx} className="bg-white shadow rounded-2xl p-6">
-                <h4 className="font-bold flex items-center gap-2">
-                  {service.icon} {service.title}
+              <div key={idx} className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6">
+                <h4 className="text-lg font-bold flex items-center gap-2">
+                  <span className="bg-red-100 rounded-full p-3">{service.icon}</span> {service.title}
                 </h4>
                 <p className="text-sm text-gray-600 mt-2">{service.desc}</p>
               </div>
@@ -86,9 +87,9 @@ export default function HomePageSections() {
           {/* Right Column */}
           <div className="space-y-6">
             {services.slice(3).map((service, idx) => (
-              <div key={idx} className="bg-white shadow rounded-2xl p-6">
-                <h4 className="font-bold flex items-center gap-2">
-                  {service.icon} {service.title}
+              <div key={idx} className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6">
+                <h4 className="text-lg font-bold flex items-center gap-2">
+                  <span className="bg-red-100 rounded-full p-3">{service.icon}</span> {service.title}
                 </h4>
                 <p className="text-sm text-gray-600 mt-2">{service.desc}</p>
               </div>
@@ -103,7 +104,7 @@ export default function HomePageSections() {
         </div>
       </section>
 
-      <section className="bg-[#2563eb] py-16 px-2">
+      {/* <section className="bg-[#2563eb] py-16 px-2">
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
           {cards.map((card, idx) => (
             <div
@@ -121,7 +122,7 @@ export default function HomePageSections() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

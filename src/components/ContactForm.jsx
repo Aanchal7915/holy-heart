@@ -5,7 +5,7 @@ export default function ContactFormSection() {
     <section className="py-16 px-6">
       <div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto">
         {/* Left Form */}
-        <div className="bg-white p-8 rounded-2xl shadow">
+        <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-300">
           <h2 className="text-2xl font-bold mb-2">Send Us A Message</h2>
           <p className="text-gray-600 mb-6">
             Fill out the form below and our team will get back to you within 24 hours.  
@@ -70,7 +70,7 @@ export default function ContactFormSection() {
 
         {/* Right Info */}
         <div className="space-y-6">
-          <div className="bg-white p-8 rounded-2xl shadow">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-300">
             <h2 className="text-2xl font-bold mb-2">Contact Information</h2>
             <p className="text-gray-600 mb-6">
               Get in touch with Holy Heart Hospital for comprehensive cardiac care.
@@ -114,7 +114,7 @@ export default function ContactFormSection() {
           </div>
 
           {/* Social Media */}
-          <div className="bg-red-600 text-white p-6 rounded-2xl shadow">
+          <div className="bg-red-600 text-white p-6 rounded-2xl shadow-2xl">
             <h3 className="font-bold text-lg mb-3">Connect With Us</h3>
             <p className="text-sm mb-4">
               Follow us on social media for health tips, hospital updates, and
