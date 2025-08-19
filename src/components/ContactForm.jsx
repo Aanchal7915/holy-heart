@@ -7,8 +7,9 @@ export default function ContactFormSection() {
         {/* Left Form */}
         <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-300">
           <h2 className="text-2xl font-bold mb-2">Send Us A Message</h2>
+          <div className="bg-red-500 h-[5px] w-[100px] mt-0 mb-4 pt-0"></div>
           <p className="text-gray-600 mb-6">
-            Fill out the form below and our team will get back to you within 24 hours.  
+            Fill out the form below and our team will get back to you within 24 hours.
             For urgent matters, please call our emergency helpline.
           </p>
 
@@ -18,13 +19,13 @@ export default function ContactFormSection() {
                 type="text"
                 placeholder="Full Name *"
                 required
-                className="border p-3 rounded-lg w-full"
+                className="border p-3 border border-gray-300 outline-none focus:outline-none focus:ring-0 p-3 rounded-lg w-full"
               />
               <input
                 type="email"
                 placeholder="Email Address *"
                 required
-                className="border p-3 rounded-lg w-full"
+                className="border p-3 border border-gray-300 outline-none focus:outline-none focus:ring-0 p-3 rounded-lg w-full"
               />
             </div>
 
@@ -32,10 +33,10 @@ export default function ContactFormSection() {
               type="tel"
               placeholder="Phone Number *"
               required
-              className="border p-3 rounded-lg w-full"
+              className="border p-3 border border-gray-300 outline-none focus:outline-none focus:ring-0 p-3 rounded-lg w-full"
             />
 
-            <select className="border p-3 rounded-lg w-full">
+            <select className="border p-3 border border-gray-300 outline-none focus:outline-none focus:ring-0 p-3 rounded-lg w-full">
               <option>Select Subject</option>
               <option>General Inquiry</option>
               <option>Appointments</option>
@@ -46,7 +47,7 @@ export default function ContactFormSection() {
               placeholder="Message *"
               rows="4"
               required
-              className="border p-3 rounded-lg w-full"
+              className="border p-3 border border-gray-300 outline-none focus:outline-none focus:ring-0 p-3 rounded-lg w-full"
             ></textarea>
 
             {/* Contact Method */}
@@ -62,16 +63,19 @@ export default function ContactFormSection() {
               </label>
             </div>
 
-            <button className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
-              ✉️ Send Message
+            <button className="flex- flex-row items-center gap-x-2 w-full bg-red-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
+              <FaEnvelope /> Send Message
             </button>
           </form>
         </div>
 
         {/* Right Info */}
-        <div className="space-y-6">
+        <div className="space-y-6 self-center">
+
+
           <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-300">
             <h2 className="text-2xl font-bold mb-2">Contact Information</h2>
+            <div className="bg-red-500 h-[5px] w-[100px]  mt-0 mb-4 pt-0"></div>
             <p className="text-gray-600 mb-6">
               Get in touch with Holy Heart Hospital for comprehensive cardiac care.
               We're committed to providing exceptional healthcare services.
@@ -79,8 +83,10 @@ export default function ContactFormSection() {
 
             <ul className="space-y-4 text-gray-700">
 
-              <li className="flex items-start gap-3">
-                <FaMapMarkerAlt className="text-red-600 mt-1" />
+              <li className="flex items-center gap-3">
+                <span className="bg-blue-100 p-3 rounded-full ">
+                  <FaMapMarkerAlt className="text-blue-600" size={26} />
+                </span>
                 <span>
                   Holy Heart Advanced Cardiac Care & Research Center <br />
                   330, Vinay Nagar, Delhi Bypass Chowk,<br />
@@ -88,23 +94,29 @@ export default function ContactFormSection() {
                 </span>
               </li>
 
-              <li className="flex items-start gap-3">
-                <FaPhoneAlt className="text-red-600 mt-1" />
+              <li className="flex items-center gap-3">
+                <span className="bg-red-100 p-3 rounded-full ">
+                  <FaPhoneAlt className="text-red-600" size={26} />
+                </span>
                 <span>
                   01262-279279, 01262-262292
                 </span>
               </li>
 
-              <li className="flex items-start gap-3">
-                <FaEnvelope className="text-red-600 mt-1" />
+              <li className="flex items-center gap-3">
+                <span className="bg-green-100 p-3 rounded-full ">
+                  <FaEnvelope className="text-green-600" size={26} />
+                </span>
                 <span>
                   holyheartk@gmail.com <br />
                   General inquiries and appointments
                 </span>
               </li>
 
-              <li className="flex items-start gap-3">
-                <FaClock className="text-red-600 mt-1" />
+              <li className="flex items-center gap-3">
+                <span className="bg-purple-100 p-3 rounded-full">
+                  <FaClock className="text-purple-600" size={26}/>
+                  </span>
                 <span>
                   Mon - Sat: 9:00 AM - 8:00 PM <br />
                   24/7 Emergency Services Available
@@ -114,7 +126,7 @@ export default function ContactFormSection() {
           </div>
 
           {/* Social Media */}
-          <div className="bg-red-600 text-white p-6 rounded-2xl shadow-2xl">
+          {/* <div className="bg-red-600 text-white p-6 rounded-2xl shadow-2xl">
             <h3 className="font-bold text-lg mb-3">Connect With Us</h3>
             <p className="text-sm mb-4">
               Follow us on social media for health tips, hospital updates, and
@@ -123,7 +135,7 @@ export default function ContactFormSection() {
             <div className="flex gap-4 text-xl">
               <a href="https://www.facebook.com/Holyheartrohtak/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200" aria-label="Facebook"><span role="img" aria-label="Facebook">�</span></a>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

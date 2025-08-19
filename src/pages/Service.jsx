@@ -92,6 +92,7 @@ function Home() {
                         image={service.image}
                         reactIconName={service["react-icon-name"]}
                         listText={service["list-text"]}
+                        index={idx}
                     />
                 ))}
             </div>

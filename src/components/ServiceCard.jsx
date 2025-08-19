@@ -11,26 +11,25 @@ import { RiMicroscopeLine } from "react-icons/ri";
 // Map string -> Lucide icon
 const icons = {
   HeartBit: LuHeartPulse,
-  Heart:GoHeart,
-  Stethoscope:CiStethoscope,
-  Wave:CiWavePulse1,
-  Hospital:RiHospitalLine,
-  People:FaPeopleRobbery,
-  Microscope:RiMicroscopeLine
+  Heart: GoHeart,
+  Stethoscope: CiStethoscope,
+  Wave: CiWavePulse1,
+  Hospital: RiHospitalLine,
+  People: FaPeopleRobbery,
+  Microscope: RiMicroscopeLine
 
 };
 
-const ServiceCard = ({ title, description, image, reactIconName, listText }) => {
+const ServiceCard = ({ title, description, image, reactIconName, listText, index }) => {
   const Icon = icons[reactIconName] || Heart;
 
   return (
     <section className="w-full bg-white py-16 px-6 md:px-20">
       <div className="grid md:grid-cols-2 gap-10 items-center">
         {/* Right Image */}
-        <div>
+        <div className={`${index%2?null:"md:order-2"}`}>
           <img
             src={image}
-            
             alt={title}
             className="w-full h-72 md:h-96 object-cover rounded-2xl shadow-lg"
           />
