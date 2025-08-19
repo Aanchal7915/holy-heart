@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { TiTick } from "react-icons/ti";
 import { FaPhoneAlt, FaClock, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { MdPayment } from "react-icons/md";
 
 export default function ConsultationForm() {
   const [form, setForm] = useState({
@@ -21,7 +23,8 @@ export default function ConsultationForm() {
     <div className="grid md:grid-cols-2 gap-6 mt-10 px-6 py-6">
       {/* Left Form Section */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-300 p-6">
-        <h2 className="text-2xl font-bold mb-2">Request A Consultation</h2>
+        <h2 className="text-2xl font-bold mb-2 text-center">Request A Consultation</h2>
+        <div className="bg-red-500 h-[5px] w-[100px] mx-auto mt-0 mb-4 pt-0"></div>
         <p className="text-gray-600 mb-6">
           Book your appointment with our cardiac specialists
         </p>
@@ -34,7 +37,7 @@ export default function ConsultationForm() {
             value={form.name}
             onChange={handleChange}
             required
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0 p-3 rounded-lg"
           />
 
           <input
@@ -44,7 +47,7 @@ export default function ConsultationForm() {
             value={form.email}
             onChange={handleChange}
             required
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0  p-3 rounded-lg"
           />
 
           <input
@@ -54,7 +57,7 @@ export default function ConsultationForm() {
             value={form.phone}
             onChange={handleChange}
             required
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0  p-3 rounded-lg"
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -64,7 +67,7 @@ export default function ConsultationForm() {
               value={form.date}
               onChange={handleChange}
               required
-              className="w-full border p-3 rounded-lg"
+              className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0  p-3 rounded-lg"
             />
             <input
               type="time"
@@ -72,7 +75,7 @@ export default function ConsultationForm() {
               value={form.time}
               onChange={handleChange}
               required
-              className="w-full border p-3 rounded-lg"
+              className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0  p-3 rounded-lg"
             />
           </div>
 
@@ -81,7 +84,7 @@ export default function ConsultationForm() {
             value={form.department}
             onChange={handleChange}
             required
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0  p-3 rounded-lg"
           >
             <option value="">Select Department</option>
             <option value="cardiology">Cardiology</option>
@@ -95,7 +98,7 @@ export default function ConsultationForm() {
             value={form.message}
             onChange={handleChange}
             rows="4"
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 outline-none focus:outline-none focus:ring-0  p-3 rounded-lg"
           />
 
           {/* Booking Type */}
@@ -123,8 +126,8 @@ export default function ConsultationForm() {
             </label>
           </div>
 
-          <button className="w-full bg-red-600 text-white font-semibold py-3 rounded-lg mt-4">
-            📅 Pay Now – ₹600
+          <button className="flex flex-row items-center justify-center gap-x-2 w-full bg-red-600 text-white font-semibold py-3 rounded-lg mt-4">
+            <MdPayment className="text-xl"/> Pay Now – ₹600
           </button>
         </form>
       </div>
@@ -142,10 +145,10 @@ export default function ConsultationForm() {
             </div>
           </div>
           <ul className="mt-4 space-y-2 text-sm">
-            <li>✅ Immediate cardiac emergency response</li>
-            <li>✅ Advanced life support ambulance</li>
-            <li>✅ Expert cardiac team on standby</li>
-            <li>✅ State-of-the-art emergency facilities</li>
+            <li className="flex flex-row gap-x-2 items-center"><TiTick className="text-green-500 text-lg"/> Immediate cardiac emergency response</li>
+            <li className="flex flex-row gap-x-2 items-center"><TiTick className="text-green-500 text-lg"/>  Advanced life support ambulance</li>
+            <li className="flex flex-row gap-x-2 items-center"><TiTick className="text-green-500 text-lg"/>  Expert cardiac team on standby</li>
+            <li className="flex flex-row gap-x-2 items-center"><TiTick className="text-green-500 text-lg"/>  State-of-the-art emergency facilities</li>
           </ul>
         </div>
 
@@ -153,10 +156,10 @@ export default function ConsultationForm() {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-300 p-6">
           <h4 className="font-bold text-lg mb-3">Contact Information</h4>
           <p className="text-gray-600 mb-2 flex flex-row items-center gap-x-2">
-            <FaMapMarkerAlt className="text-red-500 mt-1" /> 330, Vinay Nagar, Delhi Bypass Chowk, Rohtak - 124001
+            <span className="bg-blue-100 p-2 rounded-full "><FaMapMarkerAlt className="w-4 h-4 text-blue-600" /></span> 330, Vinay Nagar, Delhi Bypass Chowk, Rohtak - 124001
           </p>
-          <p className="text-gray-600 mb-2 flex flex-row items-center gap-x-2"><FaEnvelope className="text-red-500" /> holyhearthospital@gmail.com</p>
-          <p className="text-gray-600 flex flex-row items-center gap-x-2"><FaClock className="text-red-500 " /> Mon-Sat: 9:00 AM - 8:00 PM</p>
+          <p className="text-gray-600 mb-2 flex flex-row items-center gap-x-2"><span className="p-2 rounded-full bg-green-100"><FaEnvelope className="w-4 h-4 text-green-600" /> </span>holyhearthospital@gmail.com</p>
+          <p className="text-gray-600 flex flex-row items-center gap-x-2"><span className="p-2 rounded-full bg-purple-100"><FaClock className="w-4 h-4 text-purple-600" /> </span>Mon-Sat: 9:00 AM - 8:00 PM</p>
         </div>
       </div>
     </div>

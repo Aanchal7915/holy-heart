@@ -8,7 +8,7 @@ import {
   FaMapMarkerAlt,
   FaClock,
 } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo-holy-heart-removebg.png";
 
 const Footer = () => {
   return (
@@ -19,7 +19,7 @@ const Footer = () => {
           
           <div className="">
             <div className="flex items-center space-x-2 mb-4">
-              <img src={logo} alt="Holy Heart" className="h-10 w-auto" />
+              <img src={logo} alt="Holy Heart" className="h-10 md:h-20 w-auto" />
               <span className="font-bold text-xl text-red-500">Holy Heart</span>
             </div>
             <p className="text-sm mb-4">

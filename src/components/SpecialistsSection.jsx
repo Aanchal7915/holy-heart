@@ -2,32 +2,32 @@ import { FaHeartbeat, FaStethoscope, FaChild, FaMicroscope, FaHospital, FaHeart,
 
 const services = [
   {
-    icon: <FaHeartbeat className="text-red-600" />,
+    icon: <FaHeartbeat className="text-red-600 group-hover:text-white transition-colors duration-300" />,
     title: "24hrs Cardiac Backup, Fully Equipped ICCU",
     desc: "Intensive Coronary Care Unit for comprehensive monitoring and emergency care.",
   },
   {
-    icon: <FaStethoscope className="text-red-600" />,
+    icon: <FaStethoscope className="text-red-600 group-hover:text-white transition-colors duration-300" />,
     title: "Angiography, Angioplasty & Stents",
     desc: "Advanced procedures to restore normal blood flow to the heart muscle.",
   },
   {
-    icon: <FaMicroscope className="text-red-600" />,
+    icon: <FaMicroscope className="text-red-600 group-hover:text-white transition-colors duration-300" />,
     title: "Flat Panel Cath Lab 100kW Fixed",
     desc: "Fully equipped lab with diagnostic imaging for minimally invasive procedures.",
   },
   {
-    icon: <FaChild className="text-red-600" />,
+    icon: <FaChild className="text-red-600 group-hover:text-white transition-colors duration-300" />,
     title: "Pediatric Cardiology",
     desc: "Specialized services for cardiovascular diseases in children & infants.",
   },
   {
-    icon: <FaHospital className="text-red-600" />,
+    icon: <FaHospital className="text-red-600 group-hover:text-white transition-colors duration-300" />,
     title: "Echo, TMT & Holter",
     desc: "Comprehensive cardiac diagnostic services including 24-hour monitoring.",
   },
   {
-    icon: <FaHeartbeat className="text-red-600" />,
+    icon: <FaHeartbeat className="text-red-600 group-hover:text-white transition-colors duration-300" />,
     title: "Pacemakers, CRT, CRT-D & AICD",
     desc: "Advanced cardiac rhythm management to prevent sudden cardiac death.",
   },
@@ -66,9 +66,9 @@ export default function SpecialistsSection() {
           {/* Left Column */}
           <div className="space-y-6">
             {services.slice(0, 3).map((service, idx) => (
-              <div key={idx} className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6">
-                <h4 className="text-lg font-bold flex items-center gap-2">
-                  <span className="bg-red-100 rounded-full p-3">{service.icon}</span> {service.title}
+              <div key={idx} className="group hover:shadow-2xl bg-white shadow-lg border border-gray-100 rounded-2xl p-6 transition-all duration-1000">
+                <h4 className="text-lg font-bold flex items-center gap-2 group-hover:text-red-600 transition-colors duration-300">
+                  <span className="bg-red-100 rounded-full p-3 group-hover:bg-red-600 transition-colors duration-300">{service.icon}</span> {service.title}
                 </h4>
                 <p className="text-sm text-gray-600 mt-2">{service.desc}</p>
               </div>
@@ -87,9 +87,15 @@ export default function SpecialistsSection() {
           {/* Right Column */}
           <div className="space-y-6">
             {services.slice(3).map((service, idx) => (
-              <div key={idx} className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6">
-                <h4 className="text-lg font-bold flex items-center gap-2">
-                  <span className="bg-red-100 rounded-full p-3">{service.icon}</span> {service.title}
+              <div
+                key={idx}
+                className="group bg-white shadow-lg hover:shadow-2xl border border-gray-100 rounded-2xl p-6 transition-all duration-300"
+              >
+                <h4 className="text-lg font-bold flex items-center gap-2 group-hover:text-red-600 transition-colors duration-300">
+                  <span className="bg-red-100 rounded-full p-3 group-hover:bg-red-600 transition-colors duration-300">
+                    {service.icon}
+                  </span>
+                  {service.title}
                 </h4>
                 <p className="text-sm text-gray-600 mt-2">{service.desc}</p>
               </div>
@@ -98,7 +104,7 @@ export default function SpecialistsSection() {
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold">
+          <button className="hover:bg-red-700 hover:scale-110 hover:shadow bg-red-600 text-white px-6 py-3 rounded-4xl font-semibold transition-all duration-300 ">
             ➜ View All Services
           </button>
         </div>
