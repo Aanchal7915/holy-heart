@@ -126,7 +126,7 @@ export default function ConsultationForm() {
             </label>
           </div>
 
-          <button className="flex flex-row items-center justify-center gap-x-2 w-full bg-red-600 text-white font-semibold py-3 rounded-lg mt-4">
+          <button className="flex flex-row items-center justify-center gap-x-2 w-full bg-red-600/90 text-white font-semibold py-3 rounded-lg mt-4">
             <MdPayment className="text-xl"/> Pay Now – ₹600
           </button>
         </form>
@@ -134,10 +134,10 @@ export default function ConsultationForm() {
 
       {/* Right Emergency Info Section */}
       <div className="space-y-6 flex flex-col justify-center">
-        <div className="bg-red-600 text-white p-6 rounded-2xl shadow-lg">
+        <div className="bg-red-600/90 text-white p-6 rounded-2xl shadow-lg">
           <h3 className="text-xl font-bold mb-2">Emergency Situations?</h3>
           <p className="mb-4">We are here to help 24/7</p>
-          <div className="bg-red-700 p-4 rounded-lg flex items-center gap-3">
+          <div className="bg-red-900/20 p-4 rounded-lg flex items-center gap-3">
             <FaPhoneAlt className="text-2xl" />
             <div>
               <p className="font-bold text-lg">01262-279279</p>

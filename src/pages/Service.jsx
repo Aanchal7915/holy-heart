@@ -8,7 +8,7 @@ const services = [
         "title": "Transradial Angioplasty",
         "description": "Advanced angioplasty procedures with reduced access site complications. Patients can sit up and walk almost immediately with less overall discomfort.",
         "react-icon-name": "HeartBit",
-        "image": "https://source.unsplash.com/400x300/?angioplasty,health",
+        "image": "/assets/service/service-2.png",
         "list-text": [
             "Reduced bleeding complications",
             "Improved patient satisfaction",
@@ -20,7 +20,7 @@ const services = [
         "title": "Pacemaker Implantation",
         "description": "Pacemaker implantation for patients with irregular heartbeats. Our surgical procedures help control abnormal heart rates and restore normal cardiac function.",
         "react-icon-name": "Heart",
-        "image": "https://source.unsplash.com/400x300/?pacemaker,surgery",
+        "image": "/assets/service/service-3.png",
         "list-text": [
             "Treatment for slow or irregular heartbeats",
             "Advanced pacemaker technology",
@@ -32,7 +32,7 @@ const services = [
         "title": "Transradial Angiography",
         "description": "Angiography is a procedure used to identify narrowing or blockages in the arteries. Transradial access offers advantages over the transfemoral approach with minimal vascular complications and reduced bleeding risks.",
         "react-icon-name": "Stethoscope",
-        "image": "https://source.unsplash.com/400x300/?angiography,artery",
+        "image": "/assets/service/service-7.png",
         "list-text": [
             "Safe and effective alternative to transfemoral methods",
             "Minimal vascular complication rate",
@@ -44,7 +44,7 @@ const services = [
         "title": "Valvular Heart Disease",
         "description": "Comprehensive treatment for heart valve problems. Our expert team provides both medical management and surgical interventions for damaged or defective heart valves.",
         "react-icon-name": "Wave",
-        "image": "https://source.unsplash.com/400x300/?heart,valve",
+        "image": "/assets/service/service-1.png",
         "list-text": [
             "Treatment for all four heart valves",
             "Advanced valve repair and replacement",
@@ -56,7 +56,7 @@ const services = [
         "title": "24hrs Cardiac Backup & Fully Equipped ICCU",
         "description": "The Intensive Coronary Care Unit (ICCU) provides specialized medical and nursing care for patients requiring constant cardiac monitoring.",
         "react-icon-name": "Hospital",
-        "image": "https://source.unsplash.com/400x300/?hospital,icu",
+        "image": "/assets/service/service-4.png",
         "list-text": [
             "24/7 emergency cardiac care",
             "Advanced monitoring equipment",
@@ -68,7 +68,7 @@ const services = [
         "title": "Pediatric Cardiology",
         "description": "Specialized pediatric cardiology services focusing on improvement in all aspects of cardiovascular disease in children and prevention strategies.",
         "react-icon-name": "People",
-        "image": "https://source.unsplash.com/400x300/?children,cardiology",
+        "image": "/assets/service/service-6.jpg",
         "list-text": [
             "Comprehensive pediatric heart care",
             "Congenital heart defect treatment",
