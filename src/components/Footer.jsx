@@ -16,7 +16,8 @@ const Footer = () => {
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* About */}
-          <div>
+          
+          <div className="">
             <div className="flex items-center space-x-2 mb-4">
               <img src={logo} alt="Holy Heart" className="h-10 w-auto" />
               <span className="font-bold text-xl text-red-500">Holy Heart</span>
@@ -26,12 +27,31 @@ const Footer = () => {
               providing exceptional cardiovascular care since 2013, located in
               the heart of Rohtak with state-of-the-art medical technology.
             </p>
-            <div className="flex space-x-4 text-lg">
-              <a href="#" className="hover:text-red-500"><FaFacebookF /></a>
-              <a href="#" className="hover:text-red-500"><FaTwitter /></a>
-              <a href="#" className="hover:text-red-500"><FaInstagram /></a>
-              <a href="#" className="hover:text-red-500"><FaLinkedinIn /></a>
+            <div className="flex flex-row gap-4 justify-left items-center">
+            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition">
+              <a href="https://www.facebook.com/Holyheartrohtak/" target="_blank" rel="noopener noreferrer" className="hover:text-white-500"><FaFacebookF /></a>
             </div>
+
+
+            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition">
+              <a href="https://www.twitter.com/Holyheartrohtak/" target="_blank" rel="noopener noreferrer" className="hover:text-white-500"><FaTwitter /></a>
+            </div>
+
+
+            
+            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition">
+              <a href="https://www.instagram.com/Holyheartrohtak/" target="_blank" rel="noopener noreferrer" className="hover:text-white-500"><FaInstagram /></a>
+            </div>
+
+
+
+             
+            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition">
+              <a href="https://www.linkedin.com/Holyheartrohtak/" target="_blank" rel="noopener noreferrer" className="hover:text-white-500"><FaLinkedinIn /></a>
+            </div>
+            </div>
+
+            
           </div>
 
           {/* Quick Links */}
@@ -72,11 +92,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <FaPhone className="text-red-500" />
-                <span>+91 01262-279279, +91 01262-262292</span>
+                <span>01262-279279, 01262-262292</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-red-500" />
-                <span>holyhearthospital@gmail.com</span>
+                <span>holyheartk@gmail.com</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaClock className="text-red-500" />

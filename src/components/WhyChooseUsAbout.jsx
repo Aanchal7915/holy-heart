@@ -7,7 +7,7 @@ const WhyChooseUs = () => {
       description:
         "State-of-the-art cardiac catheterization lab with flat panel imaging system and comprehensive diagnostic facilities.",
       image:
-        "https://images.unsplash.com/photo-1588776814546-ec7b82a2b2c7?auto=format&fit=crop&w=800&q=80",
+        "../assets/about1.jpg", // Update with the correct path to your image
     },
     {
       title: "Experienced Medical Team",

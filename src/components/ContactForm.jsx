@@ -78,25 +78,27 @@ export default function ContactFormSection() {
             </p>
 
             <ul className="space-y-4 text-gray-700">
+
               <li className="flex items-start gap-3">
                 <FaMapMarkerAlt className="text-red-600 mt-1" />
                 <span>
                   Holy Heart Advanced Cardiac Care & Research Center <br />
-                  330, Vinay Nagar, Delhi Bypass Chowk, Rohtak - 124001, Haryana (India)
+                  330, Vinay Nagar, Delhi Bypass Chowk,<br />
+                  Rohtak - 124001, Haryana (India)
                 </span>
               </li>
 
               <li className="flex items-start gap-3">
                 <FaPhoneAlt className="text-red-600 mt-1" />
                 <span>
-                  +91 01262-279279 <br /> +91 01262-262292
+                  01262-279279, 01262-262292
                 </span>
               </li>
 
               <li className="flex items-start gap-3">
                 <FaEnvelope className="text-red-600 mt-1" />
                 <span>
-                  holyhearthospital@gmail.com <br />
+                  holyheartk@gmail.com <br />
                   General inquiries and appointments
                 </span>
               </li>
@@ -119,11 +121,7 @@ export default function ContactFormSection() {
               cardiac care information.
             </p>
             <div className="flex gap-4 text-xl">
-              <a href="#" className="hover:text-gray-200">🌐</a>
-              <a href="#" className="hover:text-gray-200">📘</a>
-              <a href="#" className="hover:text-gray-200">🐦</a>
-              <a href="#" className="hover:text-gray-200">📸</a>
-              <a href="#" className="hover:text-gray-200">🔗</a>
+              <a href="https://www.facebook.com/Holyheartrohtak/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200" aria-label="Facebook"><span role="img" aria-label="Facebook">�</span></a>
             </div>
           </div>
         </div>
