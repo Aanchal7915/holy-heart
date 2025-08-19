@@ -50,7 +50,7 @@ const MissionVision = () => {
       </div>
 
       {/* Core Principles */}
-      <div className="text-center mb-10 bg-white rounded-xl pt-6 pb-6">
+      <div className="text-center mb-10 bg-white rounded-4xl pt-6 pb-6">
         <h3 className="text-3xl font-bold">Our Core Principles</h3>
 
         <div className="grid md:grid-cols-4 gap-6 text-center bg-white rounded">

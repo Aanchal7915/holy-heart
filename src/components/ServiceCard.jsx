@@ -2,57 +2,52 @@ import React from "react";
 import { CheckCircle, Heart, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
-const ServiceCard = () => {
+// Map string -> Lucide icon
+const icons = {
+  Heart: Heart,
+};
+
+const ServiceCard = ({ title, description, image, reactIconName, listText }) => {
+  const Icon = icons[reactIconName] || Heart;
+
   return (
     <section className="w-full bg-white py-16 px-6 md:px-20">
       <div className="grid md:grid-cols-2 gap-10 items-center">
-         {/* Right Image */}
+        {/* Right Image */}
         <div>
           <img
-            src="/service2.jpg"
+            src={image}
             onError={(e) =>
-              (e.target.src =
-                "https://source.unsplash.com/600x400/?cardiology,hospital")
+            (e.target.src =
+              "https://source.unsplash.com/600x400/?cardiology,hospital")
             }
-            alt="Valvular Heart Disease"
+            alt={title}
             className="w-full h-72 md:h-96 object-cover rounded-2xl shadow-lg"
           />
         </div>
+
         {/* Left Content */}
         <div>
           {/* Icon + Title */}
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="text-red-500" size={28} />
-            <h2 className="text-2xl md:text-3xl font-bold">
-              Valvular Heart Disease
-            </h2>
+            <div className="flex flex-row items-center gap-x-4">
+              <div className="bg-red-200 p-4 rounded-full"><Icon className="text-red-500" size={28} /></div>
+              <div className="h-[5px] w-[50px] bg-red-500"></div>
+            </div>
           </div>
+          <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
 
           {/* Description */}
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            Comprehensive treatment for heart valve problems. Our expert team
-            provides both medical management and surgical interventions for
-            damaged or defective heart valves.
-          </p>
+          <p className="text-gray-600 mb-6 leading-relaxed">{description}</p>
 
           {/* Features */}
           <ul className="space-y-3 text-gray-700 mb-8">
-            <li className="flex items-center gap-2">
-              <CheckCircle className="text-green-500" size={20} />
-              Treatment for all four heart valves
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle className="text-green-500" size={20} />
-              Advanced valve repair and replacement
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle className="text-green-500" size={20} />
-              Minimally invasive surgical options
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle className="text-green-500" size={20} />
-              Long-term cardiac monitoring and care
-            </li>
+            {listText.map((item, idx) => (
+              <li key={idx} className="flex items-center gap-2">
+                <CheckCircle className="text-green-500" size={20} />
+                {item}
+              </li>
+            ))}
           </ul>
 
           {/* Buttons */}
@@ -73,8 +68,6 @@ const ServiceCard = () => {
             </motion.a>
           </div>
         </div>
-
-       
       </div>
     </section>
   );
