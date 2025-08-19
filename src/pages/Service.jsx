@@ -2,11 +2,12 @@ import ServiceCard from "../components/ServiceCard";
 import ServiceHero from "../components/ServiceHero";
 import WhyChooseUs from "../components/WhyChooseUs";
 import FreeConsultation from "../components/FreeConsultation";
+
 const services = [
     {
         "title": "Transradial Angioplasty",
         "description": "Advanced angioplasty procedures with reduced access site complications. Patients can sit up and walk almost immediately with less overall discomfort.",
-        "react-icon-name": "Heart",
+        "react-icon-name": "HeartBit",
         "image": "https://source.unsplash.com/400x300/?angioplasty,health",
         "list-text": [
             "Reduced bleeding complications",
@@ -30,7 +31,7 @@ const services = [
     {
         "title": "Transradial Angiography",
         "description": "Angiography is a procedure used to identify narrowing or blockages in the arteries. Transradial access offers advantages over the transfemoral approach with minimal vascular complications and reduced bleeding risks.",
-        "react-icon-name": "Heart",
+        "react-icon-name": "Stethoscope",
         "image": "https://source.unsplash.com/400x300/?angiography,artery",
         "list-text": [
             "Safe and effective alternative to transfemoral methods",
@@ -42,7 +43,7 @@ const services = [
     {
         "title": "Valvular Heart Disease",
         "description": "Comprehensive treatment for heart valve problems. Our expert team provides both medical management and surgical interventions for damaged or defective heart valves.",
-        "react-icon-name": "Heart",
+        "react-icon-name": "Wave",
         "image": "https://source.unsplash.com/400x300/?heart,valve",
         "list-text": [
             "Treatment for all four heart valves",
@@ -54,7 +55,7 @@ const services = [
     {
         "title": "24hrs Cardiac Backup & Fully Equipped ICCU",
         "description": "The Intensive Coronary Care Unit (ICCU) provides specialized medical and nursing care for patients requiring constant cardiac monitoring.",
-        "react-icon-name": "Heart",
+        "react-icon-name": "Hospital",
         "image": "https://source.unsplash.com/400x300/?hospital,icu",
         "list-text": [
             "24/7 emergency cardiac care",
@@ -66,7 +67,7 @@ const services = [
     {
         "title": "Pediatric Cardiology",
         "description": "Specialized pediatric cardiology services focusing on improvement in all aspects of cardiovascular disease in children and prevention strategies.",
-        "react-icon-name": "Heart",
+        "react-icon-name": "People",
         "image": "https://source.unsplash.com/400x300/?children,cardiology",
         "list-text": [
             "Comprehensive pediatric heart care",

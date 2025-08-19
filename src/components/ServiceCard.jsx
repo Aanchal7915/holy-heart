@@ -1,10 +1,23 @@
 import React from "react";
 import { CheckCircle, Heart, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
-
+import { LuHeartPulse } from "react-icons/lu";
+import { GoHeart } from "react-icons/go";
+import { CiStethoscope } from "react-icons/ci";
+import { CiWavePulse1 } from "react-icons/ci";
+import { RiHospitalLine } from "react-icons/ri";
+import { FaPeopleRobbery } from "react-icons/fa6";
+import { RiMicroscopeLine } from "react-icons/ri";
 // Map string -> Lucide icon
 const icons = {
-  Heart: Heart,
+  HeartBit: LuHeartPulse,
+  Heart:GoHeart,
+  Stethoscope:CiStethoscope,
+  Wave:CiWavePulse1,
+  Hospital:RiHospitalLine,
+  People:FaPeopleRobbery,
+  Microscope:RiMicroscopeLine
+
 };
 
 const ServiceCard = ({ title, description, image, reactIconName, listText }) => {
@@ -17,10 +30,7 @@ const ServiceCard = ({ title, description, image, reactIconName, listText }) => 
         <div>
           <img
             src={image}
-            onError={(e) =>
-            (e.target.src =
-              "https://source.unsplash.com/600x400/?cardiology,hospital")
-            }
+            
             alt={title}
             className="w-full h-72 md:h-96 object-cover rounded-2xl shadow-lg"
           />
