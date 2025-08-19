@@ -69,13 +69,13 @@ const ServiceCard = ({ title, description, image, reactIconName, listText }) => 
             >
               Book Consultation
             </motion.a>
-            <motion.a
+            {/* <motion.a
               href="#questions"
               whileHover={{ scale: 1.05 }}
               className="px-6 py-3 bg-pink-100 hover:bg-pink-200 text-red-600 rounded-full font-semibold flex items-center gap-2 shadow-md"
             >
               <MessageCircle size={18} /> Ask Questions
-            </motion.a>
+            </motion.a> */}
           </div>
         </div>
       </div>
