@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
 import OurDoctor from './pages/OurDoctor'
 import ScrollToTop from "./components/ScrollToTop";
+import BookAppointment from "./pages/BookAppointment";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/services" element={<Service />} />
         <Route path="/our-doctors" element={<OurDoctor/>}/>
+        <Route path="/book-appointment" element={<BookAppointment/>}/>
       </Routes>
       <Footer />
     </div>
