@@ -4,8 +4,9 @@ import AboutUs from "../components/AboutUs";
 import WhyChooseUs from "../components/WhyChooseUsAbout";
 import Achievements from "../components/Achievement";
 import DirectorMessage from "../components/DirectorMessage";
-import CertificationsPage from "../components/Certification";
+import CertificationsSection from "../components/CertificationsSection";
 import CallToAction from "../components/CallToAction";
+import AwardsRecognition from "../components/AwardAndRecognition";
 
 function About() {
   return (
@@ -16,7 +17,8 @@ function About() {
       <WhyChooseUs/>
       <Achievements/>
       <DirectorMessage/>
-      <CertificationsPage/>
+      <AwardsRecognition/>
+      <CertificationsSection/>
       <CallToAction/>
     </>
   );

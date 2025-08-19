@@ -4,7 +4,7 @@ import { Calendar, Phone } from "lucide-react";
 const CallToAction = () => {
   return (
     <div className="w-full flex justify-center items-center py-12 px-4">
-      <div className="w-full max-w-5xl bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white rounded-2xl shadow-lg p-10 text-center">
+      <div className="w-full max-w-5xl bg-gradient-to-r from-red-700  to-blue-700 text-white rounded-2xl shadow-lg p-10 text-center">
         
         {/* Title */}
         <h2 className="text-2xl md:text-3xl font-bold mb-2">

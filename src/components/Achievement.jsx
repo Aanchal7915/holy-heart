@@ -1,5 +1,6 @@
 import React from "react";
 
+
 const Achievements = () => {
   const stats = [
     { value: "5000+", label: "Successful Surgeries" },
@@ -9,7 +10,8 @@ const Achievements = () => {
   ];
 
   return (
-    <section className="py-16 px-6 md:px-20 bg-gradient-to-r from-pink-600 to-indigo-600 text-white rounded-2xl shadow-lg">
+    <div className="p-2 pb-5 bg-white">
+    <section className="py-16 px-6 md:px-20 bg-gradient-to-r from-red-700  to-blue-700 text-white rounded-2xl shadow-lg">
       <div className="text-center mb-10">
         <h2 className="text-3xl md:text-4xl font-bold">
           Our Achievements Speak for Themselves
@@ -28,6 +30,7 @@ const Achievements = () => {
         ))}
       </div>
     </section>
+    </div>
   );
 };
 
