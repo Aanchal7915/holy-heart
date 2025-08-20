@@ -114,21 +114,31 @@ export default function SpecialistsSection() {
 
       {/* <section className="bg-[#2563eb] py-16 px-2">
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-          {cards.map((card, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-lg flex flex-col items-center px-8 py-10 text-center"
-            >
-              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                {card.icon}
+          {cards.map((card, idx) => {
+            const handleReadMore = () => {
+              const aboutSection = document.getElementById("about");
+              if (aboutSection) {
+                aboutSection.scrollIntoView({ behavior: "smooth" });
+              } else {
+                navigate("/about");
+              }
+            };
+            return (
+              <div
+                key={idx}
+                className="bg-white rounded-xl shadow-lg flex flex-col items-center px-8 py-10 text-center"
+              >
+                <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                  {card.icon}
+                </div>
+                <h3 className="text-2xl font-bold mb-3">{card.title}</h3>
+                <p className="text-gray-600 mb-6">{card.desc}</p>
+                <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-full transition" onClick={handleReadMore}>
+                  Read More
+                </button>
               </div>
-              <h3 className="text-2xl font-bold mb-3">{card.title}</h3>
-              <p className="text-gray-600 mb-6">{card.desc}</p>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-full transition">
-                Read More
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section> */}
     </>

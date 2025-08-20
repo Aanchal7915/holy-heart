@@ -1,7 +1,7 @@
 import React from "react";
 import { User, Mail, Phone, Calendar, Clipboard } from "lucide-react";
 
-const WHATSAPP_PHONE = "919876543210"; // replace with your clinic's WhatsApp number
+const WHATSAPP_PHONE = " 01262-279279"; // replace with your clinic's WhatsApp number
 
 const BookAppointment = () => {
   const handleSubmit = (e) => {

@@ -54,11 +54,11 @@ const DoctorCard = ({ doctor }) => {
 
         {/* Buttons */}
         <div className="mt-6 flex gap-4 flex flex-wrap">
-          <button className="flex items-center gap-x-4 py-2 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full font-semibold shadow-md">
-             <Calendar1Icon/>Book Appointment
-          </button>
-          <button className="flex items-center gap-x-4 border border-gray-400 hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-full font-semibold">
-            <Phone/> Contact
+          <button
+            className="flex items-center gap-x-4 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full font-semibold shadow-md"
+            onClick={() => window.location.href = '/book-appointment'}
+          >
+            <Calendar1Icon />Book Appointment
           </button>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function DoctorsPage() {
         <h2 className="text-3xl font-bold text-center text-gray-800">
           Meet Our <span className="text-red-500">Expert Team</span>
         </h2>
-        <div className="bg-red-500 h-[5px] w-[100px] mx-auto mt-2 mt-0 mb-4 pt-0"></div>
+  <div className="bg-red-500 h-[5px] w-[100px] mx-auto mt-2 mb-4 pt-0"></div>
         <p className="text-center text-gray-600 mt-2 max-w-2xl mx-auto">
           Our distinguished team of cardiologists brings together decades of
           experience, advanced training, and a commitment to providing the

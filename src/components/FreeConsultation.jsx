@@ -38,16 +38,22 @@ export default function FreeConsultation() {
 
       {/* CTA Buttons */}
       <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
-        <button className="flex flex-row items-center gap-x-2 bg-white text-red-600 px-6 py-3 rounded-full font-semibold shadow hover:bg-gray-100 transition">
+        <button
+          className="flex flex-row items-center gap-x-2 bg-white text-red-600 px-6 py-3 rounded-full font-semibold shadow hover:bg-gray-100 transition"
+          onClick={() => window.location.href = "/book-appointment"}
+        >
           <Calendar/> Book Appointment Now
         </button>
-        <div className="flex items-center gap-3 bg-red-700 px-6 py-3 rounded-full shadow">
+        <a
+          href="tel:01262279279"
+          className="flex items-center gap-3 bg-red-700 px-6 py-3 rounded-full shadow"
+        >
           <span className="text-xl"><Phone/></span>
           <span>
             <p className="text-sm">Emergency Helpline</p>
             <p className="text-lg font-bold">01262-279279</p>
           </span>
-        </div>
+        </a>
       </div>
 
       {/* Stats */}

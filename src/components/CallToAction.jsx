@@ -18,12 +18,18 @@ const CallToAction = () => {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="flex items-center justify-center gap-2 bg-white text-pink-600 px-6 py-3 rounded-full font-medium shadow hover:bg-gray-100 transition">
+          <button
+            className="flex items-center justify-center gap-2 bg-white text-pink-600 px-6 py-3 rounded-full font-medium shadow hover:bg-gray-100 transition"
+            onClick={() => window.location.href = "/book-appointment"}
+          >
             <Calendar className="w-5 h-5" />
             Book Consultation
           </button>
 
-          <button className="flex items-center justify-center gap-2 border border-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-blue-600 transition">
+          <button
+            className="flex items-center justify-center gap-2 border border-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-blue-600 transition"
+            onClick={() => window.location.href = "/contact"}
+          >
             <Phone className="w-5 h-5" />
             Contact Us
           </button>

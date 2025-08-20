@@ -58,7 +58,10 @@ export default function Consultation() {
 
         {/* Buttons */}
         <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center">
-          <button className="bg-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-red-600">
+          <button
+            className="bg-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-red-600"
+            onClick={() => window.location.href = "/book-appointment"}
+          >
             Book Appointment Now
           </button>
           <a

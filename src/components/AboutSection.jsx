@@ -21,16 +21,24 @@ const aboutData = [
   },
 ];
 
-const AboutCard = ({ icon, title, description }) => (
-  <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center transition-transform hover:-translate-y-2 hover:shadow-xl">
-    <div className="bg-blue-100 p-4 rounded-full mb-4">{icon}</div>
-    <h3 className="text-xl font-bold mb-3">{title}</h3>
-    <p className="text-gray-600 mb-6">{description}</p>
-    <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold">
-      Read More
-    </button>
-  </div>
-);
+import { useNavigate } from "react-router-dom";
+
+const AboutCard = ({ icon, title, description }) => {
+  const navigate = useNavigate();
+  const handleReadMore = () => {
+    navigate("/about");
+  };
+  return (
+    <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center transition-transform hover:-translate-y-2 hover:shadow-xl">
+      <div className="bg-blue-100 p-4 rounded-full mb-4">{icon}</div>
+      <h3 className="text-xl font-bold mb-3">{title}</h3>
+      <p className="text-gray-600 mb-6">{description}</p>
+      <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold" onClick={handleReadMore}>
+        Read More
+      </button>
+    </div>
+  );
+};
 
 const AboutSection = () => {
   return (

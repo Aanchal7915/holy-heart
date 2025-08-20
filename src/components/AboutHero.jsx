@@ -46,6 +46,12 @@ const About = () => {
             href="#services"
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full shadow-lg font-semibold"
+            onClick={e => {
+              e.preventDefault();
+              if (window.location.pathname !== "/services") {
+                window.location.href = "/services";
+              }
+            }}
           >
             <Heart size={20} /> Our Services
           </motion.a>
@@ -54,6 +60,10 @@ const About = () => {
             href="#visit"
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-2 border-2 border-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-black transition"
+            onClick={e => {
+              e.preventDefault();
+              window.location.href = "/contact";
+            }}
           >
             <MapPin size={20} /> Visit Us
           </motion.a>

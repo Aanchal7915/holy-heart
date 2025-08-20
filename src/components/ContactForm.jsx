@@ -51,19 +51,13 @@ export default function ContactFormSection() {
             ></textarea>
 
             {/* Contact Method */}
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input type="radio" name="method" defaultChecked /> Email Response
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="radio" name="method" /> Phone Call
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="radio" name="method" /> Either Method
-              </label>
-            </div>
+            {/* Removed contact method radio buttons as requested */}
 
-            <button className="flex- flex-row items-center gap-x-2 w-full bg-red-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
+            <button
+              type="button"
+              className="flex- flex-row items-center gap-x-2 w-full bg-red-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2"
+              onClick={() => window.open('https://wa.me/911262279279', '_blank')}
+            >
               <FaEnvelope /> Send Message
             </button>
           </form>
@@ -99,7 +93,7 @@ export default function ContactFormSection() {
                   <FaPhoneAlt className="text-red-600" size={26} />
                 </span>
                 <span>
-                  01262-279279, 01262-262292
+                  <a href="tel:01262279279" className="hover:underline text-red-700">01262-279279</a>, <a href="tel:01262262292" className="hover:underline text-red-700">01262-262292</a>
                 </span>
               </li>
 

@@ -223,20 +223,17 @@ const OurDoctorHero = () => {
         {/* Buttons */}
         <div className="mt-8 flex flex-wrap gap-4">
           <motion.a
-            href="#services"
+            href="#book"
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full shadow-lg font-semibold"
+            onClick={e => {
+              e.preventDefault();
+              window.location.href = "/book-appointment";
+            }}
           >
             <Heart size={20} /> Book Consultation
           </motion.a>
 
-          <motion.a
-            href="#visit"
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-2 border-2 border-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-black transition"
-          >
-            <MapPin size={20} /> Emergency: 01262-279279
-          </motion.a>
         </div>
 
         {/* Stats */}
