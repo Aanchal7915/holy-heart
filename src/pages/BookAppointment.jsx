@@ -1,3 +1,5 @@
+
+import { motion } from "framer-motion";
 import React from "react";
 import { User, Mail, Phone, Calendar, Clipboard } from "lucide-react";
 
@@ -29,7 +31,12 @@ Message: ${message || "N/A"}
   };
 
   return (
-    <section className="bg-gray-50 py-12 px-6 md:px-20">
+    <motion.section
+      className="bg-gray-50 py-12 px-6 md:px-20"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+    >
       <div className="h-[50px]"></div>
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         {/* Heading */}
@@ -124,7 +131,7 @@ Message: ${message || "N/A"}
           </button>
         </form>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

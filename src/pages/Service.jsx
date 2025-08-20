@@ -1,4 +1,6 @@
 
+
+import { motion } from "framer-motion";
 import ServiceCard from "../components/ServiceCard";
 import ServiceHero from "../components/ServiceHero";
 import WhyChooseUs from "../components/WhyChooseUs";
@@ -76,13 +78,55 @@ const services = [
             "Child-friendly environment",
             "Family-centered care approach"
         ]
+    },
+    {
+        "title": "Angiography, Angioplasty & Stents",
+        "description": "Angioplasty procedures to open narrowed or blocked coronary arteries with stent placement to prevent re-closure.",
+        "react-icon-name": "HeartPulse",
+        "image": "/assets/service/service-8.jpg",
+        "list-text": [
+            "Latest stent technology",
+            "Drug-eluting stents available",
+            "Minimally invasive procedures",
+            "Excellent long-term outcomes"
+        ]
+    },
+    {
+        "title": "Echo, TMT & Holter Monitoring",
+        "description": "Comprehensive cardiac diagnostic services including echocardiograms, treadmill stress tests, and 24-hour Holter monitoring.",
+        "react-icon-name": "Heart",
+        "image": "/assets/service/service-9.jpg",
+        "list-text": [
+            "Advanced echocardiography (2D, 3D, Doppler)",
+            "Exercise stress testing (TMT)",
+            "24-hour Holter monitoring",
+            "Complete cardiac assessment"
+        ]
+    },
+    {
+        "title": "Flat Panel Cath Lab 100kW Fixed",
+        "description": "Fully equipped catheterization laboratory with advanced diagnostic imaging equipment for visualizing heart arteries and chambers.",
+        "react-icon-name": "Activity",
+        "image": "/assets/service/service-10.jpg",
+        "list-text": [
+            "State-of-the-art imaging technology",
+            "High-resolution cardiac visualization",
+            "Advanced interventional capabilities",
+            "Minimal radiation exposure"
+        ]
     }
+
 ]
+
 
 
 function Home() {
     return (
-        <>
+        <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+        >
             <ServiceHero />
             <div>
                 {services.map((service, idx) => (
@@ -99,7 +143,7 @@ function Home() {
             </div>
             <WhyChooseUs />
             <FreeConsultation />
-        </>
+        </motion.div>
     );
 }
 
