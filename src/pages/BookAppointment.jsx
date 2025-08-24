@@ -6,7 +6,7 @@ import { User, Mail, Phone, Calendar, Clipboard } from "lucide-react";
 const WHATSAPP_PHONE = " 01262-279279"; // replace with your clinic's WhatsApp number
 
 const BookAppointment = () => {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const fullName = formData.get("name");
@@ -16,18 +16,40 @@ const BookAppointment = () => {
     const department = formData.get("department");
     const message = formData.get("message");
 
-    const text = `*New Appointment Request*
-    
-Name: ${fullName}
-Email: ${email}
-Phone: ${phone}
-Date: ${date}
-Department: ${department}
-Message: ${message || "N/A"}
-`;
+    // Format date as DD-MM-YYYY
+    const formattedDate = date
+      ? new Date(date).toLocaleDateString("en-GB").replace(/\//g, "-")
+      : "";
 
-    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank");
+    const payload = {
+      patientName: fullName,
+      patientEmail: email,
+      patientPhone: phone,
+      appointmentDate: formattedDate,
+      Message: message || "N/A",
+      serviceType: department,
+    };
+    console.log(payload);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${import.meta.env.VITE_BACKEND || import.meta.env.backend || 'http://localhost:8000'}/appointments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        alert("Appointment booked successfully!");
+        e.target.reset();
+      } else {
+        alert("Failed to book appointment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      alert("Error booking appointment. Please check your connection.");
+    }
   };
 
   return (
