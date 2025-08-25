@@ -37,8 +37,8 @@ const Navbar = () => {
             <li><Link to="/login" className="hover:text-red-600">Login</Link></li>
             <li><Link to="/register" className="hover:text-red-600">Register</Link></li>
           </>}
-          {token && role === "admin" && <li><Link to="/admin-dashboard" className="hover:text-red-600">Admin Dashboard</Link></li>}
-          {token && role !== "admin" && <li><Link to="/user-dashboard" className="hover:text-red-600">User Dashboard</Link></li>}
+          {token && role === "admin" && <li><Link to="/admin-dashboard" className="hover:text-red-600">Dashboard</Link></li>}
+          {token && role !== "admin" && <li><Link to="/user-dashboard" className="hover:text-red-600">Dashboard</Link></li>}
           {token && <li><button onClick={handleLogout} className="hover:text-red-600">Logout</button></li>}
         </ul>
 
@@ -74,8 +74,8 @@ const Navbar = () => {
               <li><Link to="/login" onClick={() => setIsOpen(false)}>Login</Link></li>
               <li><Link to="/register" onClick={() => setIsOpen(false)}>Register</Link></li>
             </>}
-            {token && role === "admin" && <li><Link to="/admin-dashboard" onClick={() => setIsOpen(false)}>Admin Dashboard</Link></li>}
-            {token && role !== "admin" && <li><Link to="/user-dashboard" onClick={() => setIsOpen(false)}>User Dashboard</Link></li>}
+            {token && role === "admin" && <li><Link to="/admin-dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link></li>}
+            {token && role !== "admin" && <li><Link to="/user-dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link></li>}
             {token && <li><button onClick={()=>{setIsOpen(false);handleLogout();}} className="hover:text-red-600">Logout</button></li>}
             <li className="border-t border-gray-400 py-6">
               <button onClick={()=>navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">

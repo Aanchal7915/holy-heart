@@ -1,17 +1,49 @@
-
 import { motion } from "framer-motion";
-import React from "react";
-import { User, Mail, Phone, Calendar, Clipboard } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Calendar, Clipboard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const WHATSAPP_PHONE = " 01262-279279"; // replace with your clinic's WhatsApp number
+const SpinnerInBtn = () => (
+  <svg
+    className="animate-spin h-5 w-5 text-white inline-block mr-2"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    ></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8v8z"
+    ></path>
+  </svg>
+);
 
 const BookAppointment = () => {
+  const [error, setError] = useState("");
+  const [apiStatus, setApiStatus] = useState("idle");
+  const navigate = useNavigate();
+
+  // Protect route: redirect to login if not logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) navigate("/login");
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setApiStatus("loading");
     const formData = new FormData(e.target);
-    const fullName = formData.get("name");
-    const email = formData.get("email");
-    const phone = formData.get("phone");
     const date = formData.get("date");
     const department = formData.get("department");
     const message = formData.get("message");
@@ -22,34 +54,46 @@ const BookAppointment = () => {
       : "";
 
     const payload = {
-      patientName: fullName,
-      patientEmail: email,
-      patientPhone: phone,
       appointmentDate: formattedDate,
       Message: message || "N/A",
       serviceType: department,
     };
-    console.log(payload);
+
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${import.meta.env.VITE_BACKEND || import.meta.env.backend || 'http://localhost:8000'}/appointments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND ||
+          import.meta.env.backend ||
+          "http://localhost:8000"}/appointments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(payload),
+        }
+      );
       if (response.ok) {
-        alert("Appointment booked successfully!");
+        toast.success("Appointment booked successfully!");
         e.target.reset();
+        setTimeout(() => {
+          const role = localStorage.getItem("role");
+          if (role === "admin") navigate("/admin-dashboard");
+          else navigate("/user-dashboard");
+        }, 1500);
       } else {
-        alert("Failed to book appointment. Please try again.");
+        const data = await response.json();
+        setError(
+          data?.error || "Failed to book appointment. Please try again."
+        );
+        setTimeout(() => setError(""), 3000);
       }
     } catch (error) {
-      console.error("Error booking appointment:", error);
-      alert("Error booking appointment. Please check your connection.");
+      setError("Error booking appointment. Please check your connection.");
+      setTimeout(() => setError(""), 3000);
     }
+    setApiStatus("idle");
   };
 
   return (
@@ -59,6 +103,7 @@ const BookAppointment = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
     >
+      <ToastContainer position="top-right" autoClose={2000} />
       <div className="h-[50px]"></div>
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         {/* Heading */}
@@ -73,42 +118,6 @@ const BookAppointment = () => {
 
         {/* Appointment Form */}
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Full Name */}
-          <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
-            <User className="text-gray-500 w-5 h-5 mr-3" />
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
-              required
-            />
-          </div>
-
-          {/* Email */}
-          <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
-            <Mail className="text-gray-500 w-5 h-5 mr-3" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
-              required
-            />
-          </div>
-
-          {/* Phone */}
-          <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
-            <Phone className="text-gray-500 w-5 h-5 mr-3" />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
-              required
-            />
-          </div>
-
           {/* Date */}
           <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
             <Calendar className="text-gray-500 w-5 h-5 mr-3" />
@@ -144,13 +153,20 @@ const BookAppointment = () => {
             rows="4"
           ></textarea>
 
-          {/* Submit */}
+          {/* Submit Button with Spinner */}
           <button
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center"
+            disabled={apiStatus === "loading"}
           >
+            {apiStatus === "loading" && <SpinnerInBtn />}
             Book Appointment
           </button>
+
+          {/* Error Message */}
+          {error && (
+            <div className="text-sm text-red-600 mt-2 text-center">{error}</div>
+          )}
         </form>
       </div>
     </motion.section>

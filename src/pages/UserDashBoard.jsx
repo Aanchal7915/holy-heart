@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ProfileTab from "../components/ProfileTab";
+import ChatBot from "../components/ChatBot/ChatBot";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
 
@@ -7,6 +10,7 @@ const Spinner = () => (
     <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
   </div>
 );
+
 const Toast = ({ message, onClose }) => (
   <div className="fixed top-6 right-6 z-50 bg-red-600 text-white px-6 py-3 rounded shadow-lg flex items-center gap-4">
     <span>{message}</span>
@@ -14,11 +18,135 @@ const Toast = ({ message, onClose }) => (
   </div>
 );
 
-import { useNavigate } from "react-router-dom";
+const UserAppointmentsTab = ({
+  appointments, apiStatus, errorMsg, totalPages, page, total, limit, sort, filters,
+  setPage, setLimit, setSort, setFilters, fetchUserAppointments
+}) => (
+  <div>
+    <h3 className="text-xl font-bold mb-4">My Appointments</h3>
+    
+    {/* Filters */}
+    <div className="flex flex-wrap gap-4 mb-4">
+      <input
+        type="date"
+        name="date"
+        value={filters.date}
+        onChange={e => setFilters(prev => ({ ...prev, date: e.target.value }))}
+        className="border px-3 py-2 rounded"
+      />
+      <select
+        name="status"
+        value={filters.status}
+        onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
+        className="border px-3 py-2 rounded"
+      >
+        <option value="">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="completed">Completed</option>
+      </select>
+      <input
+        type="text"
+        name="serviceType"
+        value={filters.serviceType}
+        onChange={e => setFilters(prev => ({ ...prev, serviceType: e.target.value }))}
+        placeholder="Service Type"
+        className="border px-3 py-2 rounded"
+      />
+      <select
+        value={sort}
+        onChange={e => setSort(e.target.value)}
+        className="border px-3 py-2 rounded"
+      >
+        <option value="desc">Newest First</option>
+        <option value="asc">Oldest First</option>
+      </select>
+      <select
+        value={limit}
+        onChange={e => setLimit(Number(e.target.value))}
+        className="border px-3 py-2 rounded"
+      >
+        <option value={5}>5</option>
+        <option value={10}>10</option>
+        <option value={20}>20</option>
+      </select>
+      <button
+        className="bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={fetchUserAppointments}
+      >
+        Refresh
+      </button>
+    </div>
+    {/* Table */}
+    {apiStatus === "loading" ? (
+      <Spinner />
+    ) : errorMsg ? (
+      <div className="text-red-600 mb-4">{errorMsg}</div>
+    ) : (
+      <div className="overflow-x-auto">
+        <table className="min-w-full border">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 border">Date</th>
+              <th className="px-4 py-2 border">Service</th>
+              <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-4">
+                  No appointments found.
+                </td>
+              </tr>
+            ) : (
+              appointments.map((a) => (
+                <tr key={a._id}>
+                  <td className="px-4 py-2 border">
+                    {a.appointmentDate
+                      ? new Date(a.appointmentDate).toLocaleDateString()
+                      : "-"}
+                  </td>
+                  <td className="px-4 py-2 border">{a.serviceType}</td>
+                  <td className="px-4 py-2 border capitalize">{a.status}</td>
+                  <td className="px-4 py-2 border">{a.Message || "-"}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    )}
+    {/* Pagination */}
+    <div className="flex justify-between items-center mt-4">
+      <span>
+        Page {page} of {totalPages} | Total: {total}
+      </span>
+      <div className="flex gap-2">
+        <button
+          className="px-3 py-1 rounded bg-gray-200"
+          disabled={page <= 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Prev
+        </button>
+        <button
+          className="px-3 py-1 rounded bg-gray-200"
+          disabled={page >= totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
 const UserDashBoard = () => {
   const [appointments, setAppointments] = useState([]);
-  const [apiStatus, setApiStatus] = useState("idle"); // idle | loading | success | error
+  const [apiStatus, setApiStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
@@ -30,6 +158,7 @@ const UserDashBoard = () => {
     status: "",
     serviceType: ""
   });
+  const [activeTab, setActiveTab] = useState("appointments");
 
   const navigate = useNavigate();
 
@@ -74,156 +203,53 @@ const UserDashBoard = () => {
 
   useEffect(() => {
     fetchUserAppointments();
+    // eslint-disable-next-line
   }, [filters, sort, page, limit]);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-    setPage(1); // Reset to first page on filter change
-  };
-
-  const handleSortChange = (e) => {
-    setSort(e.target.value);
-    setPage(1);
-  };
-
-  const handleLimitChange = (e) => {
-    setLimit(Number(e.target.value));
-    setPage(1);
-  };
-
   return (
-    <section className="p-8 bg-gray-50 min-h-screen">
+    <section className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <div className="h-[100px]" />
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-center flex-1">My Appointments</h2>
+        <h2 className="text-3xl font-bold text-center flex-1">User Dashboard</h2>
+      </div>
+      {/* Tab Switcher */}
+      <div className="flex gap-4 mb-8 justify-center">
         <button
-          className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          onClick={fetchUserAppointments}
+          className={`px-4 py-2 rounded font-semibold transition-all ${activeTab === "appointments" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
+          onClick={() => setActiveTab("appointments")}
         >
-          Refresh
+          Appointments
+        </button>
+        <button
+          className={`px-4 py-2 rounded font-semibold transition-all ${activeTab === "profile" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
+          onClick={() => setActiveTab("profile")}
+        >
+          Profile
         </button>
       </div>
-      <div className="flex flex-wrap gap-4 mb-8 justify-center">
-        <input
-          type="date"
-          name="date"
-          value={filters.date}
-          onChange={handleFilterChange}
-          className="border rounded px-3 py-2"
-          placeholder="Filter by Date"
-        />
-        <select
-          name="status"
-          value={filters.status}
-          onChange={handleFilterChange}
-          className="border rounded px-3 py-2"
-        >
-          <option value="">All Status</option>
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
-        <select
-          name="serviceType"
-          value={filters.serviceType}
-          onChange={handleFilterChange}
-          className="border rounded px-3 py-2"
-        >
-          <option value="">All Designations</option>
-          <option value="Cardiology">Cardiology</option>
-          <option value="Neurology">Neurology</option>
-          <option value="Orthopedics">Orthopedics</option>
-          <option value="General Medicine">General Medicine</option>
-        </select>
-        <select
-          value={sort}
-          onChange={handleSortChange}
-          className="border rounded px-3 py-2"
-        >
-          <option value="desc">Newest First</option>
-          <option value="asc">Oldest First</option>
-        </select>
-        <select
-          value={limit}
-          onChange={handleLimitChange}
-          className="border rounded px-3 py-2"
-        >
-          {[10, 20, 50, 100].map((n) => (
-            <option key={n} value={n}>{n} per page</option>
-          ))}
-        </select>
-      </div>
-      {/* Toast for error */}
-      {apiStatus === "error" && errorMsg && (
-        <Toast message={errorMsg} onClose={() => setErrorMsg("")} />
-      )}
-      <div className="overflow-x-auto">
-        {apiStatus === "loading" ? (
-          <Spinner />
-        ) : apiStatus === "error" ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="text-red-600 text-lg mb-4">Something went wrong. Please try again.</div>
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-              onClick={fetchUserAppointments}
-            >
-              Refresh
-            </button>
-          </div>
-        ) : (
-          <table className="min-w-full bg-white rounded shadow">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="py-2 px-4">Date</th>
-                <th className="py-2 px-4">Designation</th>
-                <th className="py-2 px-4">Message</th>
-                <th className="py-2 px-4">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="text-center py-6 text-gray-500">
-                    No appointments found.
-                  </td>
-                </tr>
-              ) : (
-                appointments.map((a, idx) => (
-                  <tr key={idx} className="border-b">
-                    <td className="py-2 px-4">{
-                      a.appointmentDate
-                        ? new Date(a.appointmentDate).toLocaleDateString("en-GB")
-                        : ""
-                    }</td>
-                    <td className="py-2 px-4">{a.serviceType}</td>
-                    <td className="py-2 px-4">{a.Message}</td>
-                    <td className="py-2 px-4">{a.status || "Pending"}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      <div className="w-full">
+        {activeTab === "appointments" && (
+          <UserAppointmentsTab
+            appointments={appointments}
+            apiStatus={apiStatus}
+            errorMsg={errorMsg}
+            totalPages={totalPages}
+            page={page}
+            total={total}
+            limit={limit}
+            sort={sort}
+            filters={filters}
+            setPage={setPage}
+            setLimit={setLimit}
+            setSort={setSort}
+            setFilters={setFilters}
+            fetchUserAppointments={fetchUserAppointments}
+          />
         )}
+        {activeTab === "profile" && <ProfileTab />}
       </div>
-      {/* Pagination Controls */}
-      <div className="flex justify-center items-center mt-6 gap-4">
-        <button
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1 || apiStatus === "loading"}
-        >
-          Previous
-        </button>
-        <span>Page {page} of {totalPages} ({total} results)</span>
-        <button
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          disabled={page === totalPages || apiStatus === "loading"}
-        >
-          Next
-        </button>
-      </div>
+      {/* Floating ChatBot */}
+      <ChatBot />
     </section>
   );
 };
