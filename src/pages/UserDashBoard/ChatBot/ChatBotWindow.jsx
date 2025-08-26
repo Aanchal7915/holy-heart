@@ -9,8 +9,8 @@ const ChatBotWindow = ({ messages, onSend, onClose, input, setInput, options, co
 
   // Only show input field for date and message step in book appointment
   const showInput =
-    (context?.step === "book_date" || context?.step === "book_message") &&
-    (!options || options.length === 0);
+    (context?.step === "book_date" || context?.step === "book_message")
+  console.log("ChatBotWindow context:", context, "showInput:", showInput);
 
   return (
     <div className="fixed bottom-24 right-8 z-50 w-80 max-h-[80vh] bg-white rounded-xl shadow-2xl flex flex-col">
@@ -43,30 +43,30 @@ const ChatBotWindow = ({ messages, onSend, onClose, input, setInput, options, co
           ))}
         </div>
       )}
-      
-        <form
-          className="flex border-t px-2 py-2 bg-gray-50 rounded-b-xl"
-          onSubmit={e => {
-            e.preventDefault();
-            if (input.trim()) onSend(input.trim());
-          }}
-        >
-          <input
-            className="flex-1 px-2 py-1 rounded border"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Type your message..."
-            disabled={!showInput}
-            autoFocus
-          />
-          <button 
+
+      <form
+        className="flex border-t px-2 py-2 bg-gray-50 rounded-b-xl"
+        onSubmit={e => {
+          e.preventDefault();
+          if (input.trim()) onSend(input.trim());
+        }}
+      >
+        <input
+          className="flex-1 px-2 py-1 rounded border"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder="Type your message..."
           disabled={!showInput}
-          type="submit" 
+          autoFocus
+        />
+        <button
+          disabled={!showInput}
+          type="submit"
           className="ml-2 px-3 py-1 bg-blue-600 text-white rounded font-semibold">
-            Send
-          </button>
-        </form>
-    
+          Send
+        </button>
+      </form>
+
     </div>
   );
 };

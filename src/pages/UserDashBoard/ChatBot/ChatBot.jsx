@@ -11,7 +11,7 @@ const ChatBot = () => {
     { from: "bot", text: "Hi! I'm HealthBot. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
-  const [context, setContext] = useState({});
+  const [context, setContext] = useState({step:"main"});
   const [options, setOptions] = useState([
     { label: "Service Enquiry", value: "service_enquiry" },
     { label: "Appointment Enquiry", value: "appointment_enquiry" },
