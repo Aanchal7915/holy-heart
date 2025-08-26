@@ -1,5 +1,5 @@
 
-import heroBg from "../assets/hero-bg.jpg";
+import heroBg from "../../../assets/hero-bg.jpg";
 import { FaPhone, FaHeartbeat } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 

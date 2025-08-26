@@ -1,10 +1,23 @@
-import services from "../../data/services";
+import services from "../../../data/services";
 
 const SERVICES = services.map(s => s.title);
 
 export const getBotResponse = async (input, context, backendUrl, token) => {
     console.log("context:", context, "input:", input)
     const text = input.toLowerCase();
+
+    // Back to main menu
+    if (input === "back_to_main" || input === "back") {
+        return {
+            text: "How can I help you today? Please choose an option below.",
+            options: [
+                { label: "Service Enquiry", value: "service_enquiry" },
+                { label: "Appointment Enquiry", value: "appointment_enquiry" },
+                { label: "Book Appointment", value: "book_appointment" }
+            ],
+            context: { step: "main" }
+        };
+    }
 
     // Step 0: Show main options
     if (!context.step) {
@@ -43,8 +56,9 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         return {
             text: "Please select a service to know more:",
             options: [
+                { label: "Back to Main", value: "back_to_main" },
                 ...SERVICES.map(s => ({ label: s, value: `service_detail_${s}` })),
-                { label: "Back", value: "back_to_main" }
+                
             ],
             context: { step: "service_enquiry" }
         };
@@ -67,8 +81,8 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                         text: `Here are your recent appointments:\n${lines.join("\n")}`,
                         context: {},
                         options: [
+                            { label: "Back to Main", value: "back_to_main" },
                             { label: "Book Appointment", value: "book_appointment" },
-                            { label: "Back", value: "back_to_main" }
                         ]
                     };
                 } else {
@@ -76,8 +90,9 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                         text: "You have no appointments yet.",
                         context: {},
                         options: [
+                            { label: "Back to Main", value: "back_to_main" },
                             { label: "Book Appointment", value: "book_appointment" },
-                            { label: "Back", value: "back_to_main" }
+                            
                         ]
                     };
                 }
@@ -93,7 +108,10 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         const serviceType = input.replace("book_service_", "");
         return {
             text: `Great! Please enter the appointment date in YYYY-MM-DD format. (e.g., 2024-09-01)`,
-            context: { step: "book_date", serviceType }
+            context: { step: "book_date", serviceType },
+            options:[
+                { label: "Back", value: "back_to_main" }
+            ]
         };
     }
 
@@ -102,8 +120,9 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         return {
             text: "Please select the department/service for your appointment:",
             options: [
+                { label: "Back to Main", value: "back_to_main" },
                 ...SERVICES.map(s => ({ label: s, value: `book_service_${s}` })),
-                { label: "Back", value: "back_to_main" }
+                
             ],
             context: { step: "book_service" }
         };
@@ -114,7 +133,10 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         const serviceType = input.replace("book_service_", "");
         return {
             text: `Great! Please enter the appointment date in YYYY-MM-DD format. (e.g., 2024-09-01)`,
-            context: { step: "book_date", serviceType }
+            context: { step: "book_date", serviceType },
+            options: [
+                { label: "Back", value: "back_to_main" }
+            ]
         };
     }
 
@@ -123,12 +145,18 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(input.trim())) {
             return {
                 text: "Please enter a valid date in YYYY-MM-DD format. (e.g., 2024-09-01)",
-                context
+                context,
+                options: [
+                    { label: "Back", value: "back_to_main" }
+                ]
             };
         }
         return {
             text: "Any message or symptoms you'd like to add? (Type your message or type 'skip' to leave blank)",
-            context: { ...context, step: "book_message", date: input.trim() }
+            context: { ...context, step: "book_message", date: input.trim() },
+            options: [
+                { label: "Back", value: "back_to_main" }
+            ]
         };
     }
 
@@ -153,8 +181,9 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                     text: "Your appointment has been booked successfully!",
                     context: {},
                     options: [
+                        { label: "Back to Main", value: "back_to_main" },
                         { label: "Book Another", value: "book_appointment" },
-                        { label: "Back to Main", value: "back_to_main" }
+                        
                     ]
                 };
             } else {
@@ -174,18 +203,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         }
     }
 
-    // Back to main menu
-    if (input === "back_to_main" || input === "back") {
-        return {
-            text: "How can I help you today? Please choose an option below.",
-            options: [
-                { label: "Service Enquiry", value: "service_enquiry" },
-                { label: "Appointment Enquiry", value: "appointment_enquiry" },
-                { label: "Book Appointment", value: "book_appointment" }
-            ],
-            context: { step: "main" }
-        };
-    }
+    
 
     // Help
     if (text.includes("help")) {

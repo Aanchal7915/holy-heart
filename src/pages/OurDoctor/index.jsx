@@ -1,11 +1,11 @@
 
 import { motion } from "framer-motion";
-import OurDoctorHero from '../components/OurDoctorHero'
-import DoctorsPage from '../components/DoctorCard';
-import TeamCard from '../components/TeamCard'
-import StatCard from '../components/StatCard'
-import CertificationCard from '../components/CertificationCard';
-import Consultation from '../components/ScheduleConsultation';
+import OurDoctorHero from './components/OurDoctorHero'
+import DoctorsPage from './components/DoctorCard';
+import TeamCard from './components/TeamCard'
+import StatCard from './components/StatCard'
+import CertificationCard from './components/CertificationCard';
+import Consultation from './components/ScheduleConsultation';
 
 
 function OurDoctor() {

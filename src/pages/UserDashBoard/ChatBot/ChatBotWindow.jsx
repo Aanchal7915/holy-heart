@@ -1,11 +1,16 @@
 import React, { useRef, useEffect } from "react";
 
-const ChatBotWindow = ({ messages, onSend, onClose, input, setInput, options }) => {
+const ChatBotWindow = ({ messages, onSend, onClose, input, setInput, options, context }) => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Only show input field for date and message step in book appointment
+  const showInput =
+    (context?.step === "book_date" || context?.step === "book_message") &&
+    (!options || options.length === 0);
 
   return (
     <div className="fixed bottom-24 right-8 z-50 w-80 max-h-[80vh] bg-white rounded-xl shadow-2xl flex flex-col">
@@ -38,24 +43,30 @@ const ChatBotWindow = ({ messages, onSend, onClose, input, setInput, options }) 
           ))}
         </div>
       )}
-      <form
-        className="flex border-t px-2 py-2 bg-gray-50 rounded-b-xl"
-        onSubmit={e => {
-          e.preventDefault();
-          if (input.trim()) onSend(input.trim());
-        }}
-      >
-        <input
-          className="flex-1 px-2 py-1 rounded border"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Type your message..."
-          disabled={options && options.length > 0}
-        />
-        <button type="submit" className="ml-2 px-3 py-1 bg-blue-600 text-white rounded font-semibold" disabled={options && options.length > 0}>
-          Send
-        </button>
-      </form>
+      
+        <form
+          className="flex border-t px-2 py-2 bg-gray-50 rounded-b-xl"
+          onSubmit={e => {
+            e.preventDefault();
+            if (input.trim()) onSend(input.trim());
+          }}
+        >
+          <input
+            className="flex-1 px-2 py-1 rounded border"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Type your message..."
+            disabled={!showInput}
+            autoFocus
+          />
+          <button 
+          disabled={!showInput}
+          type="submit" 
+          className="ml-2 px-3 py-1 bg-blue-600 text-white rounded font-semibold">
+            Send
+          </button>
+        </form>
+    
     </div>
   );
 };

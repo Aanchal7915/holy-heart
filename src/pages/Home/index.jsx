@@ -1,9 +1,9 @@
 
 import { motion } from "framer-motion";
-import Hero from "../components/Hero";
-import AboutSection from "../components/AboutSection";
-import ConsultationForm from "../components/ConsultationForm";
-import SpecialistsSection from "../components/SpecialistsSection";
+import Hero from "./components/Hero";
+import AboutSection from "./components/AboutSection";
+import ConsultationForm from "./components/ConsultationForm";
+import SpecialistsSection from "./components/SpecialistsSection";
 
 
 function Home() {

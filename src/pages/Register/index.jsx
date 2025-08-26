@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
 
@@ -13,8 +13,8 @@ const SpinnerInBtn = () => (
   </svg>
 );
 
-const Login = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
+const Register = () => {
+  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "" });
   const [apiStatus, setApiStatus] = useState("idle");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -35,25 +35,28 @@ const Login = () => {
     setApiStatus("loading");
     setError("");
     try {
-      const res = await fetch(`${backendUrl}/auth/login`, {
+      const res = await fetch(`${backendUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          phoneNu: form.phone,
+          role: "user"
+        }),
       });
       const data = await res.json();
-      if (res.status === 200 && data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.user.userRole || "user");
+      if (res.status === 201) {
         setApiStatus("success");
-        toast.success(data.message || "Login successful");
-        setForm({ email: "", password: "" });
+        toast.success(data.message || "User registered successfully");
+        setForm({ name: "", email: "", password: "", phone: "" });
         setTimeout(() => {
-          if ((data.role || "user") === "admin") navigate("/admin-dashboard");
-          else navigate("/user-dashboard");
-        }, 1200);
+          navigate("/login");
+        }, 1500);
       } else {
         setApiStatus("error");
-        setError(data.error || "Login failed");
+        setError(data.error || "Registration failed");
         setTimeout(() => setError(""), 3000);
       }
     } catch (err) {
@@ -65,17 +68,27 @@ const Login = () => {
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+      <div className="h-[100px]"></div>
       <ToastContainer position="top-right" autoClose={2000} />
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <div className="flex justify-center mb-4">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg px-8 py-2">
+        <div className="flex justify-center mb-2">
           <img src={logo} alt="Logo" className="h-16" />
         </div>
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-1 text-center">Register</h2>
+        <div className="bg-red-500 h-[5px] w-[70px] mx-auto mt-0 mb-4 pt-0"></div>
         <p className="text-gray-600 text-center mb-6">
-          Welcome back! Please login to access your dashboard, manage appointments, and view your profile.<br />
-          If you don't have an account, you can easily create one.
+          Create your account to book appointments and get personalized care from our expert team.
         </p>
         <form className="space-y-5" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Full Name"
+            className="w-full border rounded px-4 py-2"
+            required
+          />
           <input
             type="email"
             name="email"
@@ -94,33 +107,43 @@ const Login = () => {
             className="w-full border rounded px-4 py-2"
             required
           />
+          <input
+            type="tel"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            className="w-full border rounded px-4 py-2"
+            required
+          />
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition flex items-center justify-center"
             disabled={apiStatus === "loading"}
           >
             {apiStatus === "loading" && <SpinnerInBtn />}
-            Login
+            Register
           </button>
           {error && (
             <div className="text-red-500 text-sm text-center mt-2">{error}</div>
           )}
-        </form>
-        <div className="mt-6 text-center">
-          <span className="text-gray-700">Don't have an account?</span>{" "}
-          <Link
-            to="/register"
-            className="text-blue-600 hover:underline font-semibold"
-          >
-            Register here
-          </Link>
-          <div className="text-xs text-gray-500 mt-2">
-            Create an account to book appointments, track your health, and get personalized care.
+          <div className="mt-6 text-center">
+            <span className="text-gray-700">Already have an account?</span>{" "}
+            <Link
+              to="/login"
+              className="text-blue-600 hover:underline font-semibold"
+            >
+              Login here
+            </Link>
+            <div className="text-xs text-gray-500 mt-2">
+              Login to access your dashboard, manage appointments, and view your profile.
+            </div>
           </div>
-        </div>
+        </form>
       </div>
+      <div className="h-[100px]"></div>
     </section>
   );
 };
 
-export default Login;
+export default Register;

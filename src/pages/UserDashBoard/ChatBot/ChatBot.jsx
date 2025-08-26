@@ -22,7 +22,6 @@ const ChatBot = () => {
     setMessages((prev) => [...prev, { from: "user", text: isOption ? (options.find(o => o.value === msg)?.label || msg) : msg }]);
     setInput("");
     const token = localStorage.getItem("token");
-    console.log("msg:", msg)
     const res = await getBotResponse(msg, context, backendUrl, token);
     setMessages((prev) => [...prev, { from: "bot", text: res.text }]);
     setContext(res.context || {});
@@ -40,6 +39,7 @@ const ChatBot = () => {
           input={input}
           setInput={setInput}
           options={options}
+          context={context}
         />
       )}
     </>

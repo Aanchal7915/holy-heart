@@ -1,11 +1,11 @@
 
 
 import { motion } from "framer-motion";
-import ServiceCard from "../components/ServiceCard";
-import ServiceHero from "../components/ServiceHero";
-import WhyChooseUs from "../components/WhyChooseUs";
-import FreeConsultation from "../components/FreeConsultation";
-import services from "../data/services";
+import ServiceCard from "./components/ServiceCard";
+import ServiceHero from "./components/ServiceHero";
+import WhyChooseUs from "./components/WhyChooseUs";
+import FreeConsultation from "./components/FreeConsultation";
+import services from "../../data/services";
 
 
 

@@ -1,13 +1,24 @@
 import { useState } from "react";
-import { FaBars, FaTimes, FaPhone } from "react-icons/fa";
+import { FaBars, FaTimes, FaPhone, FaCalendarPlus } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
+
+  // Listen for window resize to update width
+  // Only runs on client
+  if (typeof window !== "undefined") {
+    window.onresize = () => {
+      if (window.innerWidth !== windowWidth) {
+        setWindowWidth(window.innerWidth);
+      }
+    };
+  }
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -20,9 +31,9 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-6 py-3">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <img src={logo} alt="Holy Heart" className="h-12 md:h-15 w-auto" /> 
+          <img src={logo} alt="Holy Heart" className="h-12 md:h-15 w-auto" />
           <span className="font-medium text-lg text-red-600 font-pacifico"
-          style={{fontFamily:"Pacifico"}}
+            style={{ fontFamily: "Pacifico" }}
           >Holy Heart</span>
         </div>
 
@@ -44,12 +55,25 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="hidden lg:flex items-center space-x-6">
-          <a href="tel:+9101262279279" className="flex items-center text-red-600 font-semibold">
-            <FaPhone className="mr-2" /> +91 01262-279279
-          </a>
-          <button onClick={()=>navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-medium">
-            Book Appointment
-          </button>
+          {windowWidth > 1300 ? (
+            <>
+              <a href="tel:+9101262279279" className="flex items-center text-red-600 font-semibold">
+                <FaPhone className="mr-2" /> +91 01262-279279
+              </a>
+              <button onClick={() => navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-medium">
+                Book Appointment
+              </button>
+            </>
+          ) : (
+            <>
+              <a href="tel:+9101262279279" className="flex items-center text-red-600 font-semibold">
+                <FaPhone className="text-2xl" />
+              </a>
+              <button onClick={() => navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-full font-medium flex items-center">
+                <FaCalendarPlus className="text-xl" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Mobile Hamburger */}
@@ -76,9 +100,9 @@ const Navbar = () => {
             </>}
             {token && role === "admin" && <li><Link to="/admin-dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link></li>}
             {token && role !== "admin" && <li><Link to="/user-dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link></li>}
-            {token && <li><button onClick={()=>{setIsOpen(false);handleLogout();}} className="hover:text-red-600">Logout</button></li>}
+            {token && <li><button onClick={() => { setIsOpen(false); handleLogout(); }} className="hover:text-red-600">Logout</button></li>}
             <li className="border-t border-gray-400 py-6">
-              <button onClick={()=>navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">
+              <button onClick={() => navigate("/book-appointment")} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">
                 Book Appointment
               </button>
             </li>
