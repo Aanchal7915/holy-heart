@@ -58,7 +58,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
             options: [
                 { label: "Back to Main", value: "back_to_main" },
                 ...SERVICES.map(s => ({ label: s, value: `service_detail_${s}` })),
-                
+
             ],
             context: { step: "service_enquiry" }
         };
@@ -92,7 +92,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                         options: [
                             { label: "Back to Main", value: "back_to_main" },
                             { label: "Book Appointment", value: "book_appointment" },
-                            
+
                         ]
                     };
                 }
@@ -109,7 +109,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         return {
             text: `Great! Please enter the appointment date in YYYY-MM-DD format. (e.g., 2024-09-01)`,
             context: { step: "book_date", serviceType },
-            options:[
+            options: [
                 { label: "Back", value: "back_to_main" }
             ]
         };
@@ -122,7 +122,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
             options: [
                 { label: "Back to Main", value: "back_to_main" },
                 ...SERVICES.map(s => ({ label: s, value: `book_service_${s}` })),
-                
+
             ],
             context: { step: "book_service" }
         };
@@ -141,8 +141,12 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
     }
 
     // Book Appointment - Step 3: Enter Message
+
     if (context.step === "book_date") {
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(input.trim())) {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        const trimmedInput = input.trim();
+
+        if (!dateRegex.test(trimmedInput)) {
             return {
                 text: "Please enter a valid date in YYYY-MM-DD format. (e.g., 2024-09-01)",
                 context,
@@ -151,14 +155,31 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                 ]
             };
         }
+
+        // Parse date and compare with today's date
+        const enteredDate = new Date(trimmedInput);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // reset to midnight to ignore time
+
+        if (enteredDate < today) {
+            return {
+                text: "The date cannot be in the past. Please enter a future date.",
+                context,
+                options: [
+                    { label: "Back", value: "back_to_main" }
+                ]
+            };
+        }
+
         return {
             text: "Any message or symptoms you'd like to add? (Type your message or type 'skip' to leave blank)",
-            context: { ...context, step: "book_message", date: input.trim() },
+            context: { ...context, step: "book_message", date: trimmedInput },
             options: [
                 { label: "Back", value: "back_to_main" }
             ]
         };
     }
+
 
     // Book Appointment - Step 4: Confirm and Book
     if (context.step === "book_message") {
@@ -183,7 +204,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                     options: [
                         { label: "Back to Main", value: "back_to_main" },
                         { label: "Book Another", value: "book_appointment" },
-                        
+
                     ]
                 };
             } else {
@@ -203,7 +224,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
         }
     }
 
-    
+
 
     // Help
     if (text.includes("help")) {

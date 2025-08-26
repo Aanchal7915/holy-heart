@@ -124,6 +124,7 @@ const BookAppointment = () => {
             <input
               type="date"
               name="date"
+              min={new Date().toISOString().split("T")[0]}
               className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
               required
             />
