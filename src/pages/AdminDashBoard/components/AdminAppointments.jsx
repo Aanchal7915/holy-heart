@@ -280,7 +280,7 @@ const AdminAppointments = () => {
       </div>
       {/* Modal for update status */}
       {showModal && selectedAppointment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black opacity-90">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 bg-opacity-90">
           <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full max-w-xs md:max-w-md mx-2 relative">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl"

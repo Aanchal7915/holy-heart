@@ -10,7 +10,7 @@ const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "h
 const ConfirmModal = ({ open, user, onClose, onConfirm, modalApiStatus }) => {
   if (!open || !user) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black opacity-90">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 bg-opacity-90">
       <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full max-w-xs md:max-w-md mx-2 relative text-xs sm:text-sm md:text-base">
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl"
