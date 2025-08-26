@@ -12,6 +12,7 @@ const ChatBot = () => {
   ]);
   const [input, setInput] = useState("");
   const [context, setContext] = useState({step:"main"});
+  const [loginRequired, setLoginRequired] = useState(false);
   const [options, setOptions] = useState([
     { label: "Service Enquiry", value: "service_enquiry" },
     { label: "Appointment Enquiry", value: "appointment_enquiry" },
@@ -19,9 +20,37 @@ const ChatBot = () => {
   ]);
 
   const handleSend = async (msg, isOption = false) => {
+    const token = localStorage.getItem("token");
+    const bookingKeywords = ["book_appointment", "appointment", "consultation", "book consultation", "book a consultation"];
+    const isBookingQuery = bookingKeywords.some(keyword =>
+      (isOption && msg === keyword) ||
+      (!isOption && msg.toLowerCase().includes(keyword.replace(/_/g, " "))) // covers text queries
+    );
+
+    // If not logged in and booking query, always block and show login message
+    if (!token && isBookingQuery) {
+      setMessages((prev) => [...prev, { from: "user", text: isOption ? (options.find(o => o.value === msg)?.label || msg) : msg }]);
+      setMessages((prev) => [...prev, { from: "bot", text: "To book a consultation, please log in first." }]);
+      setLoginRequired(true);
+      setInput("");
+      return;
+    }
+
+    // If loginRequired is set and user is now logged in, notify and allow booking
+    if (loginRequired && token) {
+      setLoginRequired(false);
+      setMessages((prev) => [...prev, { from: "bot", text: "You are now logged in. You can book a consultation." }]);
+    }
+
+    // If booking is blocked due to login requirement, block all booking queries
+    if (loginRequired && isBookingQuery) {
+      setMessages((prev) => [...prev, { from: "bot", text: "To book a consultation, please log in first." }]);
+      setInput("");
+      return;
+    }
+
     setMessages((prev) => [...prev, { from: "user", text: isOption ? (options.find(o => o.value === msg)?.label || msg) : msg }]);
     setInput("");
-    const token = localStorage.getItem("token");
     const res = await getBotResponse(msg, context, backendUrl, token);
     setMessages((prev) => [...prev, { from: "bot", text: res.text }]);
     setContext(res.context || {});

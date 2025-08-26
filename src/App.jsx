@@ -5,6 +5,7 @@ import Service from "./pages/Service";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ChatBot from "./pages/UserDashBoard/ChatBot/ChatBot";
 import Contact from "./pages/Contact";
 import OurDoctor from './pages/OurDoctor';
 import ScrollToTop from "./components/ScrollToTop";
@@ -62,6 +63,10 @@ function App() {
         <Route path="/book-appointment" element={<BookAppointment/>}/>
       </Routes>
       <Footer />
+      {/* Floating ChatBot widget */}
+      <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
+        <ChatBot />
+      </div>
     </div>
   );
 }
