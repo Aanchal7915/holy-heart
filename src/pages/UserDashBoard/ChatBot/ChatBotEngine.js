@@ -66,6 +66,15 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
 
     // Appointment Enquiry
     if (context.step === "main" && input === "appointment_enquiry") {
+         if (!token) {
+            return {
+                text: `To know about appointment, Please login first!`,
+                context: { step: "appointment_enquiry" },
+                options: [
+                    { label: "Back", value: "back_to_main" }
+                ]
+            };
+        }
         try {
             const res = await fetch(`${backendUrl}/user/appointments`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -117,6 +126,15 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
 
     // Book Appointment - Step 1: Choose Service
     if ((context.step === "main" && input === "book_appointment") || context.step === "book_service") {
+        if (!token) {
+            return {
+                text: `TO Book Appointment, Please Login First!`,
+                context: { step: "book_appointment" },
+                options: [
+                    { label: "Back", value: "back_to_main" }
+                ]
+            };
+        }
         return {
             text: "Please select the department/service for your appointment:",
             options: [
@@ -130,6 +148,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
 
     // Book Appointment - Step 2: Enter Date
     if (context.step === "book_service" && input.startsWith("book_service_")) {
+        
         const serviceType = input.replace("book_service_", "");
         return {
             text: `Great! Please enter the appointment date in YYYY-MM-DD format. (e.g., 2024-09-01)`,
@@ -202,8 +221,7 @@ export const getBotResponse = async (input, context, backendUrl, token) => {
                     text: "Your appointment has been booked successfully!",
                     context: {},
                     options: [
-                        { label: "Back to Main", value: "back_to_main" },
-                        { label: "Book Another", value: "book_appointment" },
+                        { label: "Back to Main", value: "back_to_main" }
 
                     ]
                 };

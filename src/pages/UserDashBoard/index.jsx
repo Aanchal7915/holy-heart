@@ -333,7 +333,7 @@ const UserDashBoard = () => {
         {activeTab === "profile" && <ProfileTab />}
       </div>
       {/* Floating ChatBot */}
-      <ChatBot />
+      {/* <ChatBot /> */}
     </section>
   );
 };
