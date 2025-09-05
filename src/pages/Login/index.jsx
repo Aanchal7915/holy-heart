@@ -54,12 +54,12 @@ const Login = () => {
       } else {
         setApiStatus("error");
         setError(data.error || "Login failed");
-        setTimeout(() => setError(""), 3000);
+        setTimeout(() => setError(""), 10000);
       }
     } catch (err) {
       setApiStatus("error");
       setError("Something went wrong. Please try again.");
-      setTimeout(() => setError(""), 3000);
+      setTimeout(() => setError(""), 10000);
     }
   };
 
@@ -107,6 +107,9 @@ const Login = () => {
             <div className="text-red-500 text-sm text-center mt-2">{error}</div>
           )}
         </form>
+        <div className="mt-4 text-center text-sm">
+          <Link to="/forgot-password" className="text-green-700 font-medium underline">Forgot Password</Link>
+        </div>
         <div className="mt-6 text-center">
           <span className="text-gray-700">Don't have an account?</span>{" "}
           <Link

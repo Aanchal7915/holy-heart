@@ -57,12 +57,12 @@ const Register = () => {
       } else {
         setApiStatus("error");
         setError(data.error || "Registration failed");
-        setTimeout(() => setError(""), 3000);
+        setTimeout(() => setError(""), 10000);
       }
     } catch (err) {
       setApiStatus("error");
       setError("Something went wrong. Please try again.");
-      setTimeout(() => setError(""), 3000);
+      setTimeout(() => setError(""), 10000);
     }
   };
 

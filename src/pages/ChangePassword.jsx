@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useParams } from "react-router-dom";
 
 export default function ChangePassword() {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const email = params.get('email');
+  const{id, token} = useParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -19,9 +18,9 @@ export default function ChangePassword() {
       setStatus('error');
       setMessage('Missing token in URL');
     }
-    if (!email) {
+    if (!id) {
       setStatus('error');
-      setMessage('Missing email in URL');
+      setMessage('Missing Id!');
     }
   }, [token]);
 
@@ -40,10 +39,10 @@ export default function ChangePassword() {
     setStatus('loading');
     setMessage('');
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URI}/auth/reset-password`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND}/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, email, newPassword: password }),
+        body: JSON.stringify({ token, id, newPassword: password }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -52,7 +51,7 @@ export default function ChangePassword() {
       setStatus('success');
       setMessage('');
       toast.success(data?.message || 'Password changed! You can sign in now.', {
-        position: 'top-center',
+        position: 'top-right',
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,

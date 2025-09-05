@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {  toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function VerifyEmail() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    const email = params.get("email");
-    const navigate = useNavigate();
+    const{id, token} = useParams();
 
     const [status, setStatus] = useState("loading"); // loading | success | error
     const [message, setMessage] = useState("");
@@ -20,16 +17,16 @@ export default function VerifyEmail() {
                 setMessage("Verification token is missing. Please check your link.");
                 return;
             }
-            if (!email) {
+            if (!id) {
                 setStatus("error");
-                setMessage("Email is missing. Please check your link.");
+                setMessage("Id is missing. Please check your link.");
                 return;
             }
             setStatus("loading");
             setMessage("");
             try {
                 const res = await fetch(
-                    `${process.env.REACT_APP_BACKEND_URI}/auth/verify-email?token=${token}&email=${email}`,
+                    `${import.meta.env.VITE_BACKEND}/auth/verify-email/${id}/${token}`,
                     { method: "POST" }
                 );
                 const data = await res.json();
@@ -52,10 +49,10 @@ export default function VerifyEmail() {
         try {
             setStatus("loading");
             setMessage("");
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URI}/auth/resend-verification`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND}/auth/resend-verification`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ id }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data?.message || "Failed to resend verification");
@@ -93,7 +90,7 @@ export default function VerifyEmail() {
                 {status === "error" && (
                     <>
                         <p className="text-red-600 mb-6 font-semibold animate-pulse">{message}</p>
-                        {email && (
+                        {id && (
                             <button
                                 onClick={resendVerification}
                                 disabled={cooldown > 0 || status === 'loading'}

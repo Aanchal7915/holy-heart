@@ -14,6 +14,9 @@ import AdminDashBoard from "./pages/AdminDashBoard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserDashBoard from "./pages/UserDashBoard";
+import ChangePassword from "./pages/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyEmail from "./pages/VerifyEmail";
 
 // Helper to get token and role from localStorage
 const getAuth = () => {
@@ -56,6 +59,9 @@ function App() {
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="forgot-password" element={<ForgotPassword />} /> 
+        <Route path="reset-password/:id/:token" element={<ChangePassword />} />
+        <Route path="verify-email/:id/:token" element={<VerifyEmail />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/services" element={<Service />} />

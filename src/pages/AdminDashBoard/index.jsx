@@ -4,6 +4,8 @@ import AdminAppointments from "./components/AdminAppointments";
 import AdminAnalytics from "./components/AdminAnalytics";
 import AdminUsersTab from "./components/AdminUsersTab";
 import ProfileTab from "../../components/ProfileTab";
+import ServiceTab from "./components/ServiceTab";
+import DoctorTab from "./components/DoctorTab";
 
 const AdminDashBoard = () => {
   const [activeTab, setActiveTab] = useState("appointments");
@@ -49,12 +51,26 @@ const AdminDashBoard = () => {
         >
           Profile
         </button>
+        <button
+          className={`px-3 md:px-4 py-2 rounded font-semibold transition-all text-sm md:text-base ${activeTab === "services" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
+          onClick={() => setActiveTab("services")}
+        >
+          Services
+        </button>
+        <button
+          className={`px-3 md:px-4 py-2 rounded font-semibold transition-all text-sm md:text-base ${activeTab === "doctors" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
+          onClick={() => setActiveTab("doctors")}
+        >
+          Doctors
+        </button>
       </div>
       <div className="w-full max-w-full md:max-w-5xl mx-auto">
         {activeTab === "appointments" && <AdminAppointments />}
         {activeTab === "analytics" && <AdminAnalytics />}
         {activeTab === "users" && <AdminUsersTab />}
         {activeTab === "profile" && <ProfileTab />}
+        {activeTab === "services" && <ServiceTab />}
+        {activeTab === "doctors" && <DoctorTab />}
       </div>
     </section>
   );
