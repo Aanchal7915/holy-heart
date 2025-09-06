@@ -47,15 +47,13 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-blue-50 to-red-50 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-green-600 text-center mb-4">
-          Forgot Password
-        </h2>
+        <h2 className="text-3xl font-bold text-center text-red-600 mb-2">Forgot Password</h2>
+        <div className="bg-red-500 h-[5px] w-[70px] mx-auto mt-0 mb-4 pt-0"></div>
         <p className="text-gray-600 text-center mb-6">
           Enter your registered email and we’ll send you a reset link.
         </p>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
@@ -63,26 +61,23 @@ export default function ForgotPassword() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
           />
-
           <button
             type="submit"
             disabled={loading || cooldown > 0}
-            className={`w-full py-3 rounded-lg text-white font-medium transition ${
+            className={`w-full py-3 rounded-lg text-white font-semibold transition ${
               loading || cooldown > 0
-                ? "bg-green-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
+                ? "bg-red-400 cursor-not-allowed"
+                : "bg-red-600 hover:bg-red-700"
             }`}
           >
             {loading ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Send Reset Link"}
           </button>
-
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         </form>
+        <ToastContainer position="top-right" autoClose={3000} />
       </div>
-
-      <ToastContainer position="top-right" autoClose={3000} />
-    </div>
+    </section>
   );
 }

@@ -67,43 +67,43 @@ export default function ChangePassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-green-200 to-green-50">
-      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-green-200">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-red-200 to-red-50">
+      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-red-200">
         <div className="flex flex-col items-center mb-6">
-          <svg className="w-16 h-16 text-green-500 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg className="w-16 h-16 text-red-500 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 11c1.104 0 2-.896 2-2V7a2 2 0 10-4 0v2c0 1.104.896 2 2 2zm6 2v5a2 2 0 01-2 2H8a2 2 0 01-2-2v-5a6 6 0 1112 0z" />
           </svg>
-          <h2 className="text-3xl font-extrabold text-green-700 mb-1">Change Password</h2>
-          <p className="text-green-600 text-sm">Secure your account by updating your password</p>
+          <h2 className="text-3xl font-extrabold text-red-700 mb-1">Change Password</h2>
+          <p className="text-red-600 text-sm">Secure your account by updating your password</p>
         </div>
         <form onSubmit={submit} className="space-y-5">
           <div>
-            <label htmlFor="newPassword" className="block text-green-700 font-semibold mb-2">New Password <span className="text-red-500">*</span></label>
+            <label htmlFor="newPassword" className="block text-red-700 font-semibold mb-2">New Password <span className="text-red-500">*</span></label>
             <input
               id="newPassword"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 bg-green-50 placeholder-green-400"
+              className="w-full px-4 py-2 border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 bg-red-50 placeholder-red-400"
               required
               placeholder="Enter your new password"
             />
           </div>
           <div>
-            <label htmlFor="confirmPassword" className="block text-green-700 font-semibold mb-2">Confirm Password <span className="text-red-500">*</span></label>
+            <label htmlFor="confirmPassword" className="block text-red-700 font-semibold mb-2">Confirm Password <span className="text-red-500">*</span></label>
             <input
               id="confirmPassword"
               type="password"
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
-              className="w-full px-4 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 bg-green-50 placeholder-green-400"
+              className="w-full px-4 py-2 border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 bg-red-50 placeholder-red-400"
               required
               placeholder="Re-enter new password"
             />
           </div>
           <button
             type="submit"
-            className={`w-full py-2 px-4 bg-gradient-to-r from-green-500 to-green-700 text-white font-bold rounded-lg shadow-lg hover:scale-105 transition-transform duration-200 ${status === 'loading' ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`w-full py-2 px-4 bg-gradient-to-r from-red-500 to-red-700 text-white font-bold rounded-lg shadow-lg hover:scale-105 transition-transform duration-200 ${status === 'loading' ? 'opacity-60 cursor-not-allowed' : ''}`}
             disabled={status === 'loading'}
           >
             {status === 'loading' ? (
@@ -122,7 +122,7 @@ export default function ChangePassword() {
             <div className="text-sm text-center mt-2 font-semibold text-red-600 animate-pulse">{message}</div>
           )}
         </form>
-        <div className="mt-6 text-center text-green-500 text-xs">* All fields are required</div>
+        <div className="mt-6 text-center text-red-500 text-xs">* All fields are required</div>
         <ToastContainer />
       </div>
     </div>
