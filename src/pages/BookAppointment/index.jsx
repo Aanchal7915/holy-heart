@@ -31,7 +31,28 @@ const SpinnerInBtn = () => (
 const BookAppointment = () => {
   const [error, setError] = useState("");
   const [apiStatus, setApiStatus] = useState("idle");
+  const [services, setServices] = useState([]);
   const navigate = useNavigate();
+
+  // Fetch services for dropdown
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000"}/services`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
+        );
+        const data = await response.json();
+        setServices(data.services || []);
+      } catch {
+        setServices([]);
+      }
+    };
+    fetchServices();
+  }, []);
 
   // Protect route: redirect to login if not logged in
   useEffect(() => {
@@ -56,15 +77,17 @@ const BookAppointment = () => {
     const payload = {
       appointmentDate: formattedDate,
       Message: message || "N/A",
-      serviceType: department,
+      serviceId: department,
     };
+    console.log("payload" , payload); 
+    
 
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND ||
           import.meta.env.backend ||
-          "http://localhost:8000"}/appointments`,
+          "http://localhost:8000"}/appointments/auto-book`,
         {
           method: "POST",
           headers: {
@@ -85,9 +108,9 @@ const BookAppointment = () => {
       } else {
         const data = await response.json();
         setError(
-          data?.error || "Failed to book appointment. Please try again."
+          data?.error||data?.message || data?.reason || "Failed to book appointment. Please try again."
         );
-        setTimeout(() => setError(""), 3000);
+        setTimeout(() => setError(""), 8000);
       }
     } catch (error) {
       setError("Error booking appointment. Please check your connection.");
@@ -130,7 +153,7 @@ const BookAppointment = () => {
             />
           </div>
 
-          {/* Department */}
+          {/* Department (Service) */}
           <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
             <Clipboard className="text-gray-500 w-5 h-5 mr-3" />
             <select
@@ -138,11 +161,14 @@ const BookAppointment = () => {
               className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
               required
             >
-              <option value="">Select Department</option>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Neurology">Neurology</option>
-              <option value="Orthopedics">Orthopedics</option>
-              <option value="General Medicine">General Medicine</option>
+              <option value="">Select Service</option>
+              {services
+                .filter((s) => s.status === "active")
+                .map((s) => (
+                  <option key={s._id} value={s._id}>
+                    {s.name}
+                  </option>
+                ))}
             </select>
           </div>
 

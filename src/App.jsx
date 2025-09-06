@@ -17,6 +17,7 @@ import UserDashBoard from "./pages/UserDashBoard";
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyEmail from "./pages/VerifyEmail";
+import DoctorDashBoard from "./pages/DoctorDashBoard";
 
 // Helper to get token and role from localStorage
 const getAuth = () => {
@@ -57,6 +58,7 @@ function App() {
             <UserDashBoard />
           </UserProtectedRoute>
         } />
+        <Route path="/doctor-dashboard" element={<DoctorDashBoard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} /> 

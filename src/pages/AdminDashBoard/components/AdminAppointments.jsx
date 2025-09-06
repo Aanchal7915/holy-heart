@@ -229,12 +229,14 @@ const AdminAppointments = () => {
           <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
             <thead>
               <tr className="bg-gray-200">
-                <th className="py-2 px-2 md:px-4">Name</th>
-                <th className="py-2 px-2 md:px-4">Email</th>
-                <th className="py-2 px-2 md:px-4">Phone</th>
-                <th className="py-2 px-2 md:px-4">Date</th>
-                <th className="py-2 px-2 md:px-4">Designation</th>
-                <th className="py-2 px-2 md:px-4">Message</th>
+                <th className="py-2 px-2 md:px-4">Patient Name</th>
+                <th className="py-2 px-2 md:px-4">Patient Email</th>
+                <th className="py-2 px-2 md:px-4">Patient Phone</th>
+                <th className="py-2 px-2 md:px-4">Doctor</th>
+                <th className="py-2 px-2 md:px-4">Service</th>
+                <th className="py-2 px-2 md:px-4">Start</th>
+                <th className="py-2 px-2 md:px-4">End</th>
+                <th className="py-2 px-2 md:px-4">Charge</th>
                 <th className="py-2 px-2 md:px-4">Status</th>
                 <th className="py-2 px-2 md:px-4">Action</th>
               </tr>
@@ -242,26 +244,38 @@ const AdminAppointments = () => {
             <tbody>
               {appointments.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-6 text-gray-500">
+                  <td colSpan={10} className="text-center py-6 text-gray-500">
                     No appointments found.
                   </td>
                 </tr>
               ) : (
                 appointments.map((a, idx) => (
-                  <tr key={idx} className="border-b">
+                  <tr key={a._id || idx} className="border-b">
                     <td className="py-2 px-2 md:px-4">{a.patientName}</td>
                     <td className="py-2 px-2 md:px-4">{a.patientEmail}</td>
                     <td className="py-2 px-2 md:px-4">{a.patientPhone}</td>
-                    <td className="py-2 px-2 md:px-4">{
-                      a.appointmentDate
-                        ? new Date(a.appointmentDate).toLocaleDateString("en-GB")
-                        : ""
-                    }</td>
-                    <td className="py-2 px-2 md:px-4">{a.serviceType}</td>
-                    <td className="py-2 px-2 md:px-4">{a.Message}</td>
+                    <td className="py-2 px-2 md:px-4">
+                      {a.doctor?.name || "-"}
+                      {/* <br /> */}
+                      {/* <span className="text-gray-500">{a.doctor?.email}</span> */}
+                      {/* <br /> */}
+                      {/* <span className="text-gray-500">{a.doctor?.phoneNu}</span> */}
+                    </td>
+                    <td className="py-2 px-2 md:px-4">
+                      {a.service?.name || "-"}
+                      {/* <br /> */}
+                      {/* <span className="text-gray-500">{a.service?.description}</span> */}
+                    </td>
+                    <td className="py-2 px-2 md:px-4">
+                      {a.start ? new Date(a.start).toLocaleString("en-GB") : ""}
+                    </td>
+                    <td className="py-2 px-2 md:px-4">
+                      {a.end ? new Date(a.end).toLocaleString("en-GB") : ""}
+                    </td>
+                    <td className="py-2 px-2 md:px-4">{a.charge ? `₹${a.charge}` : "-"}</td>
                     <td className="py-2 px-2 md:px-4">{a.status || "Pending"}</td>
                     <td className="py-2 px-2 md:px-4">
-                      {(!a.status || a.status.toLowerCase() === "pending") && (
+                      {/* {(!a.status || a.status.toLowerCase() === "pending" || a.status.toLowerCase() === "reserved") && (
                         <button
                           className="bg-green-800 hover:bg-green-900 text-white px-2 md:px-3 py-1 rounded text-xs"
                           onClick={() => openModal(a)}
@@ -269,7 +283,7 @@ const AdminAppointments = () => {
                         >
                           Update Status
                         </button>
-                      )}
+                      )} */}
                     </td>
                   </tr>
                 ))

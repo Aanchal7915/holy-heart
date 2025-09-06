@@ -152,15 +152,14 @@ const UserAppointmentsTab = ({
       <Spinner />
     ) : errorMsg ? (
       <div className="flex flex-col items-center justify-center py-8 md:py-16">
-    <div className="text-red-600 text-xs sm:text-sm md:text-lg mb-4">{errorMsg}. Something went wrong. Please try again.</div>
-    <button
-      className="px-3 md:px-4 py-2 bg-blue-900 text-white rounded transition text-xs sm:text-sm"
-      onClick={fetchUserAppointments}
-    >
-      Refresh
-    </button>
-
-  </div>
+        <div className="text-red-600 text-xs sm:text-sm md:text-lg mb-4">{errorMsg}. Something went wrong. Please try again.</div>
+        <button
+          className="px-3 md:px-4 py-2 bg-blue-900 text-white rounded transition text-xs sm:text-sm"
+          onClick={fetchUserAppointments}
+        >
+          Refresh
+        </button>
+      </div>
     ) : (
       <div className="overflow-x-auto">
         <table className="min-w-full border text-xs sm:text-sm md:text-base">
@@ -168,14 +167,17 @@ const UserAppointmentsTab = ({
             <tr className="bg-gray-100">
               <th className="px-4 py-2 border">Date</th>
               <th className="px-4 py-2 border">Service</th>
+              <th className="px-4 py-2 border">Doctor</th>
+              <th className="px-4 py-2 border">Start</th>
+              <th className="px-4 py-2 border">End</th>
+              <th className="px-4 py-2 border">Charge</th>
               <th className="px-4 py-2 border">Status</th>
-              <th className="px-4 py-2 border">Message</th>
             </tr>
           </thead>
           <tbody>
             {appointments.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-4">
+                <td colSpan={7} className="text-center py-4">
                   No appointments found.
                 </td>
               </tr>
@@ -183,13 +185,26 @@ const UserAppointmentsTab = ({
               appointments.map((a) => (
                 <tr key={a._id}>
                   <td className="px-4 py-2 border">
-                    {a.appointmentDate
-                      ? new Date(a.appointmentDate).toLocaleDateString()
-                      : "-"}
+                    {a.start ? new Date(a.start).toLocaleDateString() : "-"}
                   </td>
-                  <td className="px-4 py-2 border">{a.serviceType}</td>
+                  <td className="px-4 py-2 border">
+                    {a.service?.name || "-"}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {a.doctor?.name || "-"}
+                    {/* <br />
+                    <span className="text-gray-500">{a.doctor?.email}</span> */}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {a.start ? new Date(a.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {a.end ? new Date(a.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {a.charge ? `₹${a.charge}` : "-"}
+                  </td>
                   <td className="px-4 py-2 border capitalize">{a.status}</td>
-                  <td className="px-4 py-2 border">{a.Message || "-"}</td>
                 </tr>
               ))
             )}

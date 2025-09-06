@@ -76,14 +76,14 @@ export default function VerifyEmail() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-green-50 px-6">
-            <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full text-center border border-green-200">
-                <h2 className="text-3xl font-extrabold text-green-700 mb-4">Email Verification</h2>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-100 via-red-200 to-red-50 px-6">
+            <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full text-center border border-red-200">
+                <h2 className="text-3xl font-extrabold text-red-700 mb-4">Email Verification</h2>
                 {status === "loading" && (
                     <>
-                        <p className="text-green-600 mb-6 animate-pulse">Verifying your email, please wait…</p>
+                        <p className="text-red-600 mb-6 animate-pulse">Verifying your email, please wait…</p>
                         <div className="flex justify-center mb-4">
-                            <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
                         </div>
                     </>
                 )}
@@ -96,7 +96,7 @@ export default function VerifyEmail() {
                                 disabled={cooldown > 0 || status === 'loading'}
                                 className={`px-4 py-2 rounded-lg font-bold transition ${cooldown > 0 || status === 'loading'
                                         ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                                        : "bg-green-600 text-white hover:bg-green-700 shadow-lg"
+                                        : "bg-red-600 text-white hover:bg-red-700 shadow-lg"
                                     }`}
                             >
                                 {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Verification Email"}
@@ -106,9 +106,9 @@ export default function VerifyEmail() {
                 )}
                 {status === "success" && (
                     <>
-                        <p className="text-green-600 mb-6 font-semibold animate-bounce">{message || "Email verified! Redirecting to login…"}</p>
+                        <p className="text-red-600 mb-6 font-semibold animate-bounce">{message || "Email verified! Redirecting to login…"}</p>
                         <div className="flex justify-center mb-4">
-                            <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
