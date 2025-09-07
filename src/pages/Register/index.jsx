@@ -14,7 +14,7 @@ const SpinnerInBtn = () => (
 );
 
 const Register = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", gender: "" });
   const [apiStatus, setApiStatus] = useState("idle");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ const Register = () => {
           email: form.email,
           password: form.password,
           phoneNu: form.phone,
+          gender: form.gender,
           role: "user"
         }),
       });
@@ -50,7 +51,7 @@ const Register = () => {
       if (res.status === 201) {
         setApiStatus("success");
         toast.success(data.message || "User registered successfully");
-        setForm({ name: "", email: "", password: "", phone: "" });
+        setForm({ name: "", email: "", password: "", phone: "", gender: "" });
         setTimeout(() => {
           navigate("/login");
         }, 1500);
@@ -116,6 +117,19 @@ const Register = () => {
             className="w-full border rounded px-4 py-2"
             required
           />
+          {/* Gender Dropdown */}
+          <select
+            name="gender"
+            value={form.gender}
+            onChange={handleChange}
+            className="w-full border rounded px-4 py-2"
+            required
+          >
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition flex items-center justify-center"

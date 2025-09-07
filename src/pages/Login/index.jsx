@@ -23,6 +23,7 @@ const Login = () => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     if (token && role === "admin") navigate("/admin-dashboard");
+    else if (token && role === "doctor") navigate("/doctor-dashboard");
     else if (token) navigate("/user-dashboard");
   }, [navigate]);
 
@@ -41,25 +42,26 @@ const Login = () => {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (res.status === 200 && data.token) {
+      // Updated to use data.user.userRole for role
+      if (res.status === 200 && data.token && data.user?.userRole) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.user.userRole || "user");
+        localStorage.setItem("role", data.user.userRole);
         setApiStatus("success");
         toast.success(data.message || "Login successful");
-        setForm({ email: "", password: "" });
         setTimeout(() => {
-          if ((data.role || "user") === "admin") navigate("/admin-dashboard");
+          if (data.user.userRole === "admin") navigate("/admin-dashboard");
+          else if (data.user.userRole === "doctor") navigate("/doctor-dashboard");
           else navigate("/user-dashboard");
         }, 1200);
       } else {
         setApiStatus("error");
         setError(data.error || "Login failed");
-        setTimeout(() => setError(""), 10000);
+        setTimeout(() => setError(""), 8000);
       }
     } catch (err) {
       setApiStatus("error");
       setError("Something went wrong. Please try again.");
-      setTimeout(() => setError(""), 10000);
+      setTimeout(() => setError(""), 8000);
     }
   };
 
@@ -72,10 +74,7 @@ const Login = () => {
           <img src={logo} alt="Logo" className="h-16" />
         </div>
         <h2 className="text-2xl font-bold mb-1 text-center">Login</h2>
-        <div className="bg-red-500 h-[5px] w-[40px] mx-auto mt-0 mb-4 pt-0"></div>
-        <p className="text-gray-600 text-center mb-6">
-          Welcome back! Please login to access your dashboard.
-        </p>
+        <div className="bg-red-500 h-[5px] w-[70px] mx-auto mt-0 mb-4 pt-0"></div>
         <form className="space-y-5" onSubmit={handleSubmit}>
           <input
             type="email"
@@ -106,22 +105,16 @@ const Login = () => {
           {error && (
             <div className="text-red-500 text-sm text-center mt-2">{error}</div>
           )}
-        </form>
-        <div className="mt-4 text-center text-sm">
-          <Link to="/forgot-password" className="text-green-700 font-medium underline">Forgot Password</Link>
-        </div>
-        <div className="mt-6 text-center">
-          <span className="text-gray-700">Don't have an account?</span>{" "}
-          <Link
-            to="/register"
-            className="text-blue-600 hover:underline font-semibold"
-          >
-            Register here
-          </Link>
-          <div className="text-xs text-gray-500 mt-2">
-            Create an account to book appointments, track your health, and get personalized care.
+          <div className="mt-6 text-center">
+            <span className="text-gray-700">Don't have an account?</span>{" "}
+            <Link
+              to="/register"
+              className="text-blue-600 hover:underline font-semibold"
+            >
+              Register here
+            </Link>
           </div>
-        </div>
+        </form>
       </div>
       <div className="h-[100px]"></div>
     </section>

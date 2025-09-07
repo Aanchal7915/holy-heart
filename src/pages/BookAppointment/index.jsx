@@ -32,6 +32,7 @@ const BookAppointment = () => {
   const [error, setError] = useState("");
   const [apiStatus, setApiStatus] = useState("idle");
   const [services, setServices] = useState([]);
+  const [serviceType, setServiceType] = useState("treatment"); // "treatment" or "test"
   const navigate = useNavigate();
 
   // Fetch services for dropdown
@@ -79,8 +80,6 @@ const BookAppointment = () => {
       Message: message || "N/A",
       serviceId: department,
     };
-    console.log("payload" , payload); 
-    
 
     try {
       const token = localStorage.getItem("token");
@@ -108,7 +107,7 @@ const BookAppointment = () => {
       } else {
         const data = await response.json();
         setError(
-          data?.error||data?.message || data?.reason || "Failed to book appointment. Please try again."
+          data?.error || data?.message || data?.reason || "Failed to book appointment. Please try again."
         );
         setTimeout(() => setError(""), 8000);
       }
@@ -118,6 +117,11 @@ const BookAppointment = () => {
     }
     setApiStatus("idle");
   };
+
+  // Filter services based on selected type
+  const filteredServices = services.filter(
+    (s) => s.status === "active" && s.type === serviceType
+  );
 
   return (
     <motion.section
@@ -138,6 +142,32 @@ const BookAppointment = () => {
           Schedule your consultation with our experienced doctors.
           Please fill out the form below and our team will contact you shortly.
         </p>
+
+        {/* Service Type Switch */}
+        <div className="flex justify-center gap-4 mb-6">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded font-semibold transition-all ${
+              serviceType === "treatment"
+                ? "bg-blue-900 text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setServiceType("treatment")}
+          >
+            Treatment
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded font-semibold transition-all ${
+              serviceType === "test"
+                ? "bg-blue-900 text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setServiceType("test")}
+          >
+            Test
+          </button>
+        </div>
 
         {/* Appointment Form */}
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -161,14 +191,15 @@ const BookAppointment = () => {
               className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
               required
             >
-              <option value="">Select Service</option>
-              {services
-                .filter((s) => s.status === "active")
-                .map((s) => (
-                  <option key={s._id} value={s._id}>
-                    {s.name}
-                  </option>
-                ))}
+              <option value="">
+                {serviceType === "treatment" ? "Select Treatment" : "Select Test"}
+              </option>
+              {filteredServices.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.name}
+                  {serviceType === "test" && s.price ? ` (₹${s.price})` : ""}
+                </option>
+              ))}
             </select>
           </div>
 

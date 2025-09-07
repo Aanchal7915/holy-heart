@@ -55,9 +55,17 @@ const ServiceTab = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Add form state
-  const [addForm, setAddForm] = useState({ name: "", description: "", image: null });
-  // Edit modal state
+  // Add form state (add type, price, duration)
+  const [addForm, setAddForm] = useState({
+    name: "",
+    description: "",
+    image: null,
+    type: "treatment",
+    price: "",
+    duration: "",
+  });
+
+  // Edit modal state (add type, price, duration)
   const [editModal, setEditModal] = useState({
     open: false,
     id: null,
@@ -66,6 +74,9 @@ const ServiceTab = () => {
     image: null,
     preview: "",
     status: "active",
+    type: "treatment",
+    price: "",
+    duration: "",
   });
 
   // Delete modal state
@@ -91,16 +102,25 @@ const ServiceTab = () => {
     fetchServices();
   }, []);
 
-  // Add service
+  // Add service (add type, price, duration)
   const handleAdd = async (e) => {
     e.preventDefault();
-    if (!addForm.name.trim() || !addForm.description.trim()) return toast.error("Name and description required");
+    if (!addForm.name.trim() || !addForm.description.trim())
+      return toast.error("Name and description required");
+    if (addForm.type === "test" && !addForm.price)
+      return toast.error("Price is required for test type");
+    if (!addForm.duration.trim())
+      return toast.error("Duration is required");
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("name", addForm.name);
       formData.append("description", addForm.description);
+      formData.append("type", addForm.type);
+      formData.append("duration", addForm.duration);
+      if (addForm.type === "test" && addForm.price)
+        formData.append("price", addForm.price);
       if (addForm.image) formData.append("image", addForm.image);
 
       const res = await fetch(`${backendUrl}/services`, {
@@ -109,7 +129,14 @@ const ServiceTab = () => {
         body: formData,
       });
       if (!res.ok) throw new Error("Failed to add service");
-      setAddForm({ name: "", description: "", image: null });
+      setAddForm({
+        name: "",
+        description: "",
+        image: null,
+        type: "treatment",
+        price: "",
+        duration: "",
+      });
       toast.success("Service added!");
       fetchServices();
     } catch (err) {
@@ -144,7 +171,7 @@ const ServiceTab = () => {
     setLoading(false);
   };
 
-  // Open edit modal (include status)
+  // Open edit modal (include type, price, duration)
   const openEditModal = (service) => {
     setEditModal({
       open: true,
@@ -152,15 +179,23 @@ const ServiceTab = () => {
       name: service.name,
       description: service.description,
       image: null,
-      preview: service.imageUrl || "",
+      preview: service.imageUrl || service.image || "",
       status: service.status || "active",
+      type: service.type || "treatment",
+      price: service.price || "",
+      duration: service.duration || "",
     });
   };
 
-  // Edit service (include status)
+  // Edit service (include type, price, duration)
   const handleEditSave = async (e) => {
     e.preventDefault();
-    if (!editModal.name.trim() || !editModal.description.trim()) return toast.error("Name and description required");
+    if (!editModal.name.trim() || !editModal.description.trim())
+      return toast.error("Name and description required");
+    if (editModal.type === "test" && !editModal.price)
+      return toast.error("Price is required for test type");
+    if (!editModal.duration.trim())
+      return toast.error("Duration is required");
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -168,6 +203,10 @@ const ServiceTab = () => {
       formData.append("name", editModal.name);
       formData.append("description", editModal.description);
       formData.append("status", editModal.status);
+      formData.append("type", editModal.type);
+      formData.append("duration", editModal.duration);
+      if (editModal.type === "test" && editModal.price)
+        formData.append("price", editModal.price);
       if (editModal.image) formData.append("image", editModal.image);
 
       const res = await fetch(`${backendUrl}/services/${editModal.id}`, {
@@ -176,7 +215,18 @@ const ServiceTab = () => {
         body: formData,
       });
       if (!res.ok) throw new Error("Failed to update service");
-      setEditModal({ open: false, id: null, name: "", description: "", image: null, preview: "", status: "active" });
+      setEditModal({
+        open: false,
+        id: null,
+        name: "",
+        description: "",
+        image: null,
+        preview: "",
+        status: "active",
+        type: "treatment",
+        price: "",
+        duration: "",
+      });
       toast.success("Service updated!");
       fetchServices();
     } catch (err) {
@@ -217,6 +267,36 @@ const ServiceTab = () => {
             onChange={e => setAddForm(f => ({ ...f, image: e.target.files[0] }))}
             disabled={loading}
           />
+          {/* Type dropdown */}
+          <select
+            className="border px-3 py-2 rounded w-full md:w-auto"
+            value={addForm.type}
+            onChange={e => setAddForm(f => ({ ...f, type: e.target.value, price: e.target.value === "test" ? f.price : "" }))}
+            disabled={loading}
+          >
+            <option value="treatment">Treatment</option>
+            <option value="test">Test</option>
+          </select>
+          {/* Price field, only active if type is test */}
+          <input
+            type="number"
+            className={`border px-3 py-2 rounded w-full md:w-auto ${addForm.type === "test" ? "" : "bg-gray-100 text-gray-400"}`}
+            placeholder="Price (for test)"
+            value={addForm.price}
+            onChange={e => setAddForm(f => ({ ...f, price: e.target.value }))}
+            disabled={loading || addForm.type !== "test"}
+            min={0}
+          />
+          {/* Duration field */}
+          <input
+            type="text"
+            className="border px-3 py-2 rounded w-full md:w-auto"
+            placeholder="Duration (e.g. 30 min)"
+            value={addForm.duration}
+            onChange={e => setAddForm(f => ({ ...f, duration: e.target.value }))}
+            disabled={loading}
+            required
+          />
         </div>
         <textarea
           className="border px-3 py-2 rounded w-full"
@@ -243,6 +323,9 @@ const ServiceTab = () => {
               <th className="py-2 px-4">Image</th>
               <th className="py-2 px-4">Name</th>
               <th className="py-2 px-4">Description</th>
+              <th className="py-2 px-4">Type</th>
+              <th className="py-2 px-4">Price</th>
+              <th className="py-2 px-4">Duration</th>
               <th className="py-2 px-4">Status</th>
               <th className="py-2 px-4">Actions</th>
             </tr>
@@ -250,7 +333,7 @@ const ServiceTab = () => {
           <tbody>
             {services.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">
+                <td colSpan={8} className="text-center py-4 text-gray-500">
                   No services found.
                 </td>
               </tr>
@@ -266,6 +349,9 @@ const ServiceTab = () => {
                   </td>
                   <td className="py-2 px-4">{s.name}</td>
                   <td className="py-2 px-4">{s.description}</td>
+                  <td className="py-2 px-4 capitalize">{s.type || "treatment"}</td>
+                  <td className="py-2 px-4">{s.type === "test" && s.price ? `₹${s.price}` : "-"}</td>
+                  <td className="py-2 px-4">{s.duration || "-"}</td>
                   <td className="py-2 px-4">{s.status || "N/A"}</td>
                   <td className="py-2 px-4 flex gap-2">
                     <button
@@ -295,7 +381,20 @@ const ServiceTab = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-2 relative">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl"
-              onClick={() => setEditModal({ open: false, id: null, name: "", description: "", image: null, preview: "", status: "active" })}
+              onClick={() =>
+                setEditModal({
+                  open: false,
+                  id: null,
+                  name: "",
+                  description: "",
+                  image: null,
+                  preview: "",
+                  status: "active",
+                  type: "treatment",
+                  price: "",
+                  duration: "",
+                })
+              }
             >
               &times;
             </button>
@@ -308,6 +407,7 @@ const ServiceTab = () => {
                 value={editModal.name}
                 onChange={e => setEditModal(f => ({ ...f, name: e.target.value }))}
                 disabled={loading}
+                required
               />
               <textarea
                 className="border px-3 py-2 rounded w-full"
@@ -316,6 +416,36 @@ const ServiceTab = () => {
                 onChange={e => setEditModal(f => ({ ...f, description: e.target.value }))}
                 disabled={loading}
                 rows={2}
+                required
+              />
+              <select
+                className="border px-3 py-2 rounded w-full"
+                value={editModal.type}
+                onChange={e => setEditModal(f => ({ ...f, type: e.target.value, price: e.target.value === "test" ? f.price : "" }))}
+                disabled={loading}
+              >
+                <option value="treatment">Treatment</option>
+                <option value="test">Test</option>
+              </select>
+              {/* Price field, only active if type is test */}
+              <input
+                type="number"
+                className={`border px-3 py-2 rounded w-full ${editModal.type === "test" ? "" : "bg-gray-100 text-gray-400"}`}
+                placeholder="Price (for test)"
+                value={editModal.price}
+                onChange={e => setEditModal(f => ({ ...f, price: e.target.value }))}
+                disabled={loading || editModal.type !== "test"}
+                min={0}
+              />
+              {/* Duration field */}
+              <input
+                type="text"
+                className="border px-3 py-2 rounded w-full"
+                placeholder="Duration (e.g. 30 min)"
+                value={editModal.duration}
+                onChange={e => setEditModal(f => ({ ...f, duration: e.target.value }))}
+                disabled={loading}
+                required
               />
               <select
                 className="border px-3 py-2 rounded w-full"
@@ -355,7 +485,7 @@ const ServiceTab = () => {
                 <button
                   type="button"
                   className="bg-gray-400 text-white px-4 py-2 rounded"
-                  onClick={() => setEditModal({ open: false, id: null, name: "", description: "", image: null, preview: "", status: "active" })}
+                  onClick={() => setEditModal({ open: false, id: null, name: "", description: "", image: null, preview: "", status: "active", type: "treatment", price: "" })}
                   disabled={loading}
                 >
                   Cancel
