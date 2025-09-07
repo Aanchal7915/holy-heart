@@ -21,10 +21,30 @@ const AdminAppointments = () => {
   const [newStatus, setNewStatus] = useState("");
   const [modalApiStatus, setModalApiStatus] = useState(""); // Separate API status for modal
 
+  // --- NEW: Service list for filter dropdown ---
+  const [serviceList, setServiceList] = useState([]);
+
   useEffect(() => {
     fetchAppointments();
     // eslint-disable-next-line
   }, [filters, sort, limit, page]);
+
+  // --- NEW: Fetch services for filter dropdown ---
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${backendUrl}/services`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setServiceList(data.services || []);
+      } catch {
+        setServiceList([]);
+      }
+    };
+    fetchServices();
+  }, []);
 
   const fetchAppointments = async () => {
     setApiStatus("loading");
@@ -32,7 +52,7 @@ const AdminAppointments = () => {
     try {
       const params = new URLSearchParams({
         status: filters.status,
-        designation: filters.designation,
+        service: filters.designation,
         startDate: filters.startDate,
         endDate: filters.endDate,
         sort,
@@ -130,7 +150,7 @@ const AdminAppointments = () => {
             <option value="Cancelled">Cancelled</option>
           </select>
         </div>
-        {/* Designation */}
+        {/* Service (Designation) */}
         <div className="flex flex-col">
           <label htmlFor="designation" className="text-xs text-gray-600 mb-1">Service Type</label>
           <select
@@ -141,10 +161,12 @@ const AdminAppointments = () => {
             className="border rounded px-3 py-2 text-xs md:text-base"
           >
             <option value="">All Service</option>
-            <option value="Cardiology">Cardiology</option>
-            <option value="Neurology">Neurology</option>
-            <option value="Orthopedics">Orthopedics</option>
-            <option value="General Medicine">General Medicine</option>
+            {/* Dynamically populate from /services */}
+            {serviceList.map((service) => (
+              <option key={service._id} value={service._id}>
+                {service.name}
+              </option>
+            ))}
           </select>
         </div>
         {/* Start Date */}
