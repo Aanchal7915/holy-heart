@@ -70,6 +70,7 @@ const DoctorTab = () => {
     password: "",
     gender: "",
     address: "",
+    specialisation: "", // Added specialisation
   });
 
   // Edit modal state
@@ -84,6 +85,7 @@ const DoctorTab = () => {
     status: "active",
     gender: "",
     address: "",
+    specialisation: "", // Added specialisation
   });
 
   // Delete modal state
@@ -180,6 +182,7 @@ const DoctorTab = () => {
       formData.append("password", addForm.password);
       formData.append("gender", addForm.gender);
       formData.append("address", addForm.address);
+      formData.append("specialisation", addForm.specialisation); // Added specialisation
       if (addForm.image) formData.append("image", addForm.image);
 
       const res = await fetch(`${backendUrl}/doctors`, {
@@ -197,6 +200,7 @@ const DoctorTab = () => {
         password: "",
         gender: "",
         address: "",
+        specialisation: "",
       });
       toast.success("Doctor added!");
       fetchDoctors();
@@ -241,10 +245,11 @@ const DoctorTab = () => {
       email: doctor.email || "",
       phoneNu: doctor.phoneNu || "",
       image: null,
-      preview: doctor.imageUrl || "",
+      preview: doctor.imageUrl || doctor.image || "",
       status: doctor.status || "active",
       gender: doctor.gender || "",
       address: doctor.address || "",
+      specialisation: doctor.specialisation || "",
     });
   };
 
@@ -264,6 +269,7 @@ const DoctorTab = () => {
       formData.append("status", editModal.status);
       formData.append("gender", editModal.gender);
       formData.append("address", editModal.address);
+      formData.append("specialisation", editModal.specialisation); // Added specialisation
       if (editModal.image) formData.append("image", editModal.image);
 
       const res = await fetch(`${backendUrl}/doctors/${editModal.id}`, {
@@ -283,6 +289,7 @@ const DoctorTab = () => {
         status: "active",
         gender: "",
         address: "",
+        specialisation: "",
       });
       toast.success("Doctor updated!");
       fetchDoctors();
@@ -448,6 +455,15 @@ const DoctorTab = () => {
           />
         </div>
         <input
+          type="text"
+          className="border px-3 py-2 rounded w-full"
+          placeholder="Specialisation"
+          value={addForm.specialisation}
+          onChange={e => setAddForm(f => ({ ...f, specialisation: e.target.value }))}
+          disabled={loading}
+          required
+        />
+        <input
           type="email"
           className="border px-3 py-2 rounded w-full"
           placeholder="Email"
@@ -521,17 +537,17 @@ const DoctorTab = () => {
             <tr className="bg-gray-200">
               <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Name</th>
+              <th className="py-2 px-4">Specialisation</th>
               <th className="py-2 px-4">Email</th>
               <th className="py-2 px-4">Phone</th>
               <th className="py-2 px-4">Gender</th>
-              {/* <th className="py-2 px-4">Status</th> */}
               <th className="py-2 px-4">Actions</th>
             </tr>
           </thead>
           <tbody>
             {doctors.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-4 text-gray-500">
+                <td colSpan={8} className="text-center py-4 text-gray-500">
                   No doctors found.
                 </td>
               </tr>
@@ -549,10 +565,10 @@ const DoctorTab = () => {
                       </button>
                     </td>
                     <td className="py-2 px-4">{d.name}</td>
+                    <td className="py-2 px-4">{d.specialisation || "-"}</td>
                     <td className="py-2 px-4">{d.email}</td>
                     <td className="py-2 px-4">{d.phoneNu}</td>
                     <td className="py-2 px-4">{d.gender}</td>
-                    {/* <td className="py-2 px-4">{d.status || "N/A"}</td> */}
                     <td className="py-2 px-4 flex gap-2">
                       <button
                         className="bg-blue-600 text-white px-2 py-1 rounded"
@@ -561,187 +577,189 @@ const DoctorTab = () => {
                       >
                         Edit
                       </button>
-                      {/* <button
-                        className="bg-red-600 text-white px-2 py-1 rounded"
-                        onClick={() => openDeleteModal(d)}
-                        disabled={loading}
-                      >
-                        Delete
-                      </button> */}
                     </td>
                   </tr>
                   {expandedDoctor === d._id && (
                     <tr>
-                      <td colSpan={7} className="bg-gray-50 border-t">
+                      <td colSpan={8} className="bg-gray-50 border-t">
                         {/* Doctor Personal Details */}
-                        <div className="p-4">
-                          <div className="font-semibold mb-2">Personal Details</div>
-                          <div className="flex flex-wrap gap-4 mb-2">
-                            <div><b>Name:</b> {d.name}</div>
-                            <div><b>Email:</b> {d.email}</div>
-                            <div><b>Phone:</b> {d.phoneNu}</div>
-                            <div><b>Gender:</b> {d.gender}</div>
-                            {/* <div><b>Status:</b> {d.status}</div> */}
-                            <div><b>Address:</b> {d?.address||"-"}</div>
+                        <div className="p-4 flex flex-col md:flex-row gap-6 items-start">
+                          {/* Doctor Image */}
+                          <div>
+                            {d.imageUrl || d.image ? (
+                              <img
+                                src={d.imageUrl || d.image}
+                                alt={d.name}
+                                className="w-24 h-24 object-cover rounded-full border mb-2"
+                              />
+                            ) : (
+                              <div className="w-24 h-24 bg-gray-200 flex items-center justify-center rounded-full mb-2 text-gray-400">
+                                No Image
+                              </div>
+                            )}
                           </div>
-                          {/* <button
-                            className="bg-blue-600 text-white px-3 py-1 rounded mb-4"
-                            onClick={() => openEditModal(d)}
-                            disabled={loading}
-                          >
-                            Edit Details
-                          </button> */}
-                          {/* Doctor Services */}
-                          <div className="font-semibold mb-2 mt-4">Services Provided</div>
-                          {doctorSlots[d._id]?.services?.length > 0 ? (
-                            <ul className="mb-4">
-                              {doctorSlots[d._id].services.map((srv, idx) => (
-                                <li key={srv._id || srv.service?._id || idx} className="flex items-center gap-2 mb-1">
-                                  <span>
-                                    {srv.service?.name || "Service"}
-                                    {srv.chargePerAppointment ? ` (₹${srv.chargePerAppointment})` : ""}
-                                  </span>
-                                  <button
-                                    className="text-xs bg-red-500 text-white px-2 py-1 rounded"
-                                    onClick={() => handleRemoveService(d._id, srv.service?._id)}
-                                    disabled={slotLoading}
-                                  >
-                                    Remove
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <div className="text-gray-500 mb-4">No services assigned.</div>
-                          )}
-                          {/* Assign Service Form */}
-                          <form
-                            className="flex flex-wrap gap-2 mb-4 items-end"
-                            onSubmit={e => {
-                              e.preventDefault();
-                              handleAssignService(d._id);
-                            }}
-                          >
-                            <select
-                              className="border px-2 py-1 rounded"
-                              value={assignServiceForm.service}
-                              onChange={e => setAssignServiceForm(f => ({ ...f, service: e.target.value }))}
-                              required
-                            >
-                              <option value="">Select Service</option>
-                              {services
-                                // Only show services not already assigned to doctor
-                                .filter(s =>
-                                  !(doctorSlots[d._id]?.services || []).some(ds => ds.service?._id === s._id)
-                                )
-                                .map(s => (
-                                  <option key={s._id} value={s._id}>{s.name}</option>
-                                ))}
-                            </select>
-                            {/* <input
-                              type="number"
-                              className="border px-2 py-1 rounded w-32"
-                              placeholder="Charge"
-                              value={assignServiceForm.chargePerAppointment}
-                              onChange={e => setAssignServiceForm(f => ({ ...f, chargePerAppointment: e.target.value }))}
-                              required
-                            /> */}
-                            <button
-                              type="submit"
-                              className="bg-blue-600 text-white px-3 py-1 rounded"
-                              disabled={slotLoading}
-                            >
-                              Assign Service
-                            </button>
-                          </form>
-                          {/* Doctor Slot Management */}
-                          <div className="font-semibold mb-2 mt-4">Doctor Availing Slots</div>
-                          {slotLoading ? (
-                            <div>Loading slots...</div>
-                          ) : (
-                            <div>
-                              {doctorSlots[d._id]?.weeklyAvailability?.length > 0 ? (
-                                doctorSlots[d._id].weeklyAvailability.map((dayObj, idx) => (
-                                  <div key={dayObj.day} className="mb-2">
-                                    <div className="font-bold">{dayObj.day}</div>
-                                    <ul>
-                                      {dayObj.slots.map((slot, sidx) => (
-                                        <li key={slot._id || sidx} className="flex items-center gap-2">
-                                          <span>
-                                            {(slot.service?.name) || "Service"}: {slot.start} - {slot.end}
-                                            {slot.chargePerAppointment ? ` (₹${slot.chargePerAppointment})` : ""}
-                                          </span>
-                                          <button
-                                            className="text-xs bg-red-500 text-white px-2 py-1 rounded"
-                                            onClick={() => handleDeleteSlot(d._id, dayObj.day, slot._id)}
-                                            disabled={slotLoading}
-                                          >
-                                            Delete
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                ))
-                              ) : (
-                                <div className="text-gray-500">No slots available.</div>
-                              )}
+                          <div className="flex-1">
+                            <div className="font-semibold mb-2">Personal Details</div>
+                            <div className="flex flex-wrap gap-4 mb-2">
+                              <div><b>Name:</b> {d.name}</div>
+                              <div><b>Specialisation:</b> {d.specialisation || "-"}</div>
+                              <div><b>Email:</b> {d.email}</div>
+                              <div><b>Phone:</b> {d.phoneNu}</div>
+                              <div><b>Gender:</b> {d.gender}</div>
+                              <div><b>Address:</b> {d?.address||"-"}</div>
                             </div>
-                          )}
-                          {/* Add Slot Form */}
-                          <form
-                            className="flex flex-wrap gap-2 mt-4 items-end"
-                            onSubmit={e => {
-                              e.preventDefault();
-                              handleAddSlot(d._id);
-                            }}
-                          >
-                            <select
-                              className="border px-2 py-1 rounded"
-                              value={slotForm.service}
-                              onChange={e => setSlotForm(f => ({ ...f, service: e.target.value }))}
-                              required
-                            >
-                              <option value="">Select Service</option>
-                              {(doctorSlots[d._id]?.services || []).map(srv => (
-                                <option key={srv.service?._id} value={srv.service?._id}>
-                                  {srv.service?.name}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              className="border px-2 py-1 rounded"
-                              value={slotForm.day}
-                              onChange={e => setSlotForm(f => ({ ...f, day: e.target.value }))}
-                              required
-                            >
-                              {daysOfWeek.map(day => (
-                                <option key={day} value={day}>{day}</option>
-                              ))}
-                            </select>
-                            <input
-                              type="time"
-                              className="border px-2 py-1 rounded"
-                              value={slotForm.start}
-                              onChange={e => setSlotForm(f => ({ ...f, start: e.target.value }))}
-                              required
-                            />
-                            <input
-                              type="time"
-                              className="border px-2 py-1 rounded"
-                              value={slotForm.end}
-                              onChange={e => setSlotForm(f => ({ ...f, end: e.target.value }))}
-                              required
-                            />
-                            <button
-                              type="submit"
-                              className="bg-green-600 text-white px-3 py-1 rounded"
-                              disabled={slotLoading}
-                            >
-                              Add Slot
-                            </button>
-                          </form>
+                          </div>
                         </div>
+                        {/* Doctor Services */}
+                        <div className="font-semibold mb-2 mt-4">Services Provided</div>
+                        {doctorSlots[d._id]?.services?.length > 0 ? (
+                          <ul className="mb-4">
+                            {doctorSlots[d._id].services.map((srv, idx) => (
+                              <li key={srv._id || srv.service?._id || idx} className="flex items-center gap-2 mb-1">
+                                <span>
+                                  {srv.service?.name || "Service"}
+                                  {srv.chargePerAppointment ? ` (₹${srv.chargePerAppointment})` : ""}
+                                </span>
+                                <button
+                                  className="text-xs bg-red-500 text-white px-2 py-1 rounded"
+                                  onClick={() => handleRemoveService(d._id, srv.service?._id)}
+                                  disabled={slotLoading}
+                                >
+                                  Remove
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="text-gray-500 mb-4">No services assigned.</div>
+                        )}
+                        {/* Assign Service Form */}
+                        <form
+                          className="flex flex-wrap gap-2 mb-4 items-end"
+                          onSubmit={e => {
+                            e.preventDefault();
+                            handleAssignService(d._id);
+                          }}
+                        >
+                          <select
+                            className="border px-2 py-1 rounded"
+                            value={assignServiceForm.service}
+                            onChange={e => setAssignServiceForm(f => ({ ...f, service: e.target.value }))}
+                            required
+                          >
+                            <option value="">Select Service</option>
+                            {services
+                              // Only show services not already assigned to doctor
+                              .filter(s =>
+                                !(doctorSlots[d._id]?.services || []).some(ds => ds.service?._id === s._id)
+                              )
+                              .map(s => (
+                                <option key={s._id} value={s._id}>{s.name}</option>
+                              ))}
+                          </select>
+                          {/* <input
+                            type="number"
+                            className="border px-2 py-1 rounded w-32"
+                            placeholder="Charge"
+                            value={assignServiceForm.chargePerAppointment}
+                            onChange={e => setAssignServiceForm(f => ({ ...f, chargePerAppointment: e.target.value }))}
+                            required
+                          /> */}
+                          <button
+                            type="submit"
+                            className="bg-blue-600 text-white px-3 py-1 rounded"
+                            disabled={slotLoading}
+                          >
+                            Assign Service
+                          </button>
+                        </form>
+                        {/* Doctor Slot Management */}
+                        <div className="font-semibold mb-2 mt-4">Doctor Availing Slots</div>
+                        {slotLoading ? (
+                          <div>Loading slots...</div>
+                        ) : (
+                          <div>
+                            {doctorSlots[d._id]?.weeklyAvailability?.length > 0 ? (
+                              doctorSlots[d._id].weeklyAvailability.map((dayObj, idx) => (
+                                <div key={dayObj.day} className="mb-2">
+                                  <div className="font-bold">{dayObj.day}</div>
+                                  <ul>
+                                    {dayObj.slots.map((slot, sidx) => (
+                                      <li key={slot._id || sidx} className="flex items-center gap-2">
+                                        <span>
+                                          {(slot.service?.name) || "Service"}: {slot.start} - {slot.end}
+                                          {slot.chargePerAppointment ? ` (₹${slot.chargePerAppointment})` : ""}
+                                        </span>
+                                        <button
+                                          className="text-xs bg-red-500 text-white px-2 py-1 rounded"
+                                          onClick={() => handleDeleteSlot(d._id, dayObj.day, slot._id)}
+                                          disabled={slotLoading}
+                                        >
+                                          Delete
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-gray-500">No slots available.</div>
+                            )}
+                          </div>
+                        )}
+                        {/* Add Slot Form */}
+                        <form
+                          className="flex flex-wrap gap-2 mt-4 items-end"
+                          onSubmit={e => {
+                            e.preventDefault();
+                            handleAddSlot(d._id);
+                          }}
+                        >
+                          <select
+                            className="border px-2 py-1 rounded"
+                            value={slotForm.service}
+                            onChange={e => setSlotForm(f => ({ ...f, service: e.target.value }))}
+                            required
+                          >
+                            <option value="">Select Service</option>
+                            {(doctorSlots[d._id]?.services || []).map(srv => (
+                              <option key={srv.service?._id} value={srv.service?._id}>
+                                {srv.service?.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="border px-2 py-1 rounded"
+                            value={slotForm.day}
+                            onChange={e => setSlotForm(f => ({ ...f, day: e.target.value }))}
+                            required
+                          >
+                            {daysOfWeek.map(day => (
+                              <option key={day} value={day}>{day}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="time"
+                            className="border px-2 py-1 rounded"
+                            value={slotForm.start}
+                            onChange={e => setSlotForm(f => ({ ...f, start: e.target.value }))}
+                            required
+                          />
+                          <input
+                            type="time"
+                            className="border px-2 py-1 rounded"
+                            value={slotForm.end}
+                            onChange={e => setSlotForm(f => ({ ...f, end: e.target.value }))}
+                            required
+                          />
+                          <button
+                            type="submit"
+                            className="bg-green-600 text-white px-3 py-1 rounded"
+                            disabled={slotLoading}
+                          >
+                            Add Slot
+                          </button>
+                        </form>
                       </td>
                     </tr>
                   )}
@@ -768,6 +786,7 @@ const DoctorTab = () => {
                 status: "active",
                 gender: "",
                 address: "",
+                specialisation: "",
               })}
             >
               &times;
@@ -780,6 +799,15 @@ const DoctorTab = () => {
                 placeholder="Doctor name"
                 value={editModal.name}
                 onChange={e => setEditModal(f => ({ ...f, name: e.target.value }))}
+                disabled={loading}
+                required
+              />
+              <input
+                type="text"
+                className="border px-3 py-2 rounded w-full"
+                placeholder="Specialisation"
+                value={editModal.specialisation}
+                onChange={e => setEditModal(f => ({ ...f, specialisation: e.target.value }))}
                 disabled={loading}
                 required
               />
@@ -868,6 +896,7 @@ const DoctorTab = () => {
                     status: "active",
                     gender: "",
                     address: "",
+                    specialisation: "",
                   })}
                   disabled={loading}
                 >

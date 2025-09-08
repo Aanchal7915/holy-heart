@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import OurDoctor from './pages/OurDoctor';
 import Test from './pages/Test';
 import ScrollToTop from "./components/ScrollToTop";
+import OPDBookingApp from "./pages/Opds"; // Adjust path if needed
 // import AdminDashBoard from "./pages/AdminDashBoard";
 // import Login from "./pages/Login";
 // import Register from "./pages/Register";
@@ -92,6 +93,7 @@ function App() {
             <Route path="/our-doctors" element={<OurDoctor/>}/>
             <Route path="/book-appointment" element={<BookAppointment/>}/>
             <Route path="/test" element={<Test/>}/>
+            <Route path="/opds" element={<OPDBookingApp />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

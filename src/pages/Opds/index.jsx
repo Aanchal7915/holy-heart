@@ -163,6 +163,7 @@ export default function OPDBookingApp() {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
+      <div className='h-[100px]'></div>
       <h1 className="text-2xl font-semibold mb-4">OPD Appointment Booking</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

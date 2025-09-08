@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { IoMdRefresh } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import "react-toastify/dist/ReactToastify.css";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
@@ -54,6 +55,7 @@ const DeleteServiceModal = ({ open, onClose, onConfirm, service }) => {
 const ServiceTab = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [expandedService, setExpandedService] = useState(null); // For toggling details
 
   // Add form state (add type, price, duration)
   const [addForm, setAddForm] = useState({
@@ -235,6 +237,16 @@ const ServiceTab = () => {
     setLoading(false);
   };
 
+  // Helper to format duration in minutes
+  function formatDuration(duration) {
+    const min = parseInt(duration, 10);
+    if (isNaN(min)) return duration;
+    if (min < 60) return `${min} min`;
+    const hr = Math.floor(min / 60);
+    const rem = min % 60;
+    return rem === 0 ? `${hr} hr` : `${hr} hr ${rem} min`;
+  }
+
   return (
     <div className="max-w-8xl mx-auto text-xs sm:text-sm md:text-base">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -250,8 +262,11 @@ const ServiceTab = () => {
         </button>
       </div>
       {/* Add Service Form */}
-      <form onSubmit={handleAdd} className="flex flex-col gap-2 mb-6 bg-white p-4 rounded shadow">
-        <div className="flex flex-col md:flex-row gap-2">
+      <form
+        onSubmit={handleAdd}
+        className="flex flex-col gap-2 mb-6 bg-white p-4 rounded shadow"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
           <input
             type="text"
             className="border px-3 py-2 rounded w-full"
@@ -259,28 +274,28 @@ const ServiceTab = () => {
             value={addForm.name}
             onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
             disabled={loading}
+            required
           />
           <input
             type="file"
             accept="image/*"
-            className="border px-3 py-2 rounded w-full md:w-auto"
+            className="border px-3 py-2 rounded w-full"
             onChange={e => setAddForm(f => ({ ...f, image: e.target.files[0] }))}
             disabled={loading}
           />
-          {/* Type dropdown */}
           <select
-            className="border px-3 py-2 rounded w-full md:w-auto"
+            className="border px-3 py-2 rounded w-full"
             value={addForm.type}
             onChange={e => setAddForm(f => ({ ...f, type: e.target.value, price: e.target.value === "test" ? f.price : "" }))}
             disabled={loading}
           >
             <option value="treatment">Treatment</option>
             <option value="test">Test</option>
+            <option value="opds">Opds</option>
           </select>
-          {/* Price field, only active if type is test */}
           <input
             type="number"
-            className="border px-3 py-2 rounded w-full md:w-auto"
+            className="border px-3 py-2 rounded w-full"
             placeholder="Price"
             value={addForm.price}
             onChange={e => setAddForm(f => ({ ...f, price: e.target.value }))}
@@ -288,10 +303,9 @@ const ServiceTab = () => {
             min={0}
             required
           />
-          {/* Duration field */}
           <input
             type="text"
-            className="border px-3 py-2 rounded w-full md:w-auto"
+            className="border px-3 py-2 rounded w-full"
             placeholder="Duration (e.g. 30 min)"
             value={addForm.duration}
             onChange={e => setAddForm(f => ({ ...f, duration: e.target.value }))}
@@ -321,9 +335,9 @@ const ServiceTab = () => {
         <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
           <thead>
             <tr className="bg-gray-200">
+              <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Image</th>
               <th className="py-2 px-4">Name</th>
-              <th className="py-2 px-4">Description</th>
               <th className="py-2 px-4">Type</th>
               <th className="py-2 px-4">Price</th>
               <th className="py-2 px-4">Duration</th>
@@ -340,37 +354,66 @@ const ServiceTab = () => {
               </tr>
             ) : (
               services.map((s) => (
-                <tr key={s._id}>
-                  <td className="py-2 px-4">
-                    {s.image ? (
-                      <img src={s.image} alt={s.name} className="w-12 h-12 object-cover rounded" />
-                    ) : (
-                      <span className="text-gray-400">No Image</span>
-                    )}
-                  </td>
-                  <td className="py-2 px-4">{s.name}</td>
-                  <td className="py-2 px-4">{s.description}</td>
-                  <td className="py-2 px-4 capitalize">{s.type || "treatment"}</td>
-                  <td className="py-2 px-4">{s.type === "test" && s.price ? `₹${s.price}` : "-"}</td>
-                  <td className="py-2 px-4">{s.duration || "-"}</td>
-                  <td className="py-2 px-4">{s.status || "N/A"}</td>
-                  <td className="py-2 px-4 flex gap-2">
-                    <button
-                      className="bg-blue-600 text-white px-2 py-1 rounded"
-                      onClick={() => openEditModal(s)}
-                      disabled={loading}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="bg-red-600 text-white px-2 py-1 rounded"
-                      onClick={() => openDeleteModal(s)}
-                      disabled={loading}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                <React.Fragment key={s._id}>
+                  <tr>
+                    <td className="py-2 px-4">
+                      <button
+                        onClick={() => setExpandedService(expandedService === s._id ? null : s._id)}
+                        className="text-blue-900"
+                        title={expandedService === s._id ? "Hide Details" : "Show Details"}
+                      >
+                        {expandedService === s._id ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                      </button>
+                    </td>
+                    <td className="py-2 px-4">
+                      {s.image ? (
+                        <img src={s.image} alt={s.name} className="w-12 h-12 object-cover rounded" />
+                      ) : (
+                        <span className="text-gray-400">No Image</span>
+                      )}
+                    </td>
+                    <td className="py-2 px-4">{s.name}</td>
+                    <td className="py-2 px-4 capitalize">{s.type || "treatment"}</td>
+                    <td className="py-2 px-4">{s.type === "test" && s.price ? `₹${s.price}` : "-"}</td>
+                    <td className="py-2 px-4">{formatDuration(s.duration) || "-"}</td>
+                    <td className="py-2 px-4">{s.status || "N/A"}</td>
+                    <td className="py-2 px-4 flex gap-2">
+                      <button
+                        className="bg-blue-600 text-white px-2 py-1 rounded"
+                        onClick={() => openEditModal(s)}
+                        disabled={loading}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-red-600 text-white px-2 py-1 rounded"
+                        onClick={() => openDeleteModal(s)}
+                        disabled={loading}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedService === s._id && (
+                    <tr>
+                      <td colSpan={8} className="bg-gray-50 border-t">
+                        <div className="p-4">
+                          <div className="font-semibold mb-2">Service Details</div>
+                          <div className="mb-2">
+                            <b>Description:</b>
+                            <div className="mt-1 text-gray-700 whitespace-pre-line break-words">
+                              {s.description}
+                            </div>
+                          </div>
+                          <div className="mb-2">
+                            <b>Duration:</b> {formatDuration(s.duration) || "-"}
+                          </div>
+                          {/* You can add more details here if needed */}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             )}
           </tbody>
@@ -427,6 +470,7 @@ const ServiceTab = () => {
               >
                 <option value="treatment">Treatment</option>
                 <option value="test">Test</option>
+                <option value="opds">Opds</option>
               </select>
               {/* Price field, only active if type is test */}
               <input
