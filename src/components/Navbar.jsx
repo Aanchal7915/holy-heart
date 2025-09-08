@@ -42,6 +42,7 @@ const Navbar = () => {
           <li><Link to="/" className="hover:text-red-600">Home</Link></li>
           <li><Link to="/about" className="hover:text-red-600">About Us</Link></li>
           <li><Link to="/services" className="hover:text-red-600">Services</Link></li>
+          <li><Link to="/book-appointment" className="hover:text-red-600">OPD</Link></li>
           <li><Link to="/diagnostic-tests" className="hover:text-red-600">Diagnostic Tests</Link></li>
           <li><Link to="/our-doctors" className="hover:text-red-600">Our Doctors</Link></li>
           <li><Link to="/contact" className="hover:text-red-600">Contact</Link></li>
@@ -93,6 +94,7 @@ const Navbar = () => {
             <li><Link to="/" onClick={() => setIsOpen(false)}>Home</Link></li>
             <li><Link to="/about" onClick={() => setIsOpen(false)}>About Us</Link></li>
             <li><Link to="/services" onClick={() => setIsOpen(false)}>Services</Link></li>
+            <li><Link to="/book-appointment" onClick={() => setIsOpen(false)}>OPD</Link></li>
             <li><Link to="/diagnostic-tests" onClick={() => setIsOpen(false)}>Diagnostic Tests</Link></li>
             <li><Link to="/our-doctors" onClick={() => setIsOpen(false)}>Our Doctors</Link></li>
             <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
