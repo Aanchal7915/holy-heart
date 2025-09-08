@@ -385,8 +385,8 @@ const DoctorTab = () => {
 
   // Assign a service to doctor (no duplicate fetch)
   const handleAssignService = async (doctorId) => {
-    if (!assignServiceForm.service || !assignServiceForm.chargePerAppointment) {
-      toast.error("Select service and enter charge");
+    if (!assignServiceForm.service) {
+      toast.error("Select service!");
       return;
     }
     setSlotLoading(true);
@@ -399,8 +399,7 @@ const DoctorTab = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          service: assignServiceForm.service,
-          chargePerAppointment: assignServiceForm.chargePerAppointment,
+          service: assignServiceForm.service
         })
       });
       if (!res.ok) throw new Error("Failed to assign service");
@@ -639,14 +638,14 @@ const DoctorTab = () => {
                                   <option key={s._id} value={s._id}>{s.name}</option>
                                 ))}
                             </select>
-                            <input
+                            {/* <input
                               type="number"
                               className="border px-2 py-1 rounded w-32"
                               placeholder="Charge"
                               value={assignServiceForm.chargePerAppointment}
                               onChange={e => setAssignServiceForm(f => ({ ...f, chargePerAppointment: e.target.value }))}
                               required
-                            />
+                            /> */}
                             <button
                               type="submit"
                               className="bg-blue-600 text-white px-3 py-1 rounded"

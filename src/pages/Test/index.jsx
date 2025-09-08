@@ -22,8 +22,8 @@ function Test() {
 
   return (
     <section className="min-h-screen bg-gray-50 py-10 px-4">
-        <div className="h-[50px]"></div>
-      <div className="max-w-3xl mx-auto">
+      <div className="h-[50px]"></div>
+      <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-blue-900 mb-4 text-center">Tests Provided</h2>
         <div className="bg-blue-900 h-[4px] w-[80px] mx-auto mb-8"></div>
         {loading ? (
@@ -31,20 +31,52 @@ function Test() {
         ) : tests.length === 0 ? (
           <div className="text-center py-12 text-gray-500">No tests available.</div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-8 md:grid-cols-2">
             {tests.map(test => (
-              <div key={test._id} className="bg-white rounded-xl shadow p-6 flex flex-col gap-2">
-                <h3 className="text-xl font-bold text-blue-900">{test.name}</h3>
-                <div className="text-gray-700">{test.description}</div>
-                {test.price && (
-                  <div className="text-blue-700 font-semibold">Price: ₹{test.price}</div>
-                )}
-                {test.duration && (
-                  <div className="text-gray-600 text-sm">Duration: {test.duration}</div>
-                )}
-                {test.image && (
-                  <img src={test.image} alt={test.name} className="w-24 h-24 object-cover rounded mt-2" />
-                )}
+              <div
+                key={test._id}
+                className="bg-white rounded-2xl shadow-lg p-0 flex flex-col overflow-hidden border border-blue-100 hover:shadow-xl transition-shadow duration-300"
+              >
+                {/* Image at top with overlay */}
+                <div className="relative">
+                  {test.image ? (
+                    <img
+                      src={test.image}
+                      alt={test.name}
+                      className="w-full h-40 object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-40 bg-blue-50 flex items-center justify-center text-blue-300 text-5xl">
+                      <span>No Image</span>
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900/70 to-transparent px-4 py-2">
+                    <h3 className="text-xl font-bold text-white drop-shadow">{test.name}</h3>
+                  </div>
+                </div>
+                {/* Card Content */}
+                <div className="p-5 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    {test.price && (
+                      <span className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded-full text-sm">
+                        ₹{test.price}
+                      </span>
+                    )}
+                    {test.duration && (
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                        {test.duration}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-gray-700 text-base leading-relaxed">
+                    {test.description}
+                  </div>
+                  <div className="flex justify-end mt-2">
+                    <button className="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-semibold shadow transition">
+                      Book Now
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -54,4 +86,4 @@ function Test() {
   );
 }
 
-export default Test
+export default Test;
