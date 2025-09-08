@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
+
+function formatDuration(duration) {
+  // Try to parse as integer minutes
+  const min = parseInt(duration, 10);
+  if (!isNaN(min)) {
+    if (min < 60) return `${min} min`;
+    const hr = Math.floor(min / 60);
+    const rem = min % 60;
+    return rem === 0 ? `${hr} hr` : `${hr} hr ${rem} min`;
+  }
+  // Fallback to raw string
+  return duration;
+}
 
 function Test() {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Add this
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -19,6 +34,11 @@ function Test() {
     };
     fetchTests();
   }, []);
+
+  const handleBookNow = (testId) => {
+    // You can pass testId as state if needed
+    navigate("/book-appointment", { state: { serviceId: testId, type: "test" } });
+  };
 
   return (
     <section className="min-h-screen bg-gray-50 py-10 px-4">
@@ -64,7 +84,7 @@ function Test() {
                     )}
                     {test.duration && (
                       <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                        {test.duration}
+                        {formatDuration(test.duration)}
                       </span>
                     )}
                   </div>
@@ -72,7 +92,10 @@ function Test() {
                     {test.description}
                   </div>
                   <div className="flex justify-end mt-2">
-                    <button className="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-semibold shadow transition">
+                    <button
+                      className="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-semibold shadow transition"
+                      onClick={() => handleBookNow(test._id)}
+                    >
                       Book Now
                     </button>
                   </div>
