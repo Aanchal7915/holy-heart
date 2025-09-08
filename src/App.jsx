@@ -28,6 +28,7 @@ const AdminDashBoard = lazy(() => import("./pages/AdminDashBoard"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const DiagnosticTests = lazy(() => import("./pages/DiagnosticTests"));
 
 // Helper to get token and role from localStorage
 const getAuth = () => {
@@ -92,6 +93,7 @@ function App() {
             <Route path="/our-doctors" element={<OurDoctor/>}/>
             <Route path="/book-appointment" element={<BookAppointment/>}/>
             <Route path="/test" element={<Test/>}/>
+            <Route path="/diagnostic-tests" element={<DiagnosticTests/>}/>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
