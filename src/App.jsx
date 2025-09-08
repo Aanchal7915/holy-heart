@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import ChatBot from "./pages/UserDashBoard/ChatBot/ChatBot";
 import Contact from "./pages/Contact";
 import OurDoctor from './pages/OurDoctor';
+import Test from './pages/Test';
 import ScrollToTop from "./components/ScrollToTop";
 // import AdminDashBoard from "./pages/AdminDashBoard";
 // import Login from "./pages/Login";
@@ -90,6 +91,7 @@ function App() {
             <Route path="/services" element={<Service />} />
             <Route path="/our-doctors" element={<OurDoctor/>}/>
             <Route path="/book-appointment" element={<BookAppointment/>}/>
+            <Route path="/test" element={<Test/>}/>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
