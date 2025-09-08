@@ -102,13 +102,13 @@ const ServiceTab = () => {
     fetchServices();
   }, []);
 
-  // Add service (add type, price, duration)
+  // Add service (make price required for both types)
   const handleAdd = async (e) => {
     e.preventDefault();
     if (!addForm.name.trim() || !addForm.description.trim())
       return toast.error("Name and description required");
-    if (addForm.type === "test" && !addForm.price)
-      return toast.error("Price is required for test type");
+    if (!addForm.price)
+      return toast.error("Price is required for all service types");
     if (!addForm.duration.trim())
       return toast.error("Duration is required");
     setLoading(true);
@@ -119,8 +119,7 @@ const ServiceTab = () => {
       formData.append("description", addForm.description);
       formData.append("type", addForm.type);
       formData.append("duration", addForm.duration);
-      if (addForm.type === "test" && addForm.price)
-        formData.append("price", addForm.price);
+      formData.append("price", addForm.price); // Always append price
       if (addForm.image) formData.append("image", addForm.image);
 
       const res = await fetch(`${backendUrl}/services`, {
@@ -280,12 +279,13 @@ const ServiceTab = () => {
           {/* Price field, only active if type is test */}
           <input
             type="number"
-            className={`border px-3 py-2 rounded w-full md:w-auto ${addForm.type === "test" ? "" : "bg-gray-100 text-gray-400"}`}
-            placeholder="Price (for test)"
+            className="border px-3 py-2 rounded w-full md:w-auto"
+            placeholder="Price"
             value={addForm.price}
             onChange={e => setAddForm(f => ({ ...f, price: e.target.value }))}
-            disabled={loading || addForm.type !== "test"}
+            disabled={loading}
             min={0}
+            required
           />
           {/* Duration field */}
           <input
