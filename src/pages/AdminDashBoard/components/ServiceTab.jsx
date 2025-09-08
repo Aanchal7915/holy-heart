@@ -193,9 +193,10 @@ const ServiceTab = () => {
       return toast.error("Name and description required");
     if (editModal.type === "test" && !editModal.price)
       return toast.error("Price is required for test type");
-    if (!editModal.duration.trim())
+    if (!editModal.duration)
       return toast.error("Duration is required");
     setLoading(true);
+    console.log(editModal)
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
