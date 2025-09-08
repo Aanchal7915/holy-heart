@@ -5,7 +5,6 @@ import ChatBot from "./ChatBot/ChatBot";
 import { IoMdRefresh } from "react-icons/io";
 import { FiTrash2 } from "react-icons/fi";
 import { MdPictureAsPdf } from "react-icons/md";
-import OPDBookingApp from "./components/opds";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
 
@@ -546,12 +545,6 @@ const UserDashBoard = () => {
           Tests
         </button>
         <button
-          className={`text-sm md:text-base px-4 py-2 rounded font-semibold transition-all ${activeTab === "opd" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
-          onClick={() => setActiveTab("opd")}
-        >
-          OPD
-        </button>
-        <button
           className={`text-sm md:text-base px-4 py-2 rounded font-semibold transition-all ${activeTab === "profile" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => setActiveTab("profile")}
         >
@@ -595,7 +588,6 @@ const UserDashBoard = () => {
             fetchUserTests={fetchUserTests}
           />
         )}
-        {activeTab === "opd" && <OPDBookingApp />}
         {activeTab === "profile" && <ProfileTab />}
       </div>
       {/* Floating ChatBot */}
