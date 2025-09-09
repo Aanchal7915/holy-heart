@@ -166,8 +166,8 @@ export default function OPDBookingApp() {
     setActionLoading(true);
     try {
       // Parse start/end to HH:mm (24h) from ISO
-      const startTime = new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-      const endTime = new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      const startTime = new Date(slot.start).toLocaleString("en-GB").split[1].slice(0,5)
+      const endTime = new Date(slot.end).toLocaleString("en-GB").split[1].slice(0,5)
 
       const res = await fetch(`${backendUrl}/opds/book-opd`, {
         method: "POST",
@@ -425,7 +425,7 @@ export default function OPDBookingApp() {
                     {slots.map((s, idx) => (
                       <div key={idx} className={`p-3 rounded-lg border ${s.status === 'free' ? 'cursor-pointer hover:bg-green-50 border-green-100' : 'bg-red-50 border-red-100 opacity-80'}`}>
                         <div className="flex items-center justify-between">
-                          <div className="font-medium">{formatTime(s.start)} - {formatTime(s.end)}</div>
+                          <div className="font-medium">{new Date(s.start).toLocaleString("en-GB").split(" ")[1].slice(0,5)} - {new Date(s.end).toLocaleString("en-GB").split(" ")[1].slice(0,5)}</div>
                           <div className="text-xs text-gray-600">{s.status === 'free' ? 'Available' : 'Booked'}</div>
                         </div>
                         <div className="mt-2 flex gap-2">
