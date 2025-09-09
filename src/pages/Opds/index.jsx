@@ -22,6 +22,40 @@ function formatTime(iso) {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function CancelModal({ open, onClose, onConfirm }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm mx-2 relative">
+        <button
+          className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl"
+          onClick={onClose}
+        >
+          &times;
+        </button>
+        <h3 className="text-lg font-bold mb-4 text-center">Cancel Appointment</h3>
+        <div className="mb-4 text-sm text-gray-700 text-center">
+          Are you sure you want to cancel this OPDS appointment?
+        </div>
+        <div className="flex gap-2 justify-center">
+          <button
+            className="bg-red-600 text-white px-4 py-2 rounded"
+            onClick={onConfirm}
+          >
+            Yes, Cancel
+          </button>
+          <button
+            className="bg-gray-400 text-white px-4 py-2 rounded"
+            onClick={onClose}
+          >
+            No, Keep
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function OPDBookingApp() {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
@@ -36,6 +70,7 @@ export default function OPDBookingApp() {
   const [bookingModal, setBookingModal] = useState({ open: false, slot: null });
   const [patientInfo, setPatientInfo] = useState({ name: '', phone: '', email: '' });
   const [userAppointments, setUserAppointments] = useState([]);
+  const [cancelModal, setCancelModal] = useState({ open: false, appointmentId: null });
 
   // Check if user is logged in
   const token = localStorage.getItem("token");
@@ -167,16 +202,16 @@ export default function OPDBookingApp() {
   }
 
   // Updated cancel API for OPDS appointment
-  async function cancelAppointment(appointmentId) {
-    if (!window.confirm('Cancel this appointment?')) return;
+  async function handleCancelConfirm() {
     setActionLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await fetch(`${backendUrl}/user/cancel-opds/${appointmentId}`, {
+      await fetch(`${backendUrl}/user/cancel-opds/${cancelModal.appointmentId}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserAppointments(prev => prev.filter(a => a._id !== appointmentId));
+      setUserAppointments(prev => prev.filter(a => a._id !== cancelModal.appointmentId));
+      setCancelModal({ open: false, appointmentId: null });
       // Optionally refetch schedule if needed
       fetch(`${backendUrl}/opds/${selectedDoctorId}/schedule-opd`)
         .then(res => res.json())
@@ -184,6 +219,7 @@ export default function OPDBookingApp() {
     } catch {
       setError("Failed to cancel appointment.");
       toast.error("Failed to cancel appointment.", { style: { fontSize: "0.85rem" } });
+      setCancelModal({ open: false, appointmentId: null });
     }
     setActionLoading(false);
   }
@@ -445,19 +481,8 @@ export default function OPDBookingApp() {
                   <div className="text-sm text-gray-500">Status: {a.status}</div>
                 </div>
                 <div className="flex gap-2">
-                  {/* <button
-                    onClick={() => {
-                      const nd = prompt('New date (YYYY-MM-DD)');
-                      const ns = prompt('New start time (HH:mm)');
-                      const ne = prompt('New end time (HH:mm)');
-                      if (nd && ns && ne) rescheduleAppointment(a._id, nd, ns, ne);
-                    }}
-                    className="px-3 py-1 rounded border text-sm"
-                  >
-                    Reschedule
-                  </button> */}
                   <button
-                    onClick={() => cancelAppointment(a._id)}
+                    onClick={() => setCancelModal({ open: true, appointmentId: a._id })}
                     className="px-3 py-1 rounded bg-red-600 text-white text-sm"
                   >
                     Cancel
@@ -468,7 +493,6 @@ export default function OPDBookingApp() {
           </div>
         )}
       </div>
-
       {/* Booking Modal */}
       {bookingModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -488,6 +512,12 @@ export default function OPDBookingApp() {
           </div>
         </div>
       )}
+      {/* Cancel Modal */}
+      <CancelModal
+        open={cancelModal.open}
+        onClose={() => setCancelModal({ open: false, appointmentId: null })}
+        onConfirm={handleCancelConfirm}
+      />
     </div>
   );
 }
