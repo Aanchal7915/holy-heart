@@ -7,8 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
 
 // Delete confirmation modal
-const DeleteServiceModal = ({ open, onClose, onConfirm, service }) => {
-  if (!open || !service) return null;
+const DeleteTestModal = ({ open, onClose, onConfirm, test }) => {
+  if (!open || !test) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 bg-opacity-40">
       <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-2 relative">
@@ -18,18 +18,18 @@ const DeleteServiceModal = ({ open, onClose, onConfirm, service }) => {
         >
           &times;
         </button>
-        <h3 className="text-lg font-bold mb-4 text-center">Delete Service</h3>
+        <h3 className="text-lg font-bold mb-4 text-center">Delete Test</h3>
         <div className="mb-4 text-sm text-gray-700">
           <div className="mb-2">
-            <b>Service:</b> {service.name}
+            <b>Test:</b> {test.name}
           </div>
           <div className="mb-2">
-            <b>Status:</b> {service.status || "N/A"}
+            <b>Status:</b> {test.status || "N/A"}
           </div>
           <div className="mb-2 text-red-600 font-semibold">
-            Are you sure you want to delete this service? <br />
+            Are you sure you want to delete this test? <br />
             <span className="font-normal text-gray-700">
-              <b>All schedules related to this service will be cancelled.</b>
+              <b>All schedules related to this test will be cancelled.</b>
             </span>
           </div>
         </div>
@@ -52,12 +52,12 @@ const DeleteServiceModal = ({ open, onClose, onConfirm, service }) => {
   );
 };
 
-const ServiceTab = () => {
-  const [services, setServices] = useState([]);
+const TestTab = () => {
+  const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [expandedService, setExpandedService] = useState(null); // For toggling details
+  const [expandedTest, setExpandedTest] = useState(null);
 
-  // Add form state (add type, price, duration)
+  // Add form state
   const [addForm, setAddForm] = useState({
     name: "",
     description: "",
@@ -66,7 +66,7 @@ const ServiceTab = () => {
     duration: "",
   });
 
-  // Edit modal state (add type, price, duration)
+  // Edit modal state
   const [editModal, setEditModal] = useState({
     open: false,
     id: null,
@@ -80,44 +80,44 @@ const ServiceTab = () => {
   });
 
   // Delete modal state
-  const [deleteModal, setDeleteModal] = useState({ open: false, service: null });
+  const [deleteModal, setDeleteModal] = useState({ open: false, test: null });
 
-  // Fetch services
-  const fetchServices = async () => {
+  // Fetch tests (type=test)
+  const fetchTests = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${backendUrl}/services?type=treatment`, {
+      const res = await fetch(`${backendUrl}/services?type=test`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      setServices(data.services || []);
+      setTests(data.services || []);
     } catch (err) {
-      toast.error("Failed to fetch services");
+      toast.error("Failed to fetch tests", { style: { fontSize: "0.85rem" } });
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchServices();
+    fetchTests();
   }, []);
 
-  // Add service (always send type: "treatment")
+  // Add test
   const handleAdd = async (e) => {
     e.preventDefault();
     if (!addForm.name.trim() || !addForm.description.trim())
-      return toast.error("Name and description required");
+      return toast.error("Name and description required", { style: { fontSize: "0.85rem" } });
     if (!addForm.price)
-      return toast.error("Price is required for all service types");
+      return toast.error("Price is required", { style: { fontSize: "0.85rem" } });
     if (!addForm.duration.trim())
-      return toast.error("Duration is required");
+      return toast.error("Duration is required", { style: { fontSize: "0.85rem" } });
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("name", addForm.name);
       formData.append("description", addForm.description);
-      formData.append("type", "treatment"); // Always send "treatment"
+      formData.append("type", "test");
       formData.append("duration", addForm.duration);
       formData.append("price", addForm.price);
       if (addForm.image) formData.append("image", addForm.image);
@@ -127,7 +127,7 @@ const ServiceTab = () => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      if (!res.ok) throw new Error("Failed to add service");
+      if (!res.ok) throw new Error("Failed to add test");
       setAddForm({
         name: "",
         description: "",
@@ -135,22 +135,22 @@ const ServiceTab = () => {
         price: "",
         duration: "",
       });
-      toast.success("Service added!");
-      fetchServices();
+      toast.success("Test added!", { style: { fontSize: "0.85rem" } });
+      fetchTests();
     } catch (err) {
-      toast.error(err.message || "Failed to add service");
+      toast.error(err.message || "Failed to add test", { style: { fontSize: "0.85rem" } });
     }
     setLoading(false);
   };
 
   // Open delete modal
-  const openDeleteModal = (service) => {
-    setDeleteModal({ open: true, service });
+  const openDeleteModal = (test) => {
+    setDeleteModal({ open: true, test });
   };
 
   // Confirm delete
   const confirmDelete = async () => {
-    const id = deleteModal.service?._id;
+    const id = deleteModal.test?._id;
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -158,41 +158,41 @@ const ServiceTab = () => {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Failed to delete service");
-      toast.success("Service deleted!");
-      setDeleteModal({ open: false, service: null });
-      fetchServices();
+      if (!res.ok) throw new Error("Failed to delete test");
+      toast.success("Test deleted!", { style: { fontSize: "0.85rem" } });
+      setDeleteModal({ open: false, test: null });
+      fetchTests();
     } catch (err) {
-      toast.error(err.message || "Failed to delete service");
-      setDeleteModal({ open: false, service: null });
+      toast.error(err.message || "Failed to delete test", { style: { fontSize: "0.85rem" } });
+      setDeleteModal({ open: false, test: null });
     }
     setLoading(false);
   };
 
-  // Open edit modal (remove type field)
-  const openEditModal = (service) => {
+  // Open edit modal
+  const openEditModal = (test) => {
     setEditModal({
       open: true,
-      id: service._id,
-      name: service.name,
-      description: service.description,
+      id: test._id,
+      name: test.name,
+      description: test.description,
       image: null,
-      preview: service.imageUrl || service.image || "",
-      status: service.status || "active",
-      price: service.price || "",
-      duration: service.duration || "",
+      preview: test.imageUrl || test.image || "",
+      status: test.status || "active",
+      price: test.price || "",
+      duration: test.duration || "",
     });
   };
 
-  // Edit service (always send type: "treatment")
+  // Edit test
   const handleEditSave = async (e) => {
     e.preventDefault();
     if (!editModal.name.trim() || !editModal.description.trim())
-      return toast.error("Name and description required");
+      return toast.error("Name and description required", { style: { fontSize: "0.85rem" } });
     if (!editModal.price)
-      return toast.error("Price is required");
+      return toast.error("Price is required", { style: { fontSize: "0.85rem" } });
     if (!editModal.duration)
-      return toast.error("Duration is required");
+      return toast.error("Duration is required", { style: { fontSize: "0.85rem" } });
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -200,7 +200,7 @@ const ServiceTab = () => {
       formData.append("name", editModal.name);
       formData.append("description", editModal.description);
       formData.append("status", editModal.status);
-      formData.append("type", "treatment"); // Always send "treatment"
+      formData.append("type", "test");
       formData.append("duration", editModal.duration);
       formData.append("price", editModal.price);
       if (editModal.image) formData.append("image", editModal.image);
@@ -210,7 +210,7 @@ const ServiceTab = () => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      if (!res.ok) throw new Error("Failed to update service");
+      if (!res.ok) throw new Error("Failed to update test");
       setEditModal({
         open: false,
         id: null,
@@ -222,10 +222,10 @@ const ServiceTab = () => {
         price: "",
         duration: "",
       });
-      toast.success("Service updated!");
-      fetchServices();
+      toast.success("Test updated!", { style: { fontSize: "0.85rem" } });
+      fetchTests();
     } catch (err) {
-      toast.error(err.message || "Failed to update service");
+      toast.error(err.message || "Failed to update test", { style: { fontSize: "0.85rem" } });
     }
     setLoading(false);
   };
@@ -244,17 +244,17 @@ const ServiceTab = () => {
     <div className="max-w-8xl mx-auto text-xs sm:text-sm md:text-base">
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg sm:text-xl md:text-2xl font-bold">Manage Services</h3>
+        <h3 className="text-lg sm:text-xl md:text-2xl font-bold">Manage Tests</h3>
         <button
           className="bg-gray-200 hover:bg-gray-300 rounded-full p-2"
-          onClick={fetchServices}
+          onClick={fetchTests}
           title="Refresh"
           disabled={loading}
         >
           <IoMdRefresh className="text-xl text-blue-900" />
         </button>
       </div>
-      {/* Add Service Form */}
+      {/* Add Test Form */}
       <form
         onSubmit={handleAdd}
         className="flex flex-col gap-2 mb-6 bg-white p-4 rounded shadow"
@@ -263,7 +263,7 @@ const ServiceTab = () => {
           <input
             type="text"
             className="border px-3 py-2 rounded w-full"
-            placeholder="Service name"
+            placeholder="Test name"
             value={addForm.name}
             onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
             disabled={loading}
@@ -298,7 +298,7 @@ const ServiceTab = () => {
         </div>
         <textarea
           className="border px-3 py-2 rounded w-full"
-          placeholder="Service description"
+          placeholder="Test description"
           value={addForm.description}
           onChange={e => setAddForm(f => ({ ...f, description: e.target.value }))}
           disabled={loading}
@@ -309,11 +309,11 @@ const ServiceTab = () => {
           className="bg-blue-900 text-white px-4 py-2 rounded w-full md:w-auto"
           disabled={loading}
         >
-          Add Service
+          Add Test
         </button>
       </form>
       {loading && <div className="mb-4">Loading...</div>}
-      {/* Service List */}
+      {/* Test List */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
           <thead>
@@ -321,7 +321,6 @@ const ServiceTab = () => {
               <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Image</th>
               <th className="py-2 px-4">Name</th>
-              {/* <th className="py-2 px-4">Type</th> */} {/* Removed type column */}
               <th className="py-2 px-4">Price</th>
               <th className="py-2 px-4">Duration</th>
               <th className="py-2 px-4">Status</th>
@@ -329,69 +328,67 @@ const ServiceTab = () => {
             </tr>
           </thead>
           <tbody>
-            {services.length === 0 ? (
+            {tests.length === 0 ? (
               <tr>
                 <td colSpan={7} className="text-center py-4 text-gray-500">
-                  No services found.
+                  No tests found.
                 </td>
               </tr>
             ) : (
-              services.map((s) => (
-                <React.Fragment key={s._id}>
+              tests.map((t) => (
+                <React.Fragment key={t._id}>
                   <tr>
                     <td className="py-2 px-4">
                       <button
-                        onClick={() => setExpandedService(expandedService === s._id ? null : s._id)}
+                        onClick={() => setExpandedTest(expandedTest === t._id ? null : t._id)}
                         className="text-blue-900"
-                        title={expandedService === s._id ? "Hide Details" : "Show Details"}
+                        title={expandedTest === t._id ? "Hide Details" : "Show Details"}
                       >
-                        {expandedService === s._id ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                        {expandedTest === t._id ? <IoIosArrowUp /> : <IoIosArrowDown />}
                       </button>
                     </td>
                     <td className="py-2 px-4">
-                      {s.image ? (
-                        <img src={s.image} alt={s.name} className="w-12 h-12 object-cover rounded" />
+                      {t.image ? (
+                        <img src={t.image} alt={t.name} className="w-12 h-12 object-cover rounded" />
                       ) : (
                         <span className="text-gray-400">No Image</span>
                       )}
                     </td>
-                    <td className="py-2 px-4">{s.name}</td>
-                    {/* <td className="py-2 px-4 capitalize">{s.type || "treatment"}</td> */} {/* Removed type column */}
-                    <td className="py-2 px-4">{s.price ? `₹${s.price}` : "-"}</td>
-                    <td className="py-2 px-4">{formatDuration(s.duration) || "-"}</td>
-                    <td className="py-2 px-4">{s.status || "N/A"}</td>
+                    <td className="py-2 px-4">{t.name}</td>
+                    <td className="py-2 px-4">{t.price ? `₹${t.price}` : "-"}</td>
+                    <td className="py-2 px-4">{formatDuration(t.duration) || "-"}</td>
+                    <td className="py-2 px-4">{t.status || "N/A"}</td>
                     <td className="py-2 px-4 flex gap-2">
                       <button
                         className="bg-blue-600 text-white px-2 py-1 rounded"
-                        onClick={() => openEditModal(s)}
+                        onClick={() => openEditModal(t)}
                         disabled={loading}
                       >
                         Edit
                       </button>
                       <button
                         className="bg-red-600 text-white px-2 py-1 rounded"
-                        onClick={() => openDeleteModal(s)}
+                        onClick={() => openDeleteModal(t)}
                         disabled={loading}
                       >
                         Delete
                       </button>
                     </td>
                   </tr>
-                  {expandedService === s._id && (
+                  {expandedTest === t._id && (
                     <tr>
                       <td colSpan={7} className="bg-gray-50 border-t">
                         <div className="p-4">
-                          <div className="font-semibold mb-2">Service Details</div>
+                          <div className="font-semibold mb-2">Test Details</div>
                           <div className="mb-2">
                             <b>Description:</b>
                             <div className="mt-1 text-gray-700 whitespace-pre-line break-words">
-                              {s.description}
+                              {t.description}
                             </div>
                           </div>
                           <div className="mb-2">
-                            <b>Duration:</b> {formatDuration(s.duration) || "-"}
+                            <b>Duration:</b> {formatDuration(t.duration) || "-"}
                           </div>
-                          {/* You can add more details here if needed */}
                         </div>
                       </td>
                     </tr>
@@ -424,12 +421,12 @@ const ServiceTab = () => {
             >
               &times;
             </button>
-            <h3 className="text-lg font-bold mb-4 text-center">Edit Service</h3>
+            <h3 className="text-lg font-bold mb-4 text-center">Edit Test</h3>
             <form onSubmit={handleEditSave} className="flex flex-col gap-2">
               <input
                 type="text"
                 className="border px-3 py-2 rounded w-full"
-                placeholder="Service name"
+                placeholder="Test name"
                 value={editModal.name}
                 onChange={e => setEditModal(f => ({ ...f, name: e.target.value }))}
                 disabled={loading}
@@ -437,7 +434,7 @@ const ServiceTab = () => {
               />
               <textarea
                 className="border px-3 py-2 rounded w-full"
-                placeholder="Service description"
+                placeholder="Test description"
                 value={editModal.description}
                 onChange={e => setEditModal(f => ({ ...f, description: e.target.value }))}
                 disabled={loading}
@@ -472,7 +469,7 @@ const ServiceTab = () => {
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
-              <p className="text-sm text-red-600">*On making service inactive, all schedules related to this service will be cancelled.</p>
+              <p className="text-sm text-red-600">*On making test inactive, all schedules related to this test will be cancelled.</p>
               <input
                 type="file"
                 accept="image/*"
@@ -512,14 +509,14 @@ const ServiceTab = () => {
         </div>
       )}
       {/* Delete Modal */}
-      <DeleteServiceModal
+      <DeleteTestModal
         open={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, service: null })}
+        onClose={() => setDeleteModal({ open: false, test: null })}
         onConfirm={confirmDelete}
-        service={deleteModal.service}
+        test={deleteModal.test}
       />
     </div>
   );
 };
 
-export default ServiceTab;
+export default TestTab;

@@ -3,7 +3,10 @@ import { ToastContainer, toast } from "react-toastify";
 import { IoMdRefresh } from "react-icons/io";
 import { FiTrash2 } from "react-icons/fi";
 import { MdPictureAsPdf } from "react-icons/md";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 import "react-toastify/dist/ReactToastify.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import ProfileTab from "./components/ProfileTab";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
@@ -287,6 +290,146 @@ const DoctorTestsTab = () => {
   );
 };
 
+// OPDS Tab Component
+const DoctorOpdsTab = () => {
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchOpds = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${backendUrl}/opds/doctors/opds-bookings`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setAppointments(data.appointments || []);
+    } catch {
+      setAppointments([]);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchOpds();
+  }, []);
+
+  // Prepare events for react-big-calendar
+  const localizer = momentLocalizer(moment);
+  const calendarEvents = appointments.map(a => ({
+    id: a._id,
+    title: `${a.patient?.name || "Patient"} (${a.status})`,
+    start: new Date(a.start),
+    end: new Date(a.end),
+    allDay: false,
+    resource: a,
+  }));
+
+  // Custom tooltip on hover
+  const EventTooltip = ({ event }) => (
+    <div className="p-2 text-xs">
+      <div><b>Patient:</b> {event.resource.patient?.name}</div>
+      <div><b>Email:</b> {event.resource.patient?.email}</div>
+      <div><b>Phone:</b> {event.resource.patient?.phoneNu}</div>
+      <div><b>Status:</b> {event.resource.status}</div>
+      <div><b>Time:</b> {moment(event.resource.start).format("HH:mm")} - {moment(event.resource.end).format("HH:mm")}</div>
+    </div>
+  );
+
+  // Custom event wrapper for tooltip
+  const CustomEvent = ({ event }) => {
+    const [show, setShow] = useState(false);
+    return (
+      <div
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        style={{ position: "relative" }}
+      >
+        <span>{event.title}</span>
+        {show && (
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              zIndex: 10,
+              background: "#fff",
+              border: "1px solid #ddd",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              padding: "6px",
+              minWidth: "180px",
+              fontSize: "0.85rem"
+            }}
+          >
+            <EventTooltip event={event} />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold">OPDS Bookings</h3>
+        <button className="bg-gray-200 rounded-full p-2" onClick={fetchOpds}>
+          <IoMdRefresh className="text-xl text-blue-900" />
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="py-2 px-4">Patient Name</th>
+              <th className="py-2 px-4">Email</th>
+              <th className="py-2 px-4">Phone</th>
+              <th className="py-2 px-4">Date</th>
+              <th className="py-2 px-4">Time</th>
+              <th className="py-2 px-4">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">No OPDS bookings found.</td>
+              </tr>
+            ) : (
+              appointments.map((a) => (
+                <tr key={a._id}>
+                  <td className="py-2 px-4">{a.patient?.name || "-"}</td>
+                  <td className="py-2 px-4">{a.patient?.email || "-"}</td>
+                  <td className="py-2 px-4">{a.patient?.phoneNu || "-"}</td>
+                  <td className="py-2 px-4">{a.start ? new Date(a.start).toLocaleDateString() : "-"}</td>
+                  <td className="py-2 px-4">
+                    {a.start && a.end
+                      ? `${new Date(a.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - ${new Date(a.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+                      : "-"}
+                  </td>
+                  <td className="py-2 px-4">{a.status || "-"}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      {/* Calendar below the table */}
+      <div className="mt-8 bg-white rounded shadow p-4">
+        <h4 className="font-semibold mb-2">OPDS Calendar View</h4>
+        <Calendar
+          localizer={localizer}
+          events={calendarEvents}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 400 }}
+          components={{
+            event: CustomEvent
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 // Main Doctor Dashboard
 export default function DoctorDashBoard ()  {
   const [activeTab, setActiveTab] = useState("appointments");
@@ -314,6 +457,12 @@ export default function DoctorDashBoard ()  {
           Tests
         </button>
         <button
+          className={`text-sm md:text-base px-4 py-2 rounded font-semibold transition-all ${activeTab === "opds" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
+          onClick={() => setActiveTab("opds")}
+        >
+          OPDS
+        </button>
+        <button
           className={`text-sm md:text-base px-4 py-2 rounded font-semibold transition-all ${activeTab === "profile" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => setActiveTab("profile")}
         >
@@ -323,6 +472,7 @@ export default function DoctorDashBoard ()  {
       <div className="w-full">
         {activeTab === "appointments" && <DoctorAppointmentsTab />}
         {activeTab === "tests" && <DoctorTestsTab />}
+        {activeTab === "opds" && <DoctorOpdsTab />}
         {activeTab === "profile" && <ProfileTab />}
       </div>
     </section>

@@ -11,15 +11,10 @@ import Contact from "./pages/Contact";
 import OurDoctor from './pages/OurDoctor';
 import Test from './pages/Test';
 import ScrollToTop from "./components/ScrollToTop";
-import OPDBookingApp from "./pages/Opds"; // Adjust path if needed
-// import AdminDashBoard from "./pages/AdminDashBoard";
-// import Login from "./pages/Login";
-// import Register from "./pages/Register";
+import OPDBookingApp from "./pages/Opds"; 
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyEmail from "./pages/VerifyEmail";
-// import DoctorDashBoard  from "./pages/DoctorDashBoard";
-// import NotFound from "./pages/NotFound";
 
 // Lazy load dashboard pages
 const BookAppointment = lazy(() => import("./pages/BookAppointment"));
@@ -40,7 +35,6 @@ const getAuth = () => {
 // Protected Route for Doctor
 const DoctorProtectedRoute = ({ children }) => {
   const { token, role } = getAuth();
-  console.log("DoctorProtectedRoute - token:", token, "role:", role);
   if (!token || role !== "doctor") return <Navigate to="/login" replace />;
   return children;
 };

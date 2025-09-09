@@ -6,6 +6,7 @@ import AdminUsersTab from "./components/AdminUsersTab";
 import ProfileTab from "../../components/ProfileTab";
 import ServiceTab from "./components/ServiceTab";
 import DoctorTab from "./components/DoctorTab";
+import TestTab from "./components/TestTab"; // Add this import
 
 const AdminDashBoard = () => {
   const [activeTab, setActiveTab] = useState("appointments");
@@ -64,6 +65,12 @@ const AdminDashBoard = () => {
           >
             Profile
           </button>
+          <button
+            className={`px-4 py-2 rounded font-semibold transition-all text-sm md:text-base ${activeTab === "tests" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
+            onClick={() => setActiveTab("tests")}
+          >
+            Tests
+          </button>
         </div>
         <div className="w-full">
           {activeTab === "appointments" && <AdminAppointments />}
@@ -72,6 +79,7 @@ const AdminDashBoard = () => {
           {activeTab === "services" && <ServiceTab />}
           {activeTab === "doctors" && <DoctorTab />}
           {activeTab === "profile" && <ProfileTab />}
+          {activeTab === "tests" && <TestTab />} {/* Add this line */}
         </div>
       </div>
       <div className="h-[50px]" />

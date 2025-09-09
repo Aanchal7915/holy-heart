@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { IoMdRefresh } from "react-icons/io";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
 
@@ -35,6 +37,9 @@ export default function OPDBookingApp() {
   const [patientInfo, setPatientInfo] = useState({ name: '', phone: '', email: '' });
   const [userAppointments, setUserAppointments] = useState([]);
 
+  // Check if user is logged in
+  const token = localStorage.getItem("token");
+
   // Fetch doctors from backend
   useEffect(() => {
     setLoadingDoctors(true);
@@ -69,6 +74,17 @@ export default function OPDBookingApp() {
       });
   }, [selectedDoctorId]);
 
+  // Fetch user's OPDS bookings if logged in
+  useEffect(() => {
+    if (!token) return;
+    fetch(`${backendUrl}/user/opds-bookings`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setUserAppointments(data.opdsBookings || []))
+      .catch(() => setUserAppointments([]));
+  }, [token]);
+
   // Get selected doctor object
   const selectedDoctor = useMemo(
     () => doctors.find(d => d.id === selectedDoctorId),
@@ -97,48 +113,77 @@ export default function OPDBookingApp() {
     setPatientInfo({ name: '', phone: '', email: '' });
   }
 
-  // Replace with real booking API
+  // Find serviceId for selected doctor from schedule response
+  const serviceId = useMemo(() => {
+    // Find from schedule response (opdsService)
+    if (!schedule.length) return "";
+    const firstDay = schedule[0];
+    return firstDay?.opdsService?.id || "";
+  }, [schedule]);
+
+  // Updated booking function
   async function confirmBooking(slot) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to book an OPDS appointment.", { style: { fontSize: "0.85rem" } });
+      return;
+    }
     setActionLoading(true);
     try {
-      // Example booking API call
-      const res = await fetch(`${backendUrl}/opds/${selectedDoctorId}/book`, {
+      // Parse start/end to HH:mm (24h) from ISO
+      const startTime = new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      const endTime = new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+      const res = await fetch(`${backendUrl}/opds/book-opd`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
+          doctorId: selectedDoctorId,
+          serviceId,
           date: selectedDate,
-          start: slot.start,
-          end: slot.end,
-          patient: patientInfo
-        })
+          start: startTime,
+          end: endTime,
+        }),
       });
-      if (!res.ok) throw new Error("Booking failed");
       const data = await res.json();
-      setUserAppointments(prev => [...prev, data]);
-      setBookingModal({ open: false, slot: null });
-      // Refetch schedule to update slot status
-      fetch(`${backendUrl}/opds/${selectedDoctorId}/schedule-opd`)
-        .then(res => res.json())
-        .then(data => setSchedule(data.schedule || []));
+      if (res.status === 201) {
+        toast.success(data.message || "Appointment booked!", { style: { fontSize: "0.85rem" } });
+        setUserAppointments(prev => [...prev, data.appointment]);
+        setBookingModal({ open: false, slot: null });
+        // Refetch schedule to update slot status
+        fetch(`${backendUrl}/opds/${selectedDoctorId}/schedule-opd`)
+          .then(res => res.json())
+          .then(data => setSchedule(data.schedule || []));
+      } else {
+        toast.error(data.error || "Booking failed", { style: { fontSize: "0.85rem" } });
+      }
     } catch (err) {
-      setError(err.message || "Booking failed");
+      toast.error("Failed to book OPDS appointment", { style: { fontSize: "0.85rem" } });
     }
     setActionLoading(false);
   }
 
-  // Replace with real cancel API
+  // Updated cancel API for OPDS appointment
   async function cancelAppointment(appointmentId) {
     if (!window.confirm('Cancel this appointment?')) return;
     setActionLoading(true);
     try {
-      await fetch(`${backendUrl}/opds/appointment/${appointmentId}`, { method: "DELETE" });
-      setUserAppointments(prev => prev.filter(a => a.appointmentId !== appointmentId));
-      // Refetch schedule to update slot status
+      const token = localStorage.getItem("token");
+      await fetch(`${backendUrl}/user/cancel-opds/${appointmentId}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserAppointments(prev => prev.filter(a => a._id !== appointmentId));
+      // Optionally refetch schedule if needed
       fetch(`${backendUrl}/opds/${selectedDoctorId}/schedule-opd`)
         .then(res => res.json())
         .then(data => setSchedule(data.schedule || []));
     } catch {
       setError("Failed to cancel appointment.");
+      toast.error("Failed to cancel appointment.", { style: { fontSize: "0.85rem" } });
     }
     setActionLoading(false);
   }
@@ -168,6 +213,51 @@ export default function OPDBookingApp() {
     }
     setActionLoading(false);
   }
+
+  // Individual refresh handlers
+  const refreshDoctors = () => {
+    setLoadingDoctors(true);
+    setError(null);
+    fetch(`${backendUrl}/opds/doctor`)
+      .then(res => res.json())
+      .then(data => {
+        setDoctors(data.doctors || []);
+        if (data.doctors?.length) {
+          setSelectedDoctorId(data.doctors[0].id);
+        }
+        setLoadingDoctors(false);
+      })
+      .catch(() => {
+        setError("Failed to load doctors.");
+        setLoadingDoctors(false);
+      });
+  };
+
+  const refreshSchedule = () => {
+    if (!selectedDoctorId) return;
+    setLoadingSlots(true);
+    setError(null);
+    fetch(`${backendUrl}/opds/${selectedDoctorId}/schedule-opd`)
+      .then(res => res.json())
+      .then(data => {
+        setSchedule(data.schedule || []);
+        setLoadingSlots(false);
+      })
+      .catch(() => {
+        setError("Failed to load slots.");
+        setLoadingSlots(false);
+      });
+  };
+
+  const refreshAppointments = () => {
+    if (!token) return;
+    fetch(`${backendUrl}/user/opds-bookings`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setUserAppointments(data.opdsBookings || []))
+      .catch(() => setUserAppointments([]));
+  };
 
   // Refresh handler
   const handleRefresh = () => {
@@ -208,23 +298,26 @@ export default function OPDBookingApp() {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
+      <ToastContainer position="top-right" autoClose={2500} />
       <div className='h-[100px]'></div>
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-2xl font-semibold">OPD Appointment Booking</h1>
-        <button
-          className="bg-gray-200 hover:bg-gray-300 rounded-full p-2"
-          onClick={handleRefresh}
-          title="Refresh"
-          disabled={loadingDoctors || loadingSlots}
-        >
-          <IoMdRefresh className={`text-2xl text-blue-900 ${loadingDoctors || loadingSlots ? "animate-spin" : ""}`} />
-        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Left: Doctors list */}
         <section className="md:col-span-1 bg-white rounded-lg shadow p-4">
-          <h2 className="font-medium mb-2">Doctors</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-medium">Doctors</h2>
+            <button
+              className="bg-gray-200 hover:bg-gray-300 rounded-full p-2"
+              onClick={refreshDoctors}
+              title="Refresh Doctors"
+              disabled={loadingDoctors}
+            >
+              <IoMdRefresh className={`text-xl text-blue-900 ${loadingDoctors ? "animate-spin" : ""}`} />
+            </button>
+          </div>
           {loadingDoctors ? (
             <div className="text-sm">Loading doctors...</div>
           ) : error ? (
@@ -260,6 +353,14 @@ export default function OPDBookingApp() {
             <div className="flex gap-2 items-center">
               <div className="text-sm text-gray-600">Selected date:</div>
               <div className="px-3 py-1 border rounded">{selectedDate}</div>
+              <button
+                className="bg-gray-200 hover:bg-gray-300 rounded-full p-2 ml-2"
+                onClick={refreshSchedule}
+                title="Refresh Slots"
+                disabled={loadingSlots}
+              >
+                <IoMdRefresh className={`text-xl text-blue-900 ${loadingSlots ? "animate-spin" : ""}`} />
+              </button>
             </div>
           </div>
 
@@ -315,31 +416,48 @@ export default function OPDBookingApp() {
 
       {/* User's appointments summary */}
       <div className="mt-6 bg-white rounded-lg shadow p-4">
-        <h3 className="font-medium mb-2">Your appointments</h3>
-        {userAppointments.length === 0 ? (
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-medium">Your appointments</h3>
+          <button
+            className="bg-gray-200 hover:bg-gray-300 rounded-full p-2"
+            onClick={refreshAppointments}
+            title="Refresh Appointments"
+            disabled={!token}
+          >
+            <IoMdRefresh className="text-xl text-blue-900" />
+          </button>
+        </div>
+        {!token ? (
+          <div className="text-sm text-gray-500">Please login to view your upcoming appointments.</div>
+        ) : userAppointments.length === 0 ? (
           <div className="text-sm text-gray-500">No upcoming appointments</div>
         ) : (
           <div className="space-y-3">
             {userAppointments.map(a => (
-              <div key={a.appointmentId} className="flex items-center justify-between p-2 border rounded">
+              <div key={a._id} className="flex items-center justify-between p-2 border rounded">
                 <div>
-                  <div className="font-medium">{selectedDoctor ? selectedDoctor.name : ''} — {a.date} {formatTime(a.start)} - {formatTime(a.end)}</div>
-                  <div className="text-sm text-gray-500">ID: {a.appointmentId}</div>
+                  <div className="font-medium">
+                    {a.doctor?.name || "Doctor"} — {a.start ? new Date(a.start).toLocaleDateString() : ""} {a.start ? formatTime(a.start) : ""} - {a.end ? formatTime(a.end) : ""}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Doctor Email: {a.doctor?.email || "-"} | Phone: {a.doctor?.phoneNu || "-"}
+                  </div>
+                  <div className="text-sm text-gray-500">Status: {a.status}</div>
                 </div>
                 <div className="flex gap-2">
-                  <button
+                  {/* <button
                     onClick={() => {
                       const nd = prompt('New date (YYYY-MM-DD)');
-                      const ns = prompt('New start time (ISO)');
-                      const ne = prompt('New end time (ISO)');
-                      if (nd && ns && ne) rescheduleAppointment(a.appointmentId, nd, ns, ne);
+                      const ns = prompt('New start time (HH:mm)');
+                      const ne = prompt('New end time (HH:mm)');
+                      if (nd && ns && ne) rescheduleAppointment(a._id, nd, ns, ne);
                     }}
                     className="px-3 py-1 rounded border text-sm"
                   >
                     Reschedule
-                  </button>
+                  </button> */}
                   <button
-                    onClick={() => cancelAppointment(a.appointmentId)}
+                    onClick={() => cancelAppointment(a._id)}
                     className="px-3 py-1 rounded bg-red-600 text-white text-sm"
                   >
                     Cancel
