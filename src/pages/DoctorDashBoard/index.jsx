@@ -114,20 +114,62 @@ const PdfUpload = ({ itemId, type, pdfs = [], refresh }) => {
   );
 };
 
-// Toggleable row for details
+// PDF Preview & Delete (with conditional rendering for iframe)
+const PdfPreview = ({ pdfs = [], onDelete, show }) => (
+  <div className="flex flex-wrap gap-2">
+    {pdfs && pdfs.length > 0 ? (
+      pdfs.map((pdfUrl, idx) => (
+        <div key={idx} className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded">
+          {show && (
+            <iframe
+              src={pdfUrl}
+              title={`PDF Preview ${idx + 1}`}
+              width={60}
+              height={60}
+              className="border rounded bg-white"
+              style={{ minWidth: 60, minHeight: 60 }}
+            />
+          )}
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-700 underline text-xs flex items-center gap-1"
+            title={`PDF ${idx + 1}`}
+          >
+            <MdPictureAsPdf className="text-red-600" />
+            PDF {idx + 1}
+          </a>
+          {onDelete && (
+            <button
+              className="ml-1 text-red-600 hover:text-red-800"
+              title="Delete PDF"
+              onClick={() => onDelete(pdfUrl)}
+            >
+              <FiTrash2 />
+            </button>
+          )}
+        </div>
+      ))
+    ) : (
+      <span className="text-gray-400 text-xs">No PDF uploaded</span>
+    )}
+  </div>
+);
+
+// Toggleable row for details (show/hide)
 const ToggleDetailRow = ({ record, type, refresh }) => {
   const [showDetail, setShowDetail] = useState(false);
-
-  // Use images array for PDFs
   const pdfs = record.images || [];
 
+  // Essential data in row
   return (
     <>
       <tr>
         <td className="py-2 px-4">{record.patient?.name || "-"}</td>
-        <td className="py-2 px-4">{type === "test" ? record.testName || "-" : record.service?.name || "-"}</td>
-        <td className="py-2 px-4">{record.start ? new Date(record.start).toLocaleDateString() : record.date ? new Date(record.date).toLocaleDateString() : "-"}</td>
-        <td className="py-2 px-4">{record.start ? new Date(record.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : record.date ? new Date(record.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
+        <td className="py-2 px-4">{record.service?.name || "-"}</td>
+        <td className="py-2 px-4">{record.start ? new Date(record.start).toLocaleDateString() : "-"}</td>
+        <td className="py-2 px-4">{record.start ? record.start?.split("T")[1].slice(0,5) : "-"}</td>
         <td className="py-2 px-4">{record.status || "-"}</td>
         <td className="py-2 px-4">
           <button
@@ -149,16 +191,33 @@ const ToggleDetailRow = ({ record, type, refresh }) => {
                   <div>Gender: {record.patient?.gender || "-"}</div>
                   <div>Email: {record.patient?.email || "-"}</div>
                   <div>Phone: {record.patient?.phoneNu || "-"}</div>
+                  <div>ID: {record.patient?._id || "-"}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">Service Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+                  <div>Name: {record.service?.name || "-"}</div>
+                  <div>Type: {record.service?.type || "-"}</div>
+                  <div>ID: {record.service?._id || "-"}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">Appointment Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+                  <div>Date: {record.start ? new Date(record.start).toLocaleDateString() : "-"}</div>
+                  <div>Start Time: {record.start ? record.start?.split("T")[1].slice(0,5): "-"}</div>
+                  <div>End Time: {record.end ? record.end?.split("T")[1].slice(0,5) : "-"}</div>
+                  <div>Charge: {record.charge ? `₹${record.charge}` : "-"}</div>
+                  <div>Status: {record.status || "-"}</div>
+                  <div>Created At: {record.createdAt ? new Date(record.createdAt).toLocaleString() : "-"}</div>
+                  <div>Updated At: {record.updatedAt ? new Date(record.updatedAt).toLocaleString() : "-"}</div>
+                  <div>Appointment ID: {record._id}</div>
                 </div>
               </div>
               <div>
                 <span className="font-semibold">PDF Report(s):</span>
-                <PdfUpload
-                  itemId={record._id}
-                  type={type}
-                  pdfs={pdfs}
-                  refresh={refresh}
-                />
+                <PdfPreview pdfs={pdfs} show={showDetail} />
               </div>
             </div>
           </td>
@@ -450,12 +509,12 @@ export default function DoctorDashBoard ()  {
         >
           Appointments
         </button>
-        <button
+        {/* <button
           className={`text-sm md:text-base px-4 py-2 rounded font-semibold transition-all ${activeTab === "tests" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => setActiveTab("tests")}
         >
           Tests
-        </button>
+        </button> */}
         <button
           className={`text-sm md:text-base px-4 py-2 rounded font-semibold transition-all ${activeTab === "opds" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => setActiveTab("opds")}
@@ -471,7 +530,7 @@ export default function DoctorDashBoard ()  {
       </div>
       <div className="w-full">
         {activeTab === "appointments" && <DoctorAppointmentsTab />}
-        {activeTab === "tests" && <DoctorTestsTab />}
+        {/* {activeTab === "tests" && <DoctorTestsTab />} */}
         {activeTab === "opds" && <DoctorOpdsTab />}
         {activeTab === "profile" && <ProfileTab />}
       </div>
