@@ -402,7 +402,7 @@ const DoctorOpdsTab = () => {
                   <td className="py-2 px-4">{a.start ? new Date(a.start).toLocaleDateString() : "-"}</td>
                   <td className="py-2 px-4">
                     {a.start && a.end
-                      ? `${a.start.split('T')[1].slice(0,5)} - ${a.start.split('T')[1].slice(0,5)}`
+                      ? `${a.start.split('T')[1].slice(0,5)} - ${a.end.split('T')[1].slice(0,5)}`
                       : "-"}
                   </td>
                   <td className="py-2 px-4">{a.status || "-"}</td>
