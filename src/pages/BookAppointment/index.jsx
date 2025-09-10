@@ -144,41 +144,59 @@ const BookAppointment = () => {
         {/* Appointment Form */}
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Date */}
-          <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
-            <Calendar className="text-gray-500 w-5 h-5 mr-3" />
-            <input
-              type="date"
-              name="date"
-              min={new Date().toISOString().split("T")[0]}
-              className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
-              required
-            />
+          <div className="flex flex-col gap-1">
+            <label className="text-[11px] text-gray-500 mb-1 ml-1">
+              Preferred Date <span className="text-gray-400">(Optional)</span>
+            </label>
+            <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
+              <Calendar className="text-gray-500 w-5 h-5 mr-3" />
+              <input
+                type="date"
+                name="date"
+                min={new Date().toISOString().split("T")[0]}
+                className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
+                // required removed to make it optional
+              />
+            </div>
+            <span className="text-[10px] text-gray-400 ml-1">
+              If no slot is available on your preferred date, slot won't be allotted. If not preferred date, nearest free slot will be allocated.
+            </span>
           </div>
 
           {/* Department (Service) */}
-          <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
-            <Clipboard className="text-gray-500 w-5 h-5 mr-3" />
-            <select
-              name="department"
-              className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
-              required
-            >
-              <option value="">Select Treatment</option>
-              {services.map((s) => (
-                <option key={s._id} value={s._id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col gap-1">
+            <label className="text-[11px] text-gray-500 mb-1 ml-1">
+              Treatment <span className="text-red-500">*</span>
+            </label>
+            <div className="flex items-center border rounded-xl px-4 py-3 bg-gray-50 focus-within:ring-2 focus-within:ring-red-500">
+              <Clipboard className="text-gray-500 w-5 h-5 mr-3" />
+              <select
+                name="department"
+                className="w-full bg-transparent outline-none focus:outline-none focus:ring-0 text-gray-700"
+                required
+              >
+                <option value="">Select Treatment</option>
+                {services.map((s) => (
+                  <option key={s._id} value={s._id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Message */}
-          <textarea
-            name="message"
-            placeholder="Message / Symptoms (Optional)"
-            className="w-full border rounded-xl px-4 py-3 bg-gray-50 outline-none focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
-            rows="4"
-          ></textarea>
+          <div className="flex flex-col gap-1">
+            <label className="text-[11px] text-gray-500 mb-1 ml-1">
+              Message / Symptoms
+            </label>
+            <textarea
+              name="message"
+              placeholder="Message / Symptoms (Optional)"
+              className="w-full border rounded-xl px-4 py-3 bg-gray-50 outline-none focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
+              rows="4"
+            ></textarea>
+          </div>
 
           {/* Submit Button with Spinner */}
           <button
