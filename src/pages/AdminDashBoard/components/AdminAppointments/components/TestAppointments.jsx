@@ -13,6 +13,8 @@ const TestAppointments = () => {
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [showDetail, setShowDetail] = useState({});
+  const [uploading, setUploading] = useState({});
+  const [deleting, setDeleting] = useState({});
 
   const fetchAppointments = async () => {
     setApiStatus("loading");
@@ -39,6 +41,52 @@ const TestAppointments = () => {
     // eslint-disable-next-line
   }, [page, limit]);
 
+  // Upload PDF handler
+  const handleUploadPdf = async (testId, file) => {
+    if (!file) return;
+    setUploading(prev => ({ ...prev, [testId]: true }));
+    try {
+      const formData = new FormData();
+      formData.append("pdf", file);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${backendUrl}/test-bookings/${testId}/upload-pdf`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to upload report");
+      toast.success("Report uploaded successfully!");
+      fetchAppointments();
+    } catch (err) {
+      toast.error(err.message || "Error uploading report");
+    }
+    setUploading(prev => ({ ...prev, [testId]: false }));
+  };
+
+  // Delete PDF handler
+  const handleDeletePdf = async (testId, pdfUrl) => {
+    setDeleting(prev => ({ ...prev, [testId]: pdfUrl }));
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${backendUrl}/test-bookings/${testId}/delete-pdf`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ pdfUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to delete report");
+      toast.success("Report deleted successfully!");
+      fetchAppointments();
+    } catch (err) {
+      toast.error(err.message || "Error deleting report");
+    }
+    setDeleting(prev => ({ ...prev, [testId]: null }));
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
@@ -63,7 +111,6 @@ const TestAppointments = () => {
               <th className="py-2 px-4">Test</th>
               <th className="py-2 px-4">Patient</th>
               <th className="py-2 px-4">Amount</th>
-              {/* <th className="py-2 px-4">Status</th> */}
               <th className="py-2 px-4">Action</th>
             </tr>
           </thead>
@@ -80,7 +127,6 @@ const TestAppointments = () => {
                     <td className="py-2 px-4">{b.test?.name || "-"}</td>
                     <td className="py-2 px-4">{b.patient?.name || b.name || "-"}</td>
                     <td className="py-2 px-4">{b.amount ? `₹${b.amount}` : "-"}</td>
-                    {/* <td className="py-2 px-4">{b.status || "-"}</td> */}
                     <td className="py-2 px-4">
                       <button
                         className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
@@ -132,6 +178,70 @@ const TestAppointments = () => {
                               <div>Created At: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "-"}</div>
                               <div>Updated At: {b.updatedAt ? new Date(b.updatedAt).toLocaleString() : "-"}</div>
                               <div>Booking ID: {b._id}</div>
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Reports:</span>
+                            <div className="ml-2 text-xs text-gray-700 flex flex-col gap-2">
+                              {b.reports && b.reports.length > 0 ? (
+                                b.reports.map((pdfUrl, idx) => (
+                                  <div key={idx} className="flex flex-col gap-1 mb-2">
+                                    <div className="flex items-center gap-2">
+                                      <a
+                                        href={pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-700 underline"
+                                      >
+                                        Report {idx + 1}
+                                      </a>
+                                      <button
+                                        className="text-red-600 text-xs px-2 py-1 border rounded hover:bg-red-50"
+                                        disabled={deleting[b._id] === pdfUrl}
+                                        onClick={() => handleDeletePdf(b._id, pdfUrl)}
+                                      >
+                                        {deleting[b._id] === pdfUrl ? "Deleting..." : "Delete"}
+                                      </button>
+                                    </div>
+                                    {/* PDF Preview */}
+                                    <div className="border rounded bg-gray-100 p-2">
+                                      <iframe
+                                        src={pdfUrl}
+                                        title={`Report Preview ${idx + 1}`}
+                                        width="100%"
+                                        height="200px"
+                                        style={{ border: "none" }}
+                                      />
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <span className="text-gray-500">No reports uploaded.</span>
+                              )}
+                              <form
+                                className="flex items-center gap-2 mt-2"
+                                onSubmit={e => {
+                                  e.preventDefault();
+                                  const file = e.target.elements.pdf.files[0];
+                                  handleUploadPdf(b._id, file);
+                                  e.target.reset();
+                                }}
+                              >
+                                <input
+                                  type="file"
+                                  name="pdf"
+                                  accept="application/pdf"
+                                  className="text-xs"
+                                  required
+                                />
+                                <button
+                                  type="submit"
+                                  className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+                                  disabled={uploading[b._id]}
+                                >
+                                  {uploading[b._id] ? "Uploading..." : "Upload Report"}
+                                </button>
+                              </form>
                             </div>
                           </div>
                         </div>

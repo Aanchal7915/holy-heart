@@ -91,6 +91,7 @@ const ToggleDetailRow = ({ record, type }) => {
         <tr>
           <td colSpan={8} className="bg-gray-50 px-4 py-3 border-t">
             <div className="flex flex-col gap-2">
+              
               <div>
                 <span className="font-semibold">Doctor Details:</span>
                 <div className="ml-2 text-xs text-gray-700">
@@ -100,6 +101,7 @@ const ToggleDetailRow = ({ record, type }) => {
                   <div>ID: {record.doctor?._id || "-"}</div>
                 </div>
               </div>
+              
               <div>
                 <span className="font-semibold">Service Details:</span>
                 <div className="ml-2 text-xs text-gray-700">
@@ -145,7 +147,7 @@ const ToggleDetailRowForTestBooking = ({ record, type }) => {
       <tr>
         <td className="px-4 py-2 border">{record.createdAt ? new Date(record.createdAt).toLocaleDateString() : record.date ? new Date(record.date).toLocaleDateString() : "-"}</td>
         <td className="px-4 py-2 border">{record.test?.name || "-"}</td>
-        <td className="px-4 py-2 border">{record.doctor?.name || "-"}</td>
+        {/* <td className="px-4 py-2 border">{record.doctor?.name || "-"}</td> */}
         {/*<td className="px-4 py-2 border">{record.start ? new Date(record.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : record.date ? new Date(record.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
         <td className="px-4 py-2 border">{record.end ? new Date(record.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>*/}
         <td className="px-4 py-2 border">{record.amount ? `₹${record.amount}` : "-"}</td>
@@ -163,6 +165,7 @@ const ToggleDetailRowForTestBooking = ({ record, type }) => {
         <tr>
           <td colSpan={8} className="bg-gray-50 px-4 py-3 border-t">
             <div className="flex flex-col gap-2">
+              {record.doctor &&
               <div>
                 <span className="font-semibold">Doctor Details:</span>
                 <div className="ml-2 text-xs text-gray-700">
@@ -172,6 +175,7 @@ const ToggleDetailRowForTestBooking = ({ record, type }) => {
                   <div>ID: {record.doctor?._id || "-"}</div>
                 </div>
               </div>
+              }
               <div>
                 <span className="font-semibold">Service Details:</span>
                 <div className="ml-2 text-xs text-gray-700">
@@ -453,7 +457,7 @@ const UserTestsTab = ({
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 border">Date</th>
                 <th className="px-4 py-2 border">Test Name</th>
-                <th className="px-4 py-2 border">Doctor</th>
+                {/* <th className="px-4 py-2 border">Doctor</th> */}
                 {/*<th className="px-4 py-2 border">Start</th>
                 <th className="px-4 py-2 border">End</th>*/}
                 <th className="px-4 py-2 border">Charge</th>
