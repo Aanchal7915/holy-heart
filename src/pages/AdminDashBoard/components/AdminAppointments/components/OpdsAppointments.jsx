@@ -228,7 +228,7 @@ const OpdsAppointments = () => {
                             <span className="font-semibold">Appointment Details:</span>
                             <div className="ml-2 text-xs text-gray-700">
                               <div>Start: {a.start ? `${a.start.split('T')[0]} ${a.start.split('T')[1].slice(0,5)}` : "-"}</div>
-                              <div>End: {a.end ? new Date(a.end).toLocaleString() : "-"}</div>
+                              <div>End: {a.end ? `${a.end.split('T')[0]} ${a.end.split('T')[1].slice(0,5)}` : "-"}</div>
                               <div>Charge: {a.charge ? `₹${a.charge}` : "-"}</div>
                               <div>Status: {a.status || "-"}</div>
                               <div>Created At: {a.createdAt ? new Date(a.createdAt).toLocaleString() : "-"}</div>
