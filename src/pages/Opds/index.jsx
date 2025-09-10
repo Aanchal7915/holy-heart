@@ -474,7 +474,7 @@ export default function OPDBookingApp() {
               <div key={a._id} className="flex items-center justify-between p-2 border rounded">
                 <div>
                   <div className="font-medium">
-                    {a.doctor?.name || "Doctor"} — {a.start ? new Date(a.start)?.toLocaleDateString() : ""} {a.start ?`${a.start.split('T')[0]} ${a.start.split('T')[1].slice(0,5)}` : ""} - {a.end ? `${a.end.split('T')[0]} ${a.end.split('T')[1].slice(0,5)}`: ""}
+                    {a.doctor?.name || "Doctor"} — {a.start ? new Date(a.start)?.toLocaleDateString() : ""} {a.start ?`${a.start.split('T')[1].slice(0,5)}` : ""} - {a.end ? `${a.end.split('T')[1].slice(0,5)}`: ""}
                   </div>
                   <div className="text-sm text-gray-500">
                     Doctor Email: {a.doctor?.email || "-"} | Phone: {a.doctor?.phoneNu || "-"}
