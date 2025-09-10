@@ -22,7 +22,7 @@ const AdminDashBoard = () => {
   return (
     <section className="min-h-screen bg-gradient-to-br from-red-100 via-blue-50 to-red-50 px-4 py-8 flex flex-col items-center">
       <div className="h-[50px]" />
-      <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <div className="w-full max-w-7xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Admin Dashboard</h2>
           <div className="bg-red-500 h-[5px] w-[120px] mx-auto mt-2 mb-6 pt-0"></div>

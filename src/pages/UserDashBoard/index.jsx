@@ -21,20 +21,22 @@ const Toast = ({ message, onClose }) => (
   </div>
 );
 
-// PDF Preview & Delete
-const PdfPreview = ({ pdfs = [], onDelete }) => (
+// PDF Preview & Delete (with conditional rendering for iframe)
+const PdfPreview = ({ pdfs = [], onDelete, show }) => (
   <div className="flex flex-wrap gap-2">
     {pdfs && pdfs.length > 0 ? (
       pdfs.map((pdfUrl, idx) => (
         <div key={idx} className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded">
-          <iframe
-            src={pdfUrl}
-            title={`PDF Preview ${idx + 1}`}
-            width={60}
-            height={60}
-            className="border rounded bg-white"
-            style={{ minWidth: 60, minHeight: 60 }}
-          />
+          {show && (
+            <iframe
+              src={pdfUrl}
+              title={`PDF Preview ${idx + 1}`}
+              width={300}
+              height={200}
+              className="border rounded bg-white"
+              // style={{ minWidth: 300, minHeight: 200 }}
+            />
+          )}
           <a
             href={pdfUrl}
             target="_blank"
@@ -65,17 +67,15 @@ const PdfPreview = ({ pdfs = [], onDelete }) => (
 // Toggleable row for appointment/test details
 const ToggleDetailRow = ({ record, type }) => {
   const [showDetail, setShowDetail] = useState(false);
-  // Use images array for PDFs
   const pdfs = record.images || [];
-
   return (
     <>
       <tr>
         <td className="px-4 py-2 border">{record.start ? new Date(record.start).toLocaleDateString() : record.date ? new Date(record.date).toLocaleDateString() : "-"}</td>
         <td className="px-4 py-2 border">{record.service?.name || "-"}</td>
         <td className="px-4 py-2 border">{record.doctor?.name || "-"}</td>
-        <td className="px-4 py-2 border">{record.start ? record.start.split('T')[1].slice(0,5): "-"}</td>
-        <td className="px-4 py-2 border">{record.end ? record.end.split('T')[1].slice(0,5) : "-"}</td>
+        <td className="px-4 py-2 border">{record.start ? record.start?.split('T')[1].slice(0,5): "-"}</td>
+        <td className="px-4 py-2 border">{record.end ? record.end?.split('T')[1].slice(0,5) : "-"}</td>
         <td className="px-4 py-2 border">{record.charge ? `₹${record.charge}` : "-"}</td>
         <td className="px-4 py-2 border capitalize">{record.status}</td>
         <td className="px-4 py-2 border">
@@ -114,8 +114,8 @@ const ToggleDetailRow = ({ record, type }) => {
               <div>
                 <span className="font-semibold">Appointment Details:</span>
                 <div className="ml-2 text-xs text-gray-700">
-                  <div>Start: {record.start ? `${record.start.split('T')[0]} ${record.startDate.split('T')[1].slice(0,5)}`  : "-"}</div>
-                  <div>End: {record.end ? `${record.end.split('T')[0]} ${record.end.split('T')[1].slice(0,5)}` : "-"}</div>
+                  <div>Start: {record.start ? `${record.start?.split('T')[0]} ${record.start?.split('T')[1].slice(0,5)}`  : "-"}</div>
+                  <div>End: {record.end ? `${record.end?.split('T')[0]} ${record.end?.split('T')[1].slice(0,5)}` : "-"}</div>
                   <div>Charge: {record.charge ? `₹${record.charge}` : "-"}</div>
                   <div>Status: {record.status || "-"}</div>
                   <div>Created At: {record.createdAt ? new Date(record.createdAt).toLocaleString() : "-"}</div>
@@ -125,7 +125,7 @@ const ToggleDetailRow = ({ record, type }) => {
               </div>
               <div>
                 <span className="font-semibold">PDF Report(s):</span>
-                <PdfPreview pdfs={pdfs} />
+                <PdfPreview pdfs={pdfs} show={showDetail} />
               </div>
             </div>
           </td>
@@ -139,8 +139,7 @@ const ToggleDetailRow = ({ record, type }) => {
 // Toggleable row for appointment/test details
 const ToggleDetailRowForTestBooking = ({ record, type }) => {
   const [showDetail, setShowDetail] = useState(false);
-  // Use images array for PDFs
-  const pdfs = record.images || [];
+  const pdfs = record.reports || [];
 
   return (
     <>
@@ -200,7 +199,7 @@ const ToggleDetailRowForTestBooking = ({ record, type }) => {
               </div>
               <div>
                 <span className="font-semibold">PDF Report(s):</span>
-                <PdfPreview pdfs={pdfs} />
+                <PdfPreview pdfs={pdfs} show={showDetail} />
               </div>
             </div>
           </td>
