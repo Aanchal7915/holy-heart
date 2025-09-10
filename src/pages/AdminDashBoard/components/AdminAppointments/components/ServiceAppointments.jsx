@@ -1,0 +1,166 @@
+import React, { useEffect, useState } from "react";
+import Spinner from "../../../../../components/Spinner";
+import { IoMdRefresh } from "react-icons/io";
+import { toast } from "react-toastify";
+
+const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
+
+const ServiceAppointments = () => {
+  const [appointments, setAppointments] = useState([]);
+  const [apiStatus, setApiStatus] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [showDetail, setShowDetail] = useState({});
+
+  const fetchAppointments = async () => {
+    setApiStatus("loading");
+    setErrorMsg("");
+    try {
+      const params = new URLSearchParams({ limit, page, type: "treatment" });
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${backendUrl}/appointments?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch appointments");
+      const data = await res.json();
+      // Only show service/treatment appointments
+      setAppointments((data.appointments || []).filter(a => a.service?.type === "treatment"));
+      setTotalPages(data.totalPages || 1);
+      setApiStatus("");
+    } catch (err) {
+      setApiStatus("error");
+      setErrorMsg(err.message || "Error fetching appointments");
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+    // eslint-disable-next-line
+  }, [page, limit]);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-semibold">Service/Treatment Appointments</h3>
+        <button
+          className="bg-gray-200 hover:bg-gray-300 rounded-full p-2"
+          onClick={fetchAppointments}
+          title="Refresh"
+        >
+          <IoMdRefresh className="text-xl text-blue-900" />
+        </button>
+      </div>
+      {apiStatus === "loading" ? (
+        <Spinner />
+      ) : errorMsg ? (
+        <div className="text-red-600">{errorMsg}</div>
+      ) : (
+        <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="py-2 px-4">Date</th>
+              <th className="py-2 px-4">Service</th>
+              <th className="py-2 px-4">Doctor</th>
+              <th className="py-2 px-4">Status</th>
+              <th className="py-2 px-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="text-center py-4 text-gray-500">No appointments found.</td>
+              </tr>
+            ) : (
+              appointments.map(a => (
+                <React.Fragment key={a._id}>
+                  <tr>
+                    <td className="py-2 px-4">{a.start ? new Date(a.start).toLocaleDateString() : "-"}</td>
+                    <td className="py-2 px-4">{a.service?.name || "-"}</td>
+                    <td className="py-2 px-4">{a.doctor?.name || "-"}</td>
+                    <td className="py-2 px-4">{a.status || "-"}</td>
+                    <td className="py-2 px-4">
+                      <button
+                        className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                        onClick={() => setShowDetail(prev => ({ ...prev, [a._id]: !prev[a._id] }))}
+                      >
+                        {showDetail[a._id] ? "Hide" : "Show"} Details
+                      </button>
+                    </td>
+                  </tr>
+                  {showDetail[a._id] && (
+                    <tr>
+                      <td colSpan={5} className="bg-gray-50 px-4 py-3 border-t">
+                        <div className="flex flex-col gap-2">
+                          <div>
+                            <span className="font-semibold">Doctor Details:</span>
+                            <div className="ml-2 text-xs text-gray-700">
+                              <div>Name: {a.doctor?.name || "-"}</div>
+                              <div>Email: {a.doctor?.email || "-"}</div>
+                              <div>Phone: {a.doctor?.phoneNu || "-"}</div>
+                              <div>ID: {a.doctor?._id || "-"}</div>
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Service Details:</span>
+                            <div className="ml-2 text-xs text-gray-700">
+                              <div>Name: {a.service?.name || "-"}</div>
+                              <div>Description: {a.service?.description || "-"}</div>
+                              <div>ID: {a.service?._id || "-"}</div>
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Patient Details:</span>
+                            <div className="ml-2 text-xs text-gray-700">
+                              <div>Name: {a.patientName || "-"}</div>
+                              <div>Email: {a.patientEmail || "-"}</div>
+                              <div>Phone: {a.patientPhone || "-"}</div>
+                              <div>User ID: {a.userId || "-"}</div>
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Appointment Details:</span>
+                            <div className="ml-2 text-xs text-gray-700">
+                              <div>Start: {a.start ? new Date(a.start).toLocaleString() : "-"}</div>
+                              <div>End: {a.end ? new Date(a.end).toLocaleString() : "-"}</div>
+                              <div>Charge: {a.charge ? `₹${a.charge}` : "-"}</div>
+                              <div>Status: {a.status || "-"}</div>
+                              <div>Created At: {a.createdAt ? new Date(a.createdAt).toLocaleString() : "-"}</div>
+                              <div>Updated At: {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "-"}</div>
+                              <div>Appointment ID: {a._id}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
+      {/* Pagination */}
+      <div className="flex justify-end mt-4 gap-2">
+        <button
+          className="px-3 py-1 rounded border"
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Prev
+        </button>
+        <span className="px-3 py-1">{page} / {totalPages}</span>
+        <button
+          className="px-3 py-1 rounded border"
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ServiceAppointments;
