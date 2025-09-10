@@ -63,7 +63,7 @@ const TestAppointments = () => {
               <th className="py-2 px-4">Test</th>
               <th className="py-2 px-4">Patient</th>
               <th className="py-2 px-4">Amount</th>
-              <th className="py-2 px-4">Status</th>
+              {/* <th className="py-2 px-4">Status</th> */}
               <th className="py-2 px-4">Action</th>
             </tr>
           </thead>
@@ -80,7 +80,7 @@ const TestAppointments = () => {
                     <td className="py-2 px-4">{b.test?.name || "-"}</td>
                     <td className="py-2 px-4">{b.patient?.name || b.name || "-"}</td>
                     <td className="py-2 px-4">{b.amount ? `₹${b.amount}` : "-"}</td>
-                    <td className="py-2 px-4">{b.status || "-"}</td>
+                    {/* <td className="py-2 px-4">{b.status || "-"}</td> */}
                     <td className="py-2 px-4">
                       <button
                         className="bg-blue-600 text-white px-2 py-1 rounded text-xs"

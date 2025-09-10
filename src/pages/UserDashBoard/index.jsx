@@ -74,8 +74,8 @@ const ToggleDetailRow = ({ record, type }) => {
         <td className="px-4 py-2 border">{record.start ? new Date(record.start).toLocaleDateString() : record.date ? new Date(record.date).toLocaleDateString() : "-"}</td>
         <td className="px-4 py-2 border">{record.service?.name || "-"}</td>
         <td className="px-4 py-2 border">{record.doctor?.name || "-"}</td>
-        <td className="px-4 py-2 border">{record.start ? new Date(record.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : record.date ? new Date(record.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
-        <td className="px-4 py-2 border">{record.end ? new Date(record.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
+        <td className="px-4 py-2 border">{record.start ? record.start.split('T')[1].slice(0,5): "-"}</td>
+        <td className="px-4 py-2 border">{record.end ? record.end.split('T')[1].slice(0,5) : "-"}</td>
         <td className="px-4 py-2 border">{record.charge ? `₹${record.charge}` : "-"}</td>
         <td className="px-4 py-2 border capitalize">{record.status}</td>
         <td className="px-4 py-2 border">
@@ -112,8 +112,8 @@ const ToggleDetailRow = ({ record, type }) => {
               <div>
                 <span className="font-semibold">Appointment Details:</span>
                 <div className="ml-2 text-xs text-gray-700">
-                  <div>Start: {record.start ? new Date(record.start).toLocaleString() : "-"}</div>
-                  <div>End: {record.end ? new Date(record.end).toLocaleString() : "-"}</div>
+                  <div>Start: {record.start ? `${record.start.split('T')[0]} ${record.startDate.split('T')[1].slice(0,5)}`  : "-"}</div>
+                  <div>End: {record.end ? `${record.end.split('T')[0]} ${record.end.split('T')[1].slice(0,5)}` : "-"}</div>
                   <div>Charge: {record.charge ? `₹${record.charge}` : "-"}</div>
                   <div>Status: {record.status || "-"}</div>
                   <div>Created At: {record.createdAt ? new Date(record.createdAt).toLocaleString() : "-"}</div>
