@@ -4,6 +4,11 @@ import { IoMdRefresh } from "react-icons/io";
 import { toast } from "react-toastify";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
+const statusOptions = ["all", "confirmed", "pending", "cancelled", "reserved", "completed"];
+const sortOptions = [
+  { value: "desc", label: "Newest First" },
+  { value: "asc", label: "Oldest First" }
+];
 
 const ServiceAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -14,18 +19,41 @@ const ServiceAppointments = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showDetail, setShowDetail] = useState({});
 
+  // Filters
+  const [status, setStatus] = useState("all");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const [sort, setSort] = useState("desc");
+  const [services, setServices] = useState([]);
+
+  // Fetch available services for filter dropdown
+  useEffect(() => {
+    fetch(`${backendUrl}/services?type=treatment`)
+      .then(res => res.json())
+      .then(data => setServices(data.services || []));
+  }, []);
+
   const fetchAppointments = async () => {
     setApiStatus("loading");
     setErrorMsg("");
     try {
-      const params = new URLSearchParams({ limit, page, type: "treatment" });
+      const params = new URLSearchParams({
+        limit,
+        page,
+        type: "treatment",
+        sort,
+        ...(status !== "all" && { status }),
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
+        ...(serviceId && { service: serviceId })
+      });
       const token = localStorage.getItem("token");
       const res = await fetch(`${backendUrl}/appointments?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch appointments");
       const data = await res.json();
-      // Only show service/treatment appointments
       setAppointments((data.appointments || []).filter(a => a.service?.type === "treatment"));
       setTotalPages(data.totalPages || 1);
       setApiStatus("");
@@ -38,7 +66,16 @@ const ServiceAppointments = () => {
   useEffect(() => {
     fetchAppointments();
     // eslint-disable-next-line
-  }, [page, limit]);
+  }, [page, limit, status, startDate, endDate, serviceId, sort]);
+
+  const clearFilters = () => {
+    setStatus("all");
+    setStartDate("");
+    setEndDate("");
+    setServiceId("");
+    setSort("desc");
+    setPage(1);
+  };
 
   return (
     <div>
@@ -50,6 +87,72 @@ const ServiceAppointments = () => {
           title="Refresh"
         >
           <IoMdRefresh className="text-xl text-blue-900" />
+        </button>
+      </div>
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2 mb-4 items-end">
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Status</label>
+          <select
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            {statusOptions.map(opt => (
+              <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Service</label>
+          <select
+            value={serviceId}
+            onChange={e => setServiceId(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            <option value="">All Services</option>
+            {services.map(s => (
+              <option key={s._id} value={s._id}>{s.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Start Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            className="border px-2 py-1 rounded"
+            placeholder="Start Date"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">End Date</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+            className="border px-2 py-1 rounded"
+            placeholder="End Date"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Sort</label>
+          <select
+            value={sort}
+            onChange={e => setSort(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            {sortOptions.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="ml-2 px-3 py-1 rounded bg-gray-300 text-xs text-gray-700 hover:bg-gray-400"
+          onClick={clearFilters}
+        >
+          Clear Filters
         </button>
       </div>
       {apiStatus === "loading" ? (

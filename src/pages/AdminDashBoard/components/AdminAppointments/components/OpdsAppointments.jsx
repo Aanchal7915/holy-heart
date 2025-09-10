@@ -4,8 +4,11 @@ import { IoMdRefresh } from "react-icons/io";
 import { toast } from "react-toastify";
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
-
-const statusOptions = ["all", "confirmed", "pending", "cancelled"];
+const statusOptions = ["all", "confirmed", "pending", "cancelled", "reserved", "completed"];
+const sortOptions = [
+  { value: "desc", label: "Newest First" },
+  { value: "asc", label: "Oldest First" }
+];
 
 const OpdsAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -19,7 +22,17 @@ const OpdsAppointments = () => {
   const [status, setStatus] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const [sort, setSort] = useState("desc");
+  const [services, setServices] = useState([]);
   const [showDetail, setShowDetail] = useState({});
+
+  // Fetch available OPDS services for filter dropdown
+  useEffect(() => {
+    fetch(`${backendUrl}/services?type=opds`)
+      .then(res => res.json())
+      .then(data => setServices(data.services || []));
+  }, []);
 
   const fetchAppointments = async () => {
     setApiStatus("loading");
@@ -28,11 +41,12 @@ const OpdsAppointments = () => {
       const params = new URLSearchParams({
         limit,
         page,
-        sort: "desc",
+        type: "opds",
+        sort,
         ...(status !== "all" && { status }),
         ...(startDate && { startDate }),
         ...(endDate && { endDate }),
-        type: "opds"
+        ...(serviceId && { service: serviceId })
       });
       const token = localStorage.getItem("token");
       const res = await fetch(`${backendUrl}/appointments?${params.toString()}`, {
@@ -40,7 +54,6 @@ const OpdsAppointments = () => {
       });
       if (!res.ok) throw new Error("Failed to fetch appointments");
       const data = await res.json();
-      // Only show OPDS appointments
       setAppointments((data.appointments || []).filter(a => a.service?.type === "opds"));
       setTotalPages(data.totalPages || 1);
       setApiStatus("");
@@ -53,7 +66,16 @@ const OpdsAppointments = () => {
   useEffect(() => {
     fetchAppointments();
     // eslint-disable-next-line
-  }, [page, limit, status, startDate, endDate]);
+  }, [page, limit, status, startDate, endDate, serviceId, sort]);
+
+  const clearFilters = () => {
+    setStatus("all");
+    setStartDate("");
+    setEndDate("");
+    setServiceId("");
+    setSort("desc");
+    setPage(1);
+  };
 
   return (
     <div>
@@ -68,30 +90,70 @@ const OpdsAppointments = () => {
         </button>
       </div>
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <select
-          value={status}
-          onChange={e => setStatus(e.target.value)}
-          className="border px-2 py-1 rounded"
+      <div className="flex flex-wrap gap-2 mb-4 items-end">
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Status</label>
+          <select
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            {statusOptions.map(opt => (
+              <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+        {/* <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Service</label>
+          <select
+            value={serviceId}
+            onChange={e => setServiceId(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            <option value="">All OPDS Services</option>
+            {services.map(s => (
+              <option key={s._id} value={s._id}>{s.name}</option>
+            ))}
+          </select>
+        </div> */}
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Start Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            className="border px-2 py-1 rounded"
+            placeholder="Start Date"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">End Date</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+            className="border px-2 py-1 rounded"
+            placeholder="End Date"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-[10px] text-gray-500 mb-1">Sort</label>
+          <select
+            value={sort}
+            onChange={e => setSort(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            {sortOptions.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="ml-2 px-3 py-1 rounded bg-gray-300 text-xs text-gray-700 hover:bg-gray-400"
+          onClick={clearFilters}
         >
-          {statusOptions.map(opt => (
-            <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
-          ))}
-        </select>
-        <input
-          type="date"
-          value={startDate}
-          onChange={e => setStartDate(e.target.value)}
-          className="border px-2 py-1 rounded"
-          placeholder="Start Date"
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={e => setEndDate(e.target.value)}
-          className="border px-2 py-1 rounded"
-          placeholder="End Date"
-        />
+          Clear Filters
+        </button>
       </div>
       {apiStatus === "loading" ? (
         <Spinner />

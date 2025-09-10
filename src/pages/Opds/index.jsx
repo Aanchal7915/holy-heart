@@ -474,7 +474,7 @@ export default function OPDBookingApp() {
               <div key={a._id} className="flex items-center justify-between p-2 border rounded">
                 <div>
                   <div className="font-medium">
-                    {a.doctor?.name || "Doctor"} — {a.start ? new Date(a.start).toLocaleDateString() : ""} {a.start ? a.start.split("T")[1].slice(0, 5) : ""} - {a.end ? a.end.split('T')[1].slice(0,5) : ""}
+                    {a.doctor?.name || "Doctor"} — {a.start ? new Date(a.start)?.toLocaleDateString() : ""} {a.start ?new Date(a.start)?.toLocaleString()?.split(", ")[1].slice(0,5) : ""} - {a.end ? new Date(a.end).toLocaleString()?.split(", ")[1].slice(0,5): ""}
                   </div>
                   <div className="text-sm text-gray-500">
                     Doctor Email: {a.doctor?.email || "-"} | Phone: {a.doctor?.phoneNu || "-"}
@@ -500,7 +500,7 @@ export default function OPDBookingApp() {
           <div className="bg-white w-full max-w-lg rounded-lg p-6">
             <h3 className="text-lg font-medium mb-3">Confirm Booking</h3>
             <div className="mb-3">Doctor: <strong>{selectedDoctor?.name}</strong></div>
-            <div className="mb-3">Date & Time: <strong>{selectedDate} {formatTime(bookingModal.slot.start)} - {formatTime(bookingModal.slot.end)}</strong></div>
+            {/* <div className="mb-3">Date & Time: <strong>{selectedDate} {formatTime(bookingModal.slot.start)} - {formatTime(bookingModal.slot.end)}</strong></div> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
               <input placeholder="Your name" value={patientInfo.name} onChange={e => setPatientInfo(p => ({ ...p, name: e.target.value }))} className="p-2 border rounded" />
               <input placeholder="Phone" value={patientInfo.phone} onChange={e => setPatientInfo(p => ({ ...p, phone: e.target.value }))} className="p-2 border rounded" />
