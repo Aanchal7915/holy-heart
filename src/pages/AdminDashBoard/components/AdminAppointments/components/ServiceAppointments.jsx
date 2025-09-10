@@ -10,6 +10,121 @@ const sortOptions = [
   { value: "asc", label: "Oldest First" }
 ];
 
+const PdfUpload = ({ appointmentId, pdfs = [], refresh }) => {
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file.");
+      return;
+    }
+    setUploading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("pdf", file);
+      const res = await fetch(`${backendUrl}/doctors/appointments/${appointmentId}/upload-pdf`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to upload report");
+      toast.success("Report uploaded successfully!");
+      refresh();
+    } catch (err) {
+      toast.error(err.message || "Error uploading report");
+    }
+    setUploading(false);
+  };
+
+  const handleDelete = async (pdfUrl) => {
+    setUploading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${backendUrl}/doctors/appointments/${appointmentId}/delete-pdf`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ pdfUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to delete report");
+      toast.success("Report deleted successfully!");
+      refresh();
+    } catch (err) {
+      toast.error(err.message || "Error deleting report");
+    }
+    setUploading(false);
+  };
+
+  return (
+    <div className="ml-2 text-xs text-gray-700 flex flex-col gap-2">
+      {pdfs && pdfs.length > 0 ? (
+        pdfs.map((pdfUrl, idx) => (
+          <div key={idx} className="flex flex-col gap-1 mb-2">
+            <div className="flex items-center gap-2">
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 underline"
+              >
+                Report {idx + 1}
+              </a>
+              <button
+                className="text-red-600 text-xs px-2 py-1 border rounded hover:bg-red-50"
+                disabled={uploading}
+                onClick={() => handleDelete(pdfUrl)}
+              >
+                {uploading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+            <div className="border rounded bg-gray-100 p-2">
+              <iframe
+                src={pdfUrl}
+                title={`Report Preview ${idx + 1}`}
+                width="100%"
+                height="200px"
+                style={{ border: "none" }}
+              />
+            </div>
+          </div>
+        ))
+      ) : (
+        <span className="text-gray-500">No reports uploaded.</span>
+      )}
+      <form
+        className="flex items-center gap-2 mt-2"
+        onSubmit={e => {
+          e.preventDefault();
+          const file = e.target.elements.pdf.files[0];
+          handleUpload({ target: { files: [file] } });
+          e.target.reset();
+        }}
+      >
+        <input
+          type="file"
+          name="pdf"
+          accept="application/pdf"
+          className="text-xs"
+          required
+        />
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+          disabled={uploading}
+        >
+          {uploading ? "Uploading..." : "Upload Report"}
+        </button>
+      </form>
+    </div>
+  );
+};
+
 const ServiceAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [apiStatus, setApiStatus] = useState("");
@@ -233,6 +348,14 @@ const ServiceAppointments = () => {
                               <div>Updated At: {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "-"}</div>
                               <div>Appointment ID: {a._id}</div>
                             </div>
+                          </div>
+                          <div>
+                            <span className="font-semibold">PDF Report(s):</span>
+                            <PdfUpload
+                              appointmentId={a._id}
+                              pdfs={a.images || []}
+                              refresh={fetchAppointments}
+                            />
                           </div>
                         </div>
                       </td>

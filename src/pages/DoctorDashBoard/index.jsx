@@ -8,6 +8,7 @@ import moment from "moment";
 import "react-toastify/dist/ReactToastify.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ProfileTab from "./components/ProfileTab";
+import { Dialog } from "@headlessui/react"; // For modal popup
 
 const backendUrl = import.meta.env.VITE_BACKEND || import.meta.env.backend || "http://localhost:8000";
 
@@ -353,6 +354,7 @@ const DoctorTestsTab = () => {
 const DoctorOpdsTab = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null); // For modal
 
   const fetchOpds = async () => {
     setLoading(true);
@@ -384,48 +386,45 @@ const DoctorOpdsTab = () => {
     resource: a,
   }));
 
-  // Custom tooltip on hover
-  const EventTooltip = ({ event }) => (
-    <div className="p-2 text-xs">
-      <div><b>Patient:</b> {event.resource.patient?.name}</div>
-      <div><b>Email:</b> {event.resource.patient?.email}</div>
-      <div><b>Phone:</b> {event.resource.patient?.phoneNu}</div>
-      <div><b>Status:</b> {event.resource.status}</div>
-      <div><b>Time:</b> {moment(event.resource.start).format("HH:mm")} - {moment(event.resource.end).format("HH:mm")}</div>
+  // Custom event wrapper for tooltip and click
+  const CustomEvent = ({ event }) => (
+    <div
+      style={{ cursor: "pointer", fontSize: "0.95em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+      title={`${event.resource.patient?.name || "Patient"} (${event.resource.status})`}
+      onClick={() => setSelectedEvent(event.resource)}
+    >
+      <span className={`font-semibold ${event.resource.status === "confirmed" ? "text-green-700" : "text-gray-700"}`}>
+        {event.resource.patient?.name}
+      </span>
+      <span className="ml-1 text-xs text-gray-500">({event.resource.status})</span>
     </div>
   );
 
-  // Custom event wrapper for tooltip
-  const CustomEvent = ({ event }) => {
-    const [show, setShow] = useState(false);
-    return (
-      <div
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-        style={{ position: "relative" }}
-      >
-        <span>{event.title}</span>
-        {show && (
-          <div
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              zIndex: 10,
-              background: "#fff",
-              border: "1px solid #ddd",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              padding: "6px",
-              minWidth: "180px",
-              fontSize: "0.85rem"
-            }}
-          >
-            <EventTooltip event={event} />
-          </div>
-        )}
+  // Modal for event details
+  const EventModal = ({ event, onClose }) => (
+    <Dialog open={!!event} onClose={onClose} className="fixed inset-0 z-50 flex items-center justify-center">
+      <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full z-50">
+        <Dialog.Title className="text-lg font-bold mb-2">OPDS Booking Details</Dialog.Title>
+        <div className="text-sm text-gray-700 space-y-2">
+          <div><b>Patient:</b> {event?.patient?.name}</div>
+          <div><b>Email:</b> {event?.patient?.email}</div>
+          <div><b>Phone:</b> {event?.patient?.phoneNu}</div>
+          <div><b>Status:</b> {event?.status}</div>
+          <div><b>Date:</b> {event?.start ? new Date(event.start).toLocaleDateString() : "-"}</div>
+          <div><b>Time:</b> {event?.start ? moment(event.start).format("HH:mm") : "-"} - {event?.end ? moment(event.end).format("HH:mm") : "-"}</div>
+          <div><b>Service:</b> {event?.service?.name || "-"}</div>
+          <div><b>Appointment ID:</b> {event?._id}</div>
+        </div>
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={onClose}
+        >
+          Close
+        </button>
       </div>
-    );
-  };
+    </Dialog>
+  );
 
   return (
     <div>
@@ -471,19 +470,45 @@ const DoctorOpdsTab = () => {
           </tbody>
         </table>
       </div>
-      {/* Calendar below the table */}
+      {/* Responsive Calendar below the table */}
       <div className="mt-8 bg-white rounded shadow p-4">
         <h4 className="font-semibold mb-2">OPDS Calendar View</h4>
-        <Calendar
-          localizer={localizer}
-          events={calendarEvents}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 400 }}
-          components={{
-            event: CustomEvent
-          }}
-        />
+        <div className="w-full overflow-x-auto">
+          <Calendar
+            localizer={localizer}
+            events={calendarEvents}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 400, minWidth: 320 }}
+            components={{
+              event: CustomEvent
+            }}
+            popup
+            views={["month", "week", "day", "agenda"]}
+            eventPropGetter={(event) => ({
+              style: {
+                backgroundColor: event.resource.status === "confirmed" ? "#d1fae5" : "#f3f4f6",
+                color: "#1e293b",
+                borderRadius: "4px",
+                border: "1px solid #e5e7eb",
+                fontWeight: "500",
+                padding: "2px 4px",
+                maxWidth: "100%",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+              }
+            })}
+            onSelectEvent={event => setSelectedEvent(event.resource)}
+            dayPropGetter={() => ({
+              style: { minHeight: 80 }
+            })}
+          />
+        </div>
+        {/* Modal for event details */}
+        {/* {selectedEvent && (
+          <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        )} */}
       </div>
     </div>
   );

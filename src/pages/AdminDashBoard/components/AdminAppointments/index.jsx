@@ -138,7 +138,7 @@ const AdminAppointments = () => {
           className={`px-4 py-2 rounded font-semibold transition-all text-sm md:text-base ${activeSubTab === "service" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => setActiveSubTab("service")}
         >
-          Service/Treatment
+          Service
         </button>
         <button
           className={`px-4 py-2 rounded font-semibold transition-all text-sm md:text-base ${activeSubTab === "opds" ? "bg-blue-900 text-white" : "bg-gray-200 text-gray-700"}`}
