@@ -96,6 +96,29 @@ const ToggleDetailRow = ({ record, type }) => {
                 <div className="ml-2 text-xs text-gray-700">
                   <div>Name: {record.doctor?.name || "-"}</div>
                   <div>Email: {record.doctor?.email || "-"}</div>
+                  <div>Phone: {record.doctor?.phoneNu || "-"}</div>
+                  <div>ID: {record.doctor?._id || "-"}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">Service Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+                  <div>Name: {record.service?.name || "-"}</div>
+                  <div>Type: {record.service?.type || "-"}</div>
+                  <div>Description: {record.service?.description || "-"}</div>
+                  <div>ID: {record.service?._id || "-"}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">Appointment Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+                  <div>Start: {record.start ? new Date(record.start).toLocaleString() : "-"}</div>
+                  <div>End: {record.end ? new Date(record.end).toLocaleString() : "-"}</div>
+                  <div>Charge: {record.charge ? `₹${record.charge}` : "-"}</div>
+                  <div>Status: {record.status || "-"}</div>
+                  <div>Created At: {record.createdAt ? new Date(record.createdAt).toLocaleString() : "-"}</div>
+                  <div>Updated At: {record.updatedAt ? new Date(record.updatedAt).toLocaleString() : "-"}</div>
+                  <div>Appointment ID: {record._id}</div>
                 </div>
               </div>
               <div>
@@ -110,6 +133,81 @@ const ToggleDetailRow = ({ record, type }) => {
   );
 };
 
+
+// Toggleable row for appointment/test details
+const ToggleDetailRowForTestBooking = ({ record, type }) => {
+  const [showDetail, setShowDetail] = useState(false);
+  // Use images array for PDFs
+  const pdfs = record.images || [];
+
+  return (
+    <>
+      <tr>
+        <td className="px-4 py-2 border">{record.createdAt ? new Date(record.createdAt).toLocaleDateString() : record.date ? new Date(record.date).toLocaleDateString() : "-"}</td>
+        <td className="px-4 py-2 border">{record.test?.name || "-"}</td>
+        <td className="px-4 py-2 border">{record.doctor?.name || "-"}</td>
+        {/*<td className="px-4 py-2 border">{record.start ? new Date(record.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : record.date ? new Date(record.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
+        <td className="px-4 py-2 border">{record.end ? new Date(record.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}</td>*/}
+        <td className="px-4 py-2 border">{record.amount ? `₹${record.amount}` : "-"}</td>
+        <td className="px-4 py-2 border capitalize">{record.appointMentStatus || 'Pending'}</td>
+        <td className="px-4 py-2 border">
+          <button
+            className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+            onClick={() => setShowDetail((v) => !v)}
+          >
+            {showDetail ? "Hide Details" : "Show Details"}
+          </button>
+        </td>
+      </tr>
+      {showDetail && (
+        <tr>
+          <td colSpan={8} className="bg-gray-50 px-4 py-3 border-t">
+            <div className="flex flex-col gap-2">
+              <div>
+                <span className="font-semibold">Doctor Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+                  <div>Name: {record.doctor?.name || "-"}</div>
+                  <div>Email: {record.doctor?.email || "-"}</div>
+                  <div>Phone: {record.doctor?.phoneNu || "-"}</div>
+                  <div>ID: {record.doctor?._id || "-"}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">Service Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+                  <div>Name: {record.test?.name || "-"}</div>
+                  {/*<div>Type: {record.test?.type || "-"}</div>*/}
+                  <div>Description: {record.test?.description || "-"}</div>
+                  <div>ID: {record.test?._id || "-"}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">Appointment Details:</span>
+                <div className="ml-2 text-xs text-gray-700">
+{/*
+                  <div>Start: {record.start ? new Date(record.start).toLocaleString() : "-"}</div>
+                  <div>End: {record.end ? new Date(record.end).toLocaleString() : "-"}</div>*/}
+                  <div>Charge: {record.amount ? `₹${record.amount}` : "-"}</div>
+                  <div>Status: {record.status || "-"}</div>
+                  <div>Created At: {record.createdAt ? new Date(record.createdAt).toLocaleString() : "-"}</div>
+                  <div>Updated At: {record.updatedAt ? new Date(record.updatedAt).toLocaleString() : "-"}</div>
+                  <div>Appointment ID: {record._id}</div>
+                </div>
+              </div>
+              <div>
+                <span className="font-semibold">PDF Report(s):</span>
+                <PdfPreview pdfs={pdfs} />
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  );
+};
+
+
+
 // Appointment Tab Component
 const UserAppointmentsTab = ({
   appointments, apiStatus, errorMsg, totalPages, page, total, limit, sort, filters,
@@ -121,7 +219,7 @@ const UserAppointmentsTab = ({
     const fetchServices = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${backendUrl}/services`, {
+        const res = await fetch(`${backendUrl}/services?type=treatment`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = await res.json();
@@ -134,7 +232,7 @@ const UserAppointmentsTab = ({
   }, []);
 
   return (
-    <div className="text-xs sm:text-sm md:text-base">
+    <div className="text-xs sm:text-sm md:text-base max-w-7xl mx-auto">
       <div className="flex flex-row items-center mb-4 md:mb-6 gap-2">
         <h3 className="text-lg sm:text-xl md:text-2xl font-bold">My Appointments</h3>
         <button
@@ -356,8 +454,8 @@ const UserTestsTab = ({
                 <th className="px-4 py-2 border">Date</th>
                 <th className="px-4 py-2 border">Test Name</th>
                 <th className="px-4 py-2 border">Doctor</th>
-                <th className="px-4 py-2 border">Start</th>
-                <th className="px-4 py-2 border">End</th>
+                {/*<th className="px-4 py-2 border">Start</th>
+                <th className="px-4 py-2 border">End</th>*/}
                 <th className="px-4 py-2 border">Charge</th>
                 <th className="px-4 py-2 border">Status</th>
                 <th className="px-4 py-2 border">Details</th>
@@ -372,7 +470,7 @@ const UserTestsTab = ({
                 </tr>
               ) : (
                 tests.map((t) => (
-                  <ToggleDetailRow key={t._id} record={t} type="test" />
+                  <ToggleDetailRowForTestBooking key={t._id} record={t} type="test" />
                 ))
               )}
             </tbody>
@@ -492,7 +590,7 @@ const UserDashBoard = () => {
     params.append("sort", testSort);
     params.append("page", testPage);
     params.append("limit", testLimit);
-    fetch(`${backendUrl}/user/tests?${params.toString()}`, {
+    fetch(`${backendUrl}/test-bookings/my-bookings?${params.toString()}`, {
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
@@ -502,7 +600,8 @@ const UserDashBoard = () => {
         return res.json();
       })
       .then((data) => {
-        setTests(data.tests || []);
+console.log(data.data);
+        setTests(data.data || []);
         setTestTotalPages(data.totalPages || 1);
         setTestTotal(data.total || 0);
         setTestApiStatus("success");
