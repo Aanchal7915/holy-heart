@@ -104,155 +104,157 @@ const TestAppointments = () => {
       ) : errorMsg ? (
         <div className="text-red-600">{errorMsg}</div>
       ) : (
-        <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="py-2 px-4">Date</th>
-              <th className="py-2 px-4">Test</th>
-              <th className="py-2 px-4">Patient</th>
-              <th className="py-2 px-4">Amount</th>
-              <th className="py-2 px-4">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">No test bookings found.</td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="py-2 px-4">Date</th>
+                <th className="py-2 px-4">Test</th>
+                <th className="py-2 px-4">Patient</th>
+                <th className="py-2 px-4">Amount</th>
+                <th className="py-2 px-4">Action</th>
               </tr>
-            ) : (
-              bookings.map(b => (
-                <React.Fragment key={b._id}>
-                  <tr>
-                    <td className="py-2 px-4">{b.capturedAt ? new Date(b.capturedAt).toLocaleDateString() : "-"}</td>
-                    <td className="py-2 px-4">{b.test?.name || "-"}</td>
-                    <td className="py-2 px-4">{b.patient?.name || b.name || "-"}</td>
-                    <td className="py-2 px-4">{b.amount ? `₹${b.amount}` : "-"}</td>
-                    <td className="py-2 px-4">
-                      <button
-                        className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-                        onClick={() => setShowDetail(prev => ({ ...prev, [b._id]: !prev[b._id] }))}
-                      >
-                        {showDetail[b._id] ? "Hide" : "Show"} Details
-                      </button>
-                    </td>
-                  </tr>
-                  {showDetail[b._id] && (
+            </thead>
+            <tbody>
+              {bookings.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-4 text-gray-500">No test bookings found.</td>
+                </tr>
+              ) : (
+                bookings.map(b => (
+                  <React.Fragment key={b._id}>
                     <tr>
-                      <td colSpan={6} className="bg-gray-50 px-4 py-3 border-t">
-                        <div className="flex flex-col gap-2">
-                          <div>
-                            <span className="font-semibold">Test Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Name: {b.test?.name || "-"}</div>
-                              <div>Description: {b.test?.description || "-"}</div>
-                              <div>ID: {b.test?._id || "-"}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Patient Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Name: {b.patient?.name || b.name || "-"}</div>
-                              <div>Email: {b.patient?.email || b.email || "-"}</div>
-                              <div>Phone: {b.patient?.phoneNu || b.phoneNu || "-"}</div>
-                              <div>Gender: {b.gender || "-"}</div>
-                              <div>ID: {b.patient?._id || "-"}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Payment Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Amount: {b.amount ? `₹${b.amount}` : "-"}</div>
-                              <div>Currency: {b.currency || "-"}</div>
-                              <div>Method: {b.method || "-"}</div>
-                              <div>Status: {b.status || "-"}</div>
-                              <div>Order ID: {b.razorpayOrderId || "-"}</div>
-                              <div>Payment ID: {b.razorpayPaymentId || "-"}</div>
-                              <div>Signature: {b.razorpaySignature || "-"}</div>
-                              <div>UPI ID: {b.paymentDetails?.upiId || "-"}</div>
-                              <div>Captured At: {b.capturedAt ? new Date(b.capturedAt).toLocaleString() : "-"}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Booking Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Created At: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "-"}</div>
-                              <div>Updated At: {b.updatedAt ? new Date(b.updatedAt).toLocaleString() : "-"}</div>
-                              <div>Booking ID: {b._id}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Reports:</span>
-                            <div className="ml-2 text-xs text-gray-700 flex flex-col gap-2">
-                              {b.reports && b.reports.length > 0 ? (
-                                b.reports.map((pdfUrl, idx) => (
-                                  <div key={idx} className="flex flex-col gap-1 mb-2">
-                                    <div className="flex items-center gap-2">
-                                      <a
-                                        href={pdfUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-700 underline"
-                                      >
-                                        Report {idx + 1}
-                                      </a>
-                                      <button
-                                        className="text-red-600 text-xs px-2 py-1 border rounded hover:bg-red-50"
-                                        disabled={deleting[b._id] === pdfUrl}
-                                        onClick={() => handleDeletePdf(b._id, pdfUrl)}
-                                      >
-                                        {deleting[b._id] === pdfUrl ? "Deleting..." : "Delete"}
-                                      </button>
-                                    </div>
-                                    {/* PDF Preview */}
-                                    <div className="border rounded bg-gray-100 p-2">
-                                      <iframe
-                                        src={pdfUrl}
-                                        title={`Report Preview ${idx + 1}`}
-                                        width="100%"
-                                        height="200px"
-                                        style={{ border: "none" }}
-                                      />
-                                    </div>
-                                  </div>
-                                ))
-                              ) : (
-                                <span className="text-gray-500">No reports uploaded.</span>
-                              )}
-                              <form
-                                className="flex items-center gap-2 mt-2"
-                                onSubmit={e => {
-                                  e.preventDefault();
-                                  const file = e.target.elements.pdf.files[0];
-                                  handleUploadPdf(b._id, file);
-                                  e.target.reset();
-                                }}
-                              >
-                                <input
-                                  type="file"
-                                  name="pdf"
-                                  accept="application/pdf"
-                                  className="text-xs"
-                                  required
-                                />
-                                <button
-                                  type="submit"
-                                  className="bg-green-600 text-white px-2 py-1 rounded text-xs"
-                                  disabled={uploading[b._id]}
-                                >
-                                  {uploading[b._id] ? "Uploading..." : "Upload Report"}
-                                </button>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
+                      <td className="py-2 px-4">{b.capturedAt ? new Date(b.capturedAt).toLocaleDateString() : "-"}</td>
+                      <td className="py-2 px-4">{b.test?.name || "-"}</td>
+                      <td className="py-2 px-4">{b.patient?.name || b.name || "-"}</td>
+                      <td className="py-2 px-4">{b.amount ? `₹${b.amount}` : "-"}</td>
+                      <td className="py-2 px-4">
+                        <button
+                          className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                          onClick={() => setShowDetail(prev => ({ ...prev, [b._id]: !prev[b._id] }))}
+                        >
+                          {showDetail[b._id] ? "Hide" : "Show"} Details
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))
-            )}
-          </tbody>
-        </table>
+                    {showDetail[b._id] && (
+                      <tr>
+                        <td colSpan={6} className="bg-gray-50 px-4 py-3 border-t">
+                          <div className="flex flex-col gap-2">
+                            <div>
+                              <span className="font-semibold">Test Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Name: {b.test?.name || "-"}</div>
+                                <div>Description: {b.test?.description || "-"}</div>
+                                <div>ID: {b.test?._id || "-"}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Patient Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Name: {b.patient?.name || b.name || "-"}</div>
+                                <div>Email: {b.patient?.email || b.email || "-"}</div>
+                                <div>Phone: {b.patient?.phoneNu || b.phoneNu || "-"}</div>
+                                <div>Gender: {b.gender || "-"}</div>
+                                <div>ID: {b.patient?._id || "-"}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Payment Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Amount: {b.amount ? `₹${b.amount}` : "-"}</div>
+                                <div>Currency: {b.currency || "-"}</div>
+                                <div>Method: {b.method || "-"}</div>
+                                <div>Status: {b.status || "-"}</div>
+                                <div>Order ID: {b.razorpayOrderId || "-"}</div>
+                                <div>Payment ID: {b.razorpayPaymentId || "-"}</div>
+                                <div>Signature: {b.razorpaySignature || "-"}</div>
+                                <div>UPI ID: {b.paymentDetails?.upiId || "-"}</div>
+                                <div>Captured At: {b.capturedAt ? new Date(b.capturedAt).toLocaleString() : "-"}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Booking Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Created At: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "-"}</div>
+                                <div>Updated At: {b.updatedAt ? new Date(b.updatedAt).toLocaleString() : "-"}</div>
+                                <div>Booking ID: {b._id}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Reports:</span>
+                              <div className="ml-2 text-xs text-gray-700 flex flex-col gap-2">
+                                {b.reports && b.reports.length > 0 ? (
+                                  b.reports.map((pdfUrl, idx) => (
+                                    <div key={idx} className="flex flex-col gap-1 mb-2">
+                                      <div className="flex items-center gap-2">
+                                        <a
+                                          href={pdfUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-blue-700 underline"
+                                        >
+                                          Report {idx + 1}
+                                        </a>
+                                        <button
+                                          className="text-red-600 text-xs px-2 py-1 border rounded hover:bg-red-50"
+                                          disabled={deleting[b._id] === pdfUrl}
+                                          onClick={() => handleDeletePdf(b._id, pdfUrl)}
+                                        >
+                                          {deleting[b._id] === pdfUrl ? "Deleting..." : "Delete"}
+                                        </button>
+                                      </div>
+                                      {/* PDF Preview */}
+                                      <div className="border rounded bg-gray-100 p-2">
+                                        <iframe
+                                          src={pdfUrl}
+                                          title={`Report Preview ${idx + 1}`}
+                                          width="100%"
+                                          height="200px"
+                                          style={{ border: "none" }}
+                                        />
+                                      </div>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <span className="text-gray-500">No reports uploaded.</span>
+                                )}
+                                <form
+                                  className="flex items-center gap-2 mt-2"
+                                  onSubmit={e => {
+                                    e.preventDefault();
+                                    const file = e.target.elements.pdf.files[0];
+                                    handleUploadPdf(b._id, file);
+                                    e.target.reset();
+                                  }}
+                                >
+                                  <input
+                                    type="file"
+                                    name="pdf"
+                                    accept="application/pdf"
+                                    className="text-xs"
+                                    required
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+                                    disabled={uploading[b._id]}
+                                  >
+                                    {uploading[b._id] ? "Uploading..." : "Upload Report"}
+                                  </button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
       {/* Pagination */}
       <div className="flex justify-end mt-4 gap-2">

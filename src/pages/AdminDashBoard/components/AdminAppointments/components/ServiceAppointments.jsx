@@ -275,97 +275,99 @@ const ServiceAppointments = () => {
       ) : errorMsg ? (
         <div className="text-red-600">{errorMsg}</div>
       ) : (
-        <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="py-2 px-4">Date</th>
-              <th className="py-2 px-4">Service</th>
-              <th className="py-2 px-4">Doctor</th>
-              <th className="py-2 px-4">Status</th>
-              <th className="py-2 px-4">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">No appointments found.</td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white rounded shadow text-xs sm:text-sm md:text-base">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="py-2 px-4">Date</th>
+                <th className="py-2 px-4">Service</th>
+                <th className="py-2 px-4">Doctor</th>
+                <th className="py-2 px-4">Status</th>
+                <th className="py-2 px-4">Action</th>
               </tr>
-            ) : (
-              appointments.map(a => (
-                <React.Fragment key={a._id}>
-                  <tr>
-                    <td className="py-2 px-4">{a.start ? new Date(a.start).toLocaleDateString() : "-"}</td>
-                    <td className="py-2 px-4">{a.service?.name || "-"}</td>
-                    <td className="py-2 px-4">{a.doctor?.name || "-"}</td>
-                    <td className="py-2 px-4">{a.status || "-"}</td>
-                    <td className="py-2 px-4">
-                      <button
-                        className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-                        onClick={() => setShowDetail(prev => ({ ...prev, [a._id]: !prev[a._id] }))}
-                      >
-                        {showDetail[a._id] ? "Hide" : "Show"} Details
-                      </button>
-                    </td>
-                  </tr>
-                  {showDetail[a._id] && (
+            </thead>
+            <tbody>
+              {appointments.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-4 text-gray-500">No appointments found.</td>
+                </tr>
+              ) : (
+                appointments.map(a => (
+                  <React.Fragment key={a._id}>
                     <tr>
-                      <td colSpan={5} className="bg-gray-50 px-4 py-3 border-t">
-                        <div className="flex flex-col gap-2">
-                          <div>
-                            <span className="font-semibold">Doctor Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Name: {a.doctor?.name || "-"}</div>
-                              <div>Email: {a.doctor?.email || "-"}</div>
-                              <div>Phone: {a.doctor?.phoneNu || "-"}</div>
-                              <div>ID: {a.doctor?._id || "-"}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Service Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Name: {a.service?.name || "-"}</div>
-                              <div>Description: {a.service?.description || "-"}</div>
-                              <div>ID: {a.service?._id || "-"}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Patient Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Name: {a.patientName || "-"}</div>
-                              <div>Email: {a.patientEmail || "-"}</div>
-                              <div>Phone: {a.patientPhone || "-"}</div>
-                              <div>User ID: {a.userId || "-"}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">Appointment Details:</span>
-                            <div className="ml-2 text-xs text-gray-700">
-                              <div>Start: {a.start? `${a.start.split("T")[0]} ${a.start.split("T")[1].slice(0,5)}`: "-"}</div>
-                              <div>End: {a.end ? `${a.end.split("T")[0]} ${a.end.split("T")[1].slice(0,5)}`: "-"}</div>
-                              <div>Charge: {a.charge ? `₹${a.charge}` : "-"}</div>
-                              <div>Status: {a.status || "-"}</div>
-                              <div>Created At: {a.createdAt ? new Date(a.createdAt).toLocaleString() : "-"}</div>
-                              <div>Updated At: {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "-"}</div>
-                              <div>Appointment ID: {a._id}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-semibold">PDF Report(s):</span>
-                            <PdfUpload
-                              appointmentId={a._id}
-                              pdfs={a.images || []}
-                              refresh={fetchAppointments}
-                            />
-                          </div>
-                        </div>
+                      <td className="py-2 px-4">{a.start ? new Date(a.start).toLocaleDateString() : "-"}</td>
+                      <td className="py-2 px-4">{a.service?.name || "-"}</td>
+                      <td className="py-2 px-4">{a.doctor?.name || "-"}</td>
+                      <td className="py-2 px-4">{a.status || "-"}</td>
+                      <td className="py-2 px-4">
+                        <button
+                          className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                          onClick={() => setShowDetail(prev => ({ ...prev, [a._id]: !prev[a._id] }))}
+                        >
+                          {showDetail[a._id] ? "Hide" : "Show"} Details
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))
-            )}
-          </tbody>
-        </table>
+                    {showDetail[a._id] && (
+                      <tr>
+                        <td colSpan={5} className="bg-gray-50 px-4 py-3 border-t">
+                          <div className="flex flex-col gap-2">
+                            <div>
+                              <span className="font-semibold">Doctor Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Name: {a.doctor?.name || "-"}</div>
+                                <div>Email: {a.doctor?.email || "-"}</div>
+                                <div>Phone: {a.doctor?.phoneNu || "-"}</div>
+                                <div>ID: {a.doctor?._id || "-"}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Service Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Name: {a.service?.name || "-"}</div>
+                                <div>Description: {a.service?.description || "-"}</div>
+                                <div>ID: {a.service?._id || "-"}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Patient Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Name: {a.patientName || "-"}</div>
+                                <div>Email: {a.patientEmail || "-"}</div>
+                                <div>Phone: {a.patientPhone || "-"}</div>
+                                <div>User ID: {a.userId || "-"}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Appointment Details:</span>
+                              <div className="ml-2 text-xs text-gray-700">
+                                <div>Start: {a.start? `${a.start.split("T")[0]} ${a.start.split("T")[1].slice(0,5)}`: "-"}</div>
+                                <div>End: {a.end ? `${a.end.split("T")[0]} ${a.end.split("T")[1].slice(0,5)}`: "-"}</div>
+                                <div>Charge: {a.charge ? `₹${a.charge}` : "-"}</div>
+                                <div>Status: {a.status || "-"}</div>
+                                <div>Created At: {a.createdAt ? new Date(a.createdAt).toLocaleString() : "-"}</div>
+                                <div>Updated At: {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "-"}</div>
+                                <div>Appointment ID: {a._id}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-semibold">PDF Report(s):</span>
+                              <PdfUpload
+                                appointmentId={a._id}
+                                pdfs={a.images || []}
+                                refresh={fetchAppointments}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
       {/* Pagination */}
       <div className="flex justify-end mt-4 gap-2">
